@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/light_infantry_blue.png-b9da584266189964dd033474387c8434.stex"
+path="res://.import/artillery_red.png-0f4c3636fa118c7a138925a27c2a65d9.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/units/light_infantry_blue.png"
-dest_files=[ "res://.import/light_infantry_blue.png-b9da584266189964dd033474387c8434.stex" ]
+source_file="res://assets/units/artillery/artillery_red.png"
+dest_files=[ "res://.import/artillery_red.png-0f4c3636fa118c7a138925a27c2a65d9.stex" ]
 
 [params]
 
