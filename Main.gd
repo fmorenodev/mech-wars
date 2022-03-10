@@ -216,7 +216,8 @@ func _on_move_action() -> void:
 	menu_open = false
 
 func _on_cancel_action() -> void:
-	active_unit.position = active_unit.last_pos
+	if active_unit.last_pos:
+		active_unit.position = active_unit.last_pos
 	targets = []
 	select_unit()
 	menu_open = false
