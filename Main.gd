@@ -3,44 +3,55 @@ extends Node2D
 onready var CursorTileMap: TileMap = $CursorTileMap
 onready var SelectionTileMap: TileMap = $SelectionTileMap
 onready var TerrainTileMap: TileMap = $TerrainTileMap
+onready var BuildingsTileMap: TileMap = $BuildingsTileMap
 onready var PathTileMap: PathTileMap = $PathTileMap
 onready var ActionMenu: PopupMenu = $GUI/GUIContainer/ActionMenu
+onready var StatusMenu: PopupMenu = $GUI/GUIContainer/StatusMenu
 
+const Team = preload("res://Team.gd")
+
+var active_team: Team
 var active_unit: Unit
 var walkable_cells := []
-var units: Array
+var units := []
+var teams := []
 var menu_open := false
 var targets := []
 var selecting_targets := false
+var current_index: int
 
 func initialize() -> void:
 	CursorTileMap.cursor_pos = Vector2.ZERO
 	CursorTileMap.set_cellv(CursorTileMap.cursor_pos, 0)
 	init_a_star()
 	units.clear()
+	active_team = teams[0]
+	current_index = 0
 
 func _ready() -> void:
-	var _err = gl.connect("accept_pressed", self, "_on_accept_pressed")
-	_err = gl.connect("cancel_pressed", self, "_on_cancel_pressed")
-	_err = gl.connect("cursor_moved", self, "_on_cursor_moved")
-	_err = gl.connect("move_action", self, "_on_move_action")
-	_err = gl.connect("cancel_action", self, "_on_cancel_action")
-	_err = gl.connect("attack_action", self, "_on_attack_action")
-	_err = gl.connect("target_selected", self, "_on_target_selected")
-	_err = gl.connect("unit_deleted", self, "_on_unit_deleted")
+	var _err = signals.connect("accept_pressed", self, "_on_accept_pressed")
+	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
+	_err = signals.connect("cursor_moved", self, "_on_cursor_moved")
+	_err = signals.connect("move_action", self, "_on_move_action")
+	_err = signals.connect("cancel_action", self, "_on_cancel_action")
+	_err = signals.connect("attack_action", self, "_on_attack_action")
+	_err = signals.connect("capture_action", self, "_on_capture_action")
+	_err = signals.connect("target_selected", self, "_on_target_selected")
+	_err = signals.connect("unit_deleted", self, "_on_unit_deleted")
+	_err = signals.connect("turn_ended", self, "_on_turn_ended")
+	teams.append(Team.new(gl.TEAM.RED))
+	teams.append(Team.new(gl.TEAM.BLUE))
 	initialize()
 	var i = 0
 	for child in SelectionTileMap.get_children():
-		if i == 0:
-			child.initialize(0)
-		else:
-			child.initialize(1)
+		child.initialize(0)
 		units.append(child)
 		if i % 2 == 0:
-			child.set_team(gl.TEAM.BLUE)
+			teams[0].add_unit(child)
 		else:
-			child.set_team(gl.TEAM.RED)
+			teams[1].add_unit(child)
 		i += 1
+	start_turn()
 
 func init_a_star() -> void:
 	gl.a_star = AStar2D.new()
@@ -141,13 +152,13 @@ func check_targets() -> Array:
 	return result
 
 func move_active_unit(target_pos: Vector2) -> void:
-	
 	var unit_blocking = is_unit_in_position(target_pos)
 	if (unit_blocking and unit_blocking != active_unit) or not target_pos in walkable_cells: # empty
 		return
 	
 	if PathTileMap.map_to_world(target_pos) == active_unit.position:
 		deselect_active_unit()
+		targets = check_targets()
 	else:
 		# movement
 		disable_input(true)
@@ -162,12 +173,22 @@ func move_active_unit(target_pos: Vector2) -> void:
 		active_unit.position = path_world_coords.back()
 	
 	# check for attack targets
-	targets = check_targets()
+	if active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
+		targets = check_targets()
 	
-	# build_menu
+	# build action menu
 	var menu_options = []
 	if !targets.empty():
 		menu_options.append(2) # menu_options.attack
+	var building_id = BuildingsTileMap.get_cellv(target_pos)
+	if building_id != -1 and active_unit.id == gl.UNITS.LIGHT_INFANTRY: # add other inf types
+		match building_id:
+			gl.BUILDINGS.RUINS, gl.BUILDINGS.RUINS_2, gl.BUILDINGS.FACTORY, \
+			gl.BUILDINGS.AIRPORT, gl.BUILDINGS.PORT, gl.BUILDINGS.POWER_PLANT, gl.BUILDINGS.RESEARCH:
+				menu_options.append(3) # capture
+	else:
+		active_unit.capture_points = 0
+		active_unit.AuxLabel.text = ''
 	menu_open = true
 	open_action_menu(menu_options, target_pos)
 
@@ -177,11 +198,14 @@ func select_unit_or_building(pos: Vector2) -> void:
 		if active_unit.can_move:
 			select_unit()
 		else:
+			if active_unit.team != active_team.color:
+				pass
+				# show movement range for enemy units
 			active_unit = null
-	elif TerrainTileMap.get_cellv(pos) == 4:
+	elif BuildingsTileMap.get_cellv(pos) != -1:
 		pass # open building menu
 	else:
-		pass # open status menu
+		StatusMenu.show()
 
 func is_off_borders(pos: Vector2) -> bool:
 	return pos.x < Vector2.ZERO.x or pos.x >= gl.map_size.x or pos.y < Vector2.ZERO.y or pos.y >= gl.map_size.y
@@ -210,10 +234,13 @@ func _on_cursor_moved(target_pos: Vector2) -> void:
 	if active_unit and active_unit.is_selected:
 		PathTileMap.draw(PathTileMap.world_to_map(active_unit.position), target_pos)
 
-func _on_move_action() -> void:
+func end_unit_action() -> void:
 	active_unit.end_action()
 	clear_active_unit()
 	menu_open = false
+
+func _on_move_action() -> void:
+	end_unit_action()
 
 func _on_cancel_action() -> void:
 	if active_unit.last_pos:
@@ -229,21 +256,58 @@ func _on_attack_action() -> void:
 		selecting_targets = true
 		CursorTileMap.set_cellv(targets[0], 1)
 
+func _on_capture_action() -> void:
+	active_unit.capture()
+	if active_unit.capture_points >= 20:
+		active_unit.capture_points = 0
+		var pos = BuildingsTileMap.world_to_map(active_unit.position)
+		var cell_value = BuildingsTileMap.get_cellv(pos) + gl.BUILDINGS.size() * (active_unit.team + 1)
+		BuildingsTileMap.set_cellv(pos, cell_value)
+		teams[active_unit.team].add_building(pos)
+	end_unit_action()
+
 func _on_target_selected(pos: Vector2) -> void:
 	var target_unit: Unit = is_unit_in_position(pos)
-	# missing terrain defense bonus
-	target_unit.health = target_unit.health - active_unit.dmg_chart[target_unit.id] * (active_unit.health / 100)
+	# missing terrain defense bonus and co bonus
+	target_unit.health -= calc_damage(active_unit, target_unit)
 	targets = []
+	# missing attribute to know if target can retaliate against active unit
 	if target_unit and target_unit.atk_type == gl.ATTACK_TYPE.DIRECT and active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
-		active_unit.health = active_unit.health - target_unit.dmg_chart[target_unit.id] * (target_unit.health / 100)
+		active_unit.health -= calc_damage(target_unit, active_unit)
 	selecting_targets = false
 	active_unit.end_action()
 	clear_active_unit()
 	menu_open = false
 
+func calc_damage(attacker: Unit, target: Unit) -> int:
+	var result = (attacker.dmg_chart[target.id] * (attacker.health / 10.0) + (randi() % 11 * attacker.health / 10.0)) / 10.0
+	return int(result)
+
 func _on_unit_deleted(unit: Unit) -> void:
 	units.remove(units.find(unit))
 	unit.queue_free()
+
+func _on_turn_ended() -> void:
+	for unit in active_team.units:
+		unit.end_turn()
+	current_index += 1
+	if current_index > teams.size() - 1:
+		current_index = 0
+	active_team = teams[current_index]
+	start_turn()
+
+func start_turn() -> void:
+	for building in active_team.buildings:
+		active_team.funds += 1000
+	for unit in active_team.units:
+		unit.activate()
+		if BuildingsTileMap.get_cellv(BuildingsTileMap.world_to_map(unit.position)) != -1:
+			var damage = 10 - unit.health
+			if damage > 0:
+				var repair_cost = unit.cost * min(0.2, damage / 10)
+				if repair_cost <= active_team.funds:
+					unit.health += min(damage, 2)
+					active_team.funds -= repair_cost
 
 func disable_input(value: bool) -> void:
 	get_tree().get_root().set_disable_input(value)

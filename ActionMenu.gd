@@ -3,25 +3,29 @@ extends PopupMenu
 onready var move_icon: Texture = preload("res://assets/gui/move_arrow.png")
 onready var cancel_icon: Texture = preload("res://assets/gui/cancel.png")
 onready var attack_icon: Texture = preload("res://assets/gui/attack.png")
+onready var capture_icon: Texture = preload("res://assets/gui/capture.png")
 
 enum menu_options {
 	MOVE,
 	CANCEL,
-	ATTACK
+	ATTACK,
+	CAPTURE
 }
 
 func _ready() -> void:
 	var _err = connect("id_pressed", self, "_on_id_pressed")
-	_err = gl.connect("cancel_pressed", self, "_on_cancel_pressed")
+	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
 
 func _on_id_pressed(id: int) -> void:
 	match id:
 		menu_options.MOVE:
-			gl.emit_signal("move_action")
+			signals.emit_signal("move_action")
 		menu_options.CANCEL:
-			gl.emit_signal("cancel_action")
+			signals.emit_signal("cancel_action")
 		menu_options.ATTACK:
-			gl.emit_signal("attack_action")
+			signals.emit_signal("attack_action")
+		menu_options.CAPTURE:
+			signals.emit_signal("capture_action")
 
 func add_option(id: int) -> void:
 	match id:
@@ -31,6 +35,8 @@ func add_option(id: int) -> void:
 			add_icon_item(cancel_icon, "Cancel", id)
 		menu_options.ATTACK:
 			add_icon_item(attack_icon, "Attack", id)
+		menu_options.CAPTURE:
+			add_icon_item(capture_icon, "Capture", id)
 
 func generate_menu(options: PoolIntArray) -> void:
 	clear()

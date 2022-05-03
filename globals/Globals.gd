@@ -1,4 +1,3 @@
-#warning-ignore-all:unused_signal
 extends Node
 
 var DIRECTIONS = [Vector2.UP, Vector2.DOWN, Vector2.RIGHT, Vector2.LEFT]
@@ -17,17 +16,8 @@ enum MOVE_TYPE {LIGHT_INF, ARTILLERY}
 enum ATTACK_TYPE {DIRECT, ARTILLERY}
 enum TEAM {RED, BLUE}
 
-signal cursor_moved(pos)
-signal accept_pressed(pos)
-signal cancel_pressed
-
-signal cancel_action
-signal move_action
-signal attack_action
-
-signal target_selected(pos)
-
-signal unit_deleted(unit)
+enum TILES {PLAINS, FOREST, SMALL_MOUNTAIN, MOUNTAIN, WATER}
+enum BUILDINGS {RUINS, RUINS_2, FACTORY, AIRPORT, PORT, RESEARCH, POWER_PLANT}
 
 func clamp(grid_position: Vector2) -> Vector2:
 	var result := grid_position

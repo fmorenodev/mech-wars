@@ -7,17 +7,22 @@ onready var UnitSprite: AnimatedSprite = $PathFollow2D/AnimatedSprite
 onready var AnimPlayer: AnimationPlayer = $AnimationPlayer
 onready var PathF: PathFollow2D = $PathFollow2D
 onready var HealthLabel: Label = $PathFollow2D/AnimatedSprite/HealthLabel
+onready var AuxLabel: Label = $PathFollow2D/AnimatedSprite/AuxLabel
+
+onready var greyscale_mat: Material = preload("res://assets/greyscale_material.tres")
 
 var id: int
 var unit_name: String
 var movement: int
-var health: float = 100 setget set_health
+var health: int = 10 setget set_health
 var energy: int
 var move_type: int
 var atk_type: int
 var dmg_chart: Dictionary
+var cost: int
 
 var team: int setget set_team
+var capture_points: int = 0
 
 signal walk_finished
 var texture: SpriteFrames setget set_texture
@@ -25,18 +30,25 @@ var move_sound
 var move_speed := 150.0
 var is_moving := false setget set_is_moving
 var is_selected := false
-var can_move := true
+var can_move := false
 var last_pos: Vector2
 
-func set_health(value: float) -> void:
+func set_health(value: int) -> void:
 	health = value
 	if health <= 0:
 		health = 0
-		gl.emit_signal("unit_deleted", self)
+		signals.emit_signal("unit_deleted", self)
 		return
-	var label_value = abs(round(health / 10))
-	if label_value < 10 and label_value > 0:
+	elif health > 10:
+		health = 10
+	var label_value = round_health(health)
+	if label_value < 10:
 		HealthLabel.text = str(label_value)
+	elif label_value == 10:
+		HealthLabel.text = ''
+
+func round_health(value: float) -> float:
+	return abs(round(value))
 
 func set_texture(value: SpriteFrames) -> void:
 	texture = value
@@ -67,6 +79,7 @@ func initialize(unit: int) -> void:
 			move_type = gl.MOVE_TYPE.LIGHT_INF
 			dmg_chart = {gl.UNITS.LIGHT_INFANTRY: 55, gl.UNITS.ARTILLERY: 15}
 			atk_type = gl.ATTACK_TYPE.DIRECT
+			cost = 1000
 		gl.UNITS.ARTILLERY:
 			id = gl.UNITS.ARTILLERY
 			unit_name = 'Artillery'
@@ -75,6 +88,7 @@ func initialize(unit: int) -> void:
 			move_type = gl.MOVE_TYPE.ARTILLERY
 			dmg_chart = {gl.UNITS.LIGHT_INFANTRY: 90, gl.UNITS.ARTILLERY: 75}
 			atk_type = gl.ATTACK_TYPE.ARTILLERY
+			cost = 6000
 
 func _ready() -> void:
 	set_process(false)
@@ -97,10 +111,24 @@ func walk_along(path: PoolVector2Array) -> void:
 	curve.add_point(Vector2.ZERO)
 	for point in path:
 		curve.add_point(point - position)
-
 	self.is_moving = true # start moving
 
 func end_action() -> void:
 	can_move = false
 	UnitSprite.stop()
-	# add greyed-out sprite
+	UnitSprite.material = greyscale_mat
+
+func end_turn() -> void:
+	can_move = false
+	UnitSprite.play()
+	UnitSprite.material = null
+
+func activate() -> void:
+	can_move = true
+
+func capture() -> void:
+	capture_points += health
+	if capture_points >= 20:
+		AuxLabel.text = ''
+	else:
+		AuxLabel.text = 'c'

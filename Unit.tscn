@@ -15,9 +15,21 @@ loop = false
 [node name="AnimatedSprite" type="AnimatedSprite" parent="PathFollow2D"]
 frames = ExtResource( 2 )
 animation = "red"
-frame = 7
+frame = 2
 playing = true
 centered = false
+
+[node name="AuxLabel" type="Label" parent="PathFollow2D/AnimatedSprite"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 2.19142
+margin_top = -14.8102
+margin_right = 10.1914
+margin_bottom = 5.18981
+custom_fonts/font = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="HealthLabel" type="Label" parent="PathFollow2D/AnimatedSprite"]
 anchor_left = 1.0
