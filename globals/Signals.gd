@@ -14,4 +14,5 @@ signal capture_action
 
 signal target_selected(pos)
 
+signal unit_added(unit_id, team_id, pos)
 signal unit_deleted(unit)

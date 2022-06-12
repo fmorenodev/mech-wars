@@ -11,6 +11,23 @@ var tile_size: int = 24
 var map_size: Vector2 = Vector2(14, 11)
 var a_star: AStar2D
 
+var units = { UNITS.LIGHT_INFANTRY: 
+				{unit_name = 'Light Infantry',
+				movement = 4,
+				energy = 99,
+				move_type = MOVE_TYPE.LIGHT_INF,
+				dmg_chart = {UNITS.LIGHT_INFANTRY: 55, UNITS.ARTILLERY: 15},
+				atk_type = ATTACK_TYPE.DIRECT,
+				cost = 1000},
+			UNITS.ARTILLERY: 
+				{unit_name = 'Artillery',
+				movement = 6,
+				energy = 99,
+				move_type = MOVE_TYPE.ARTILLERY,
+				dmg_chart = {UNITS.LIGHT_INFANTRY: 90, UNITS.ARTILLERY: 75},
+				atk_type = ATTACK_TYPE.ARTILLERY,
+				cost = 6000}
+			}
 enum UNITS {LIGHT_INFANTRY, ARTILLERY}
 enum MOVE_TYPE {LIGHT_INF, ARTILLERY}
 enum ATTACK_TYPE {DIRECT, ARTILLERY}

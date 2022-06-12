@@ -9,7 +9,7 @@ onready var PathF: PathFollow2D = $PathFollow2D
 onready var HealthLabel: Label = $PathFollow2D/AnimatedSprite/HealthLabel
 onready var AuxLabel: Label = $PathFollow2D/AnimatedSprite/AuxLabel
 
-onready var greyscale_mat: Material = preload("res://assets/greyscale_material.tres")
+var unit_data = gl.units
 
 var id: int
 var unit_name: String
@@ -70,25 +70,14 @@ func set_team(value: int) -> void:
 			UnitSprite.animation = "blue"
 
 func initialize(unit: int) -> void:
-	match unit:
-		gl.UNITS.LIGHT_INFANTRY:
-			id = gl.UNITS.LIGHT_INFANTRY
-			unit_name = 'Infantry'
-			movement = 4
-			energy = 99
-			move_type = gl.MOVE_TYPE.LIGHT_INF
-			dmg_chart = {gl.UNITS.LIGHT_INFANTRY: 55, gl.UNITS.ARTILLERY: 15}
-			atk_type = gl.ATTACK_TYPE.DIRECT
-			cost = 1000
-		gl.UNITS.ARTILLERY:
-			id = gl.UNITS.ARTILLERY
-			unit_name = 'Artillery'
-			movement = 6
-			energy = 99
-			move_type = gl.MOVE_TYPE.ARTILLERY
-			dmg_chart = {gl.UNITS.LIGHT_INFANTRY: 90, gl.UNITS.ARTILLERY: 75}
-			atk_type = gl.ATTACK_TYPE.ARTILLERY
-			cost = 6000
+	id = unit
+	unit_name = gl.units[unit].unit_name
+	movement = gl.units[unit].movement
+	energy = gl.units[unit].energy
+	move_type = gl.units[unit].move_type
+	dmg_chart = gl.units[unit].dmg_chart
+	atk_type = gl.units[unit].atk_type
+	cost = gl.units[unit].cost
 
 func _ready() -> void:
 	set_process(false)
@@ -116,7 +105,7 @@ func walk_along(path: PoolVector2Array) -> void:
 func end_action() -> void:
 	can_move = false
 	UnitSprite.stop()
-	UnitSprite.material = greyscale_mat
+	UnitSprite.material = sp.greyscale_mat
 
 func end_turn() -> void:
 	can_move = false

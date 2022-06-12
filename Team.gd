@@ -15,5 +15,5 @@ func add_unit(unit: Unit) -> void:
 	unit.team = color
 	units.append(unit)
 
-func add_building(pos: Vector2) -> void:
-	buildings.append(pos)
+func add_building(building) -> void:
+	buildings.append(building)
