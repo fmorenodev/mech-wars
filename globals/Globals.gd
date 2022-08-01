@@ -18,7 +18,8 @@ var units = { UNITS.LIGHT_INFANTRY:
 				move_type = MOVE_TYPE.LIGHT_INF,
 				dmg_chart = {UNITS.LIGHT_INFANTRY: 55, UNITS.ARTILLERY: 15},
 				atk_type = ATTACK_TYPE.DIRECT,
-				cost = 1000},
+				cost = 1000,
+				can_capture = true},
 			UNITS.ARTILLERY: 
 				{unit_name = 'Artillery',
 				movement = 6,
@@ -26,7 +27,8 @@ var units = { UNITS.LIGHT_INFANTRY:
 				move_type = MOVE_TYPE.ARTILLERY,
 				dmg_chart = {UNITS.LIGHT_INFANTRY: 90, UNITS.ARTILLERY: 75},
 				atk_type = ATTACK_TYPE.ARTILLERY,
-				cost = 6000}
+				cost = 6000,
+				can_capture = false}
 			}
 enum UNITS {LIGHT_INFANTRY, ARTILLERY}
 enum MOVE_TYPE {LIGHT_INF, ARTILLERY}
@@ -36,8 +38,25 @@ enum TEAM {RED, BLUE}
 enum TILES {PLAINS, FOREST, SMALL_MOUNTAIN, MOUNTAIN, WATER}
 enum BUILDINGS {RUINS, RUINS_2, FACTORY, AIRPORT, PORT, RESEARCH, POWER_PLANT}
 
+func is_indirect(unit: Unit) -> bool:
+	if unit.atk_type == MOVE_TYPE.ARTILLERY:
+		return true
+	return false
+
 func clamp(grid_position: Vector2) -> Vector2:
 	var result := grid_position
 	result.x = clamp(result.x, 0, map_size.x - 1.0)
 	result.y = clamp(result.y, 0, map_size.y - 1.0)
+	return result
+
+func delete_duplicates(array: Array) -> Array:
+	var result = []
+	for i in range(array.size()):
+		var duplicated = false
+		for j in range(i+1, array.size()):
+			if array[i] == array[j]:
+				duplicated = true
+				break
+		if not duplicated:
+			result += [array[i]]
 	return result

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://assets/map/green_tileset.png" type="Texture" id=2]
@@ -11,9 +11,11 @@
 [ext_resource path="res://assets/map/reticle/reticle.tres" type="Texture" id=9]
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=10]
 [ext_resource path="res://assets/map/building_tileset.png" type="Texture" id=11]
-[ext_resource path="res://ActionMenu.gd" type="Script" id=12]
-[ext_resource path="res://StatusMenu.gd" type="Script" id=15]
-[ext_resource path="res://BuildingMenu.gd" type="Script" id=16]
+[ext_resource path="res://ui/ActionMenu.gd" type="Script" id=12]
+[ext_resource path="res://assets/map/selection_tile/selection_tile_red.tres" type="Texture" id=13]
+[ext_resource path="res://AI.gd" type="Script" id=14]
+[ext_resource path="res://ui/StatusMenu.gd" type="Script" id=15]
+[ext_resource path="res://ui/BuildingMenu.gd" type="Script" id=16]
 [ext_resource path="res://Building.gd" type="Script" id=17]
 
 [sub_resource type="TileSet" id=1]
@@ -88,7 +90,7 @@
 4/shapes = [  ]
 4/z_index = 0
 
-[sub_resource type="TileSet" id=3]
+[sub_resource type="TileSet" id=2]
 0/name = "arrows.png 0"
 0/texture = ExtResource( 7 )
 0/tex_offset = Vector2( 0, 0 )
@@ -113,7 +115,7 @@
 0/shapes = [  ]
 0/z_index = 0
 
-[sub_resource type="TileSet" id=4]
+[sub_resource type="TileSet" id=3]
 0/name = "selection_tile.tres 0"
 0/texture = ExtResource( 4 )
 0/tex_offset = Vector2( 0, 0 )
@@ -128,8 +130,22 @@
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
 0/z_index = 0
+1/name = "selection_tile_red.tres 1"
+1/texture = ExtResource( 13 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 0, 0, 24, 24 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape_one_way = false
+1/shape_one_way_margin = 0.0
+1/shapes = [  ]
+1/z_index = 0
 
-[sub_resource type="TileSet" id=5]
+[sub_resource type="TileSet" id=4]
 0/name = "cursor.tres 0"
 0/texture = ExtResource( 5 )
 0/tex_offset = Vector2( 0, 0 )
@@ -213,7 +229,7 @@ frame = 4
 script = ExtResource( 17 )
 
 [node name="PathTileMap" type="TileMap" parent="."]
-tile_set = SubResource( 3 )
+tile_set = SubResource( 2 )
 cell_size = Vector2( 24, 24 )
 cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
@@ -221,7 +237,7 @@ format = 1
 script = ExtResource( 8 )
 
 [node name="SelectionTileMap" type="TileMap" parent="."]
-tile_set = SubResource( 4 )
+tile_set = SubResource( 3 )
 cell_size = Vector2( 24, 24 )
 cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
@@ -244,7 +260,7 @@ position = Vector2( 120, 120 )
 position = Vector2( 72, 120 )
 
 [node name="CursorTileMap" type="TileMap" parent="."]
-tile_set = SubResource( 5 )
+tile_set = SubResource( 4 )
 cell_size = Vector2( 24, 24 )
 cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
@@ -296,3 +312,6 @@ __meta__ = {
 margin_right = 8.0
 margin_bottom = 8.0
 script = ExtResource( 16 )
+
+[node name="AI" type="Node" parent="."]
+script = ExtResource( 14 )

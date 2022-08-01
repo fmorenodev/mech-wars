@@ -7,7 +7,7 @@ credits:
 TODO_LIST:
 - building units DONE
 - basic AI
-- aedding more units
+- adding more units
 - adding more terrain and making it functional
 - adding UI
 - adding victory and defeat

@@ -20,6 +20,7 @@ var move_type: int
 var atk_type: int
 var dmg_chart: Dictionary
 var cost: int
+var can_capture: bool
 
 var team: int setget set_team
 var capture_points: int = 0
@@ -78,6 +79,7 @@ func initialize(unit: int) -> void:
 	dmg_chart = gl.units[unit].dmg_chart
 	atk_type = gl.units[unit].atk_type
 	cost = gl.units[unit].cost
+	can_capture = gl.units[unit].can_capture
 
 func _ready() -> void:
 	set_process(false)
