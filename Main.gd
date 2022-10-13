@@ -59,7 +59,7 @@ func _ready() -> void:
 			add_unit_data(child, randi() % 2, gl.TEAM.BLUE)
 		i = i + 1
 	for child in BuildingsTileMap.get_children():
-		add_building_data(child, randi() % gl.BUILDINGS.size(), -1)
+		add_building_data(child, randi() % gl.BUILDINGS.size(), randi() % 2)
 	init_a_star()
 	start_turn()
 
@@ -105,6 +105,7 @@ func update_a_star() -> void:
 			else:
 				update_point(gl.a_star.get_closest_point(pos), pos)
 
+# TODO: take into account movement types, adding them to the Unit type
 func update_point(id: int, pos: Vector2) -> void:
 	match TerrainTileMap.get_cellv(pos):
 		0: # plains
@@ -127,9 +128,11 @@ func add_and_connect_point(pos: Vector2) -> void:
 	for point in points_to_connect:
 		gl.a_star.connect_points(new_id, point)
 
-func get_path_weight(from_id: int, to_id: int) -> int:
+func get_path_weight(from_id: int, to_id: int, to_enemy: bool = false) -> int:
 	var id_point_array: Array = gl.a_star.get_id_path(from_id, to_id)
 	id_point_array.pop_front()
+	if to_enemy:
+		id_point_array.pop_back()
 	var result = 0
 	for id in id_point_array:
 		result += gl.a_star.get_point_weight_scale(id)
@@ -165,6 +168,21 @@ func flood_fill(start_pos: Vector2, max_distance: int) -> Array:
 func get_walkable_cells(unit: Unit) -> Array:
 	return flood_fill(TerrainTileMap.world_to_map(unit.position), unit.movement)
 
+func get_partial_path(from_id: int, to_id: int, movement: int) -> Array:
+	var path = gl.a_star.get_id_path(from_id, to_id)
+	var remaining_movement = movement
+	var walkable_path = [gl.a_star.get_point_position(path[0])]
+	path.remove(0)
+	for point_id in path:
+		var weight = gl.a_star.get_point_weight_scale(point_id)
+		remaining_movement -= weight
+		if remaining_movement < 0:
+			return walkable_path
+		else:
+			walkable_path.append(gl.a_star.get_point_position(path[0]))
+			path.remove(0)
+	return walkable_path
+
 ##########################
 # TILE ACTIONS FUNCTIONS # 
 ##########################
@@ -195,7 +213,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 	for direction in directions:
 		var coordinates: Vector2 = TerrainTileMap.world_to_map(pos) + direction
 		var target_unit = is_unit_in_position(coordinates)
-		if all_possible or (target_unit and target_unit.team != unit.team):
+		if all_possible or (target_unit and target_unit.team != unit.team and can_attack(unit, target_unit)):
 			result.append(coordinates)
 	return result
 
@@ -293,7 +311,7 @@ func move_active_unit(target_pos: Vector2) -> void:
 	if !targets.empty():
 		menu_options.append(2) # menu_options.attack
 	var building = is_building_in_position(target_pos)
-	if building and active_unit.id == gl.UNITS.LIGHT_INFANTRY and building.team != active_team.color: # TODO: add other inf types
+	if building and active_unit.can_capture and building.team != active_team.color:
 		menu_options.append(3) # capture
 	else:
 		active_unit.capture_points = 0
@@ -318,6 +336,25 @@ func open_status_menu() -> void:
 func close_menus() -> void:
 	StatusMenu.hide()
 	BuildingMenu.hide()
+
+# TODO: fix both functions yield, look at working yield example in code (no other code to continue) so it yields correctly
+
+func move_unit_ai(unit: Unit, path: Array) -> void:
+	unit.last_pos = unit.position
+	var path_world_coords = []
+	for point in path:
+		path_world_coords.append(PathTileMap.map_to_world(point))
+	unit.walk_along(path_world_coords)
+	yield(unit, "walk_finished")
+	unit.position = path_world_coords.back()
+
+func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
+	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), 1)
+	yield(get_tree().create_timer(1.0), "timeout")
+	var damage = calc_damage(unit, target_unit)
+	unit.health -= calc_retaliation_damage(target_unit, unit, damage)
+	target_unit.health -= damage
+	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), -1)
 
 ##########################
 # TILE CHECKER FUNCTIONS #
@@ -390,20 +427,23 @@ func _on_attack_action() -> void:
 		CursorTileMap.set_cellv(targets[0], 1)
 
 func _on_capture_action() -> void:
-	active_unit.capture()
-	if active_unit.capture_points >= 20:
-		active_unit.capture_points = 0
-		var building = is_building_in_position(SelectionTileMap.world_to_map(active_unit.position))
+	capture_action(active_unit)
+
+func capture_action(unit: Unit) -> void:
+	unit.capture()
+	if unit.capture_points >= 20:
+		unit.capture_points = 0
+		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
 		building.capture(active_team.color)
 		active_team.add_building(building)
 	end_unit_action()
 
 func _on_target_selected(pos: Vector2) -> void:
 	var target_unit: Unit = is_unit_in_position(pos)
-	target_unit.health -= calc_damage(active_unit, target_unit)
+	var damage = calc_damage(active_unit, target_unit)
 	targets = []
-	if target_unit and target_unit.atk_type == gl.ATTACK_TYPE.DIRECT and active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
-		active_unit.health -= calc_damage(target_unit, active_unit)
+	active_unit.health -= calc_retaliation_damage(target_unit, active_unit, damage)
+	target_unit.health -= damage
 	selecting_targets = false
 	active_unit.end_action()
 	clear_active_unit()
@@ -433,28 +473,31 @@ func _on_turn_ended() -> void:
 
 # TODO missing terrain defense bonus and co bonus
 func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> int:
-	var result = (attacker.dmg_chart[target.id] * (attacker.health / 10.0))
-	if add_random:
-		result += (randi() % 11 * attacker.health / 10.0) / 10.0
-	return int(result)
-
-# TODO missing attribute to know if target can retaliate against active unit
-func calc_retaliation_damage(attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> int:
-	if target and target.atk_type == gl.ATTACK_TYPE.DIRECT and attacker.atk_type == gl.ATTACK_TYPE.DIRECT:
-		var result = (attacker.dmg_chart[target.id] * (attacker.health - dmg_suffered / 10.0) + (randi() % 11 * (attacker.health - dmg_suffered) / 10.0)) / 10.0
+	if can_attack(attacker, target):
+		var result = (attacker.dmg_chart[target.id] * (attacker.health / 10.0)) / 10.0
 		if add_random:
-			result += (randi() % 11 * attacker.health - dmg_suffered / 10.0) / 10.0
-		return result
+			result += (randi() % 11 * attacker.health / 10.0) / 10.0
+		return int(result)
+	else:
+		return 0
+
+func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> int:
+	if counter_attacker and counter_attacker.atk_type == gl.ATTACK_TYPE.DIRECT and target.atk_type == gl.ATTACK_TYPE.DIRECT and can_attack(counter_attacker, target):
+		var result = (counter_attacker.dmg_chart[target.id] * (counter_attacker.health - dmg_suffered / 10.0)) / 10.0
+		if add_random:
+			result += (randi() % 11 * (counter_attacker.health - dmg_suffered) / 10.0) / 10.0
+		return int(result)
 	else:
 		return 0
 
 func calc_dmg_value(attacker: Unit, target: Unit) -> int:
-	if target and target.atk_type == gl.ATTACK_TYPE.DIRECT and attacker.atk_type == gl.ATTACK_TYPE.DIRECT:
-		attacker.health -= calc_damage(attacker, target)
 	var dmg = calc_damage(attacker, target, false)
-	var retaliation_dmg = calc_retaliation_damage(attacker, target, dmg, false)
+	var retaliation_dmg = calc_retaliation_damage(target, attacker, dmg, false)
 	var value = dmg * (target.cost / 1000.0) - retaliation_dmg * (attacker.cost / 1000.0)
 	return value
+
+func can_attack(attacker: Unit, target: Unit) -> bool:
+	return attacker.dmg_chart[target.id] > 0
 
 func start_turn() -> void:
 	for building in active_team.buildings:
