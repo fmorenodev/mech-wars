@@ -25,6 +25,7 @@ var can_capture: bool
 var team: int setget set_team
 var capture_points: int = 0
 
+# variables for movement
 signal walk_finished
 var texture: SpriteFrames setget set_texture
 var move_sound
@@ -32,7 +33,22 @@ var move_speed := 150.0
 var is_moving := false setget set_is_moving
 var is_selected := false
 var can_move := false
-var last_pos: Vector2
+var last_pos # Vector2
+
+# turn values to decide turn actions
+var attack_turn_value
+var chosen_target
+var cell_to_move
+
+var capture_turn_value
+var chosen_building
+
+var repair_turn_value
+var chosen_repair_building
+
+var chosen_action
+
+var turn_conflicts
 
 func set_health(value: int) -> void:
 	health = value

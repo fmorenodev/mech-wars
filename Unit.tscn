@@ -15,7 +15,7 @@ loop = false
 [node name="AnimatedSprite" type="AnimatedSprite" parent="PathFollow2D"]
 frames = ExtResource( 2 )
 animation = "red"
-frame = 3
+frame = 6
 playing = true
 centered = false
 

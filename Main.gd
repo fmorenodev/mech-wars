@@ -181,7 +181,16 @@ func get_partial_path(from_id: int, to_id: int, movement: int) -> Array:
 		else:
 			walkable_path.append(gl.a_star.get_point_position(path[0]))
 			path.remove(0)
+	walkable_path = ends_path_in_unit(walkable_path)
 	return walkable_path
+
+func ends_path_in_unit(point_path: Array) -> Array:
+	for i in range(point_path.size() - 1, -1, -1):
+		if is_unit_in_position(point_path[i]):
+			point_path.remove(i)
+		else:
+			return point_path
+	return point_path
 
 ##########################
 # TILE ACTIONS FUNCTIONS # 
@@ -219,7 +228,11 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 
 func check_all_targets(unit: Unit) -> Array:
 	if gl.is_indirect(unit):
-		return check_targets(unit, unit.position)
+		var th_cells = check_targets(unit, unit.position)
+		var unit_pos = SelectionTileMap.map_to_world(unit.position)
+		for i in th_cells.size():
+			th_cells[i] = [unit_pos, th_cells[i]]
+		return th_cells
 	else:
 		var wk_cells = get_walkable_cells(unit)
 		for i in range(wk_cells.size() - 1, -1, -1):
@@ -228,7 +241,9 @@ func check_all_targets(unit: Unit) -> Array:
 		var th_cells: Array = []
 		for cell in wk_cells:
 			var tgs = check_targets(unit, SelectionTileMap.map_to_world(cell))
-			th_cells = th_cells + tgs
+			for target in tgs:
+				th_cells.append([cell, target])
+			# th_cells = th_cells + tgs
 		th_cells = gl.delete_duplicates(th_cells)
 		return th_cells
 
@@ -256,9 +271,9 @@ func check_buildings(unit: Unit, owned: bool) -> Array:
 		if is_unit_in_position(wk_cells[i]):
 			wk_cells.remove(i)
 	for cell in wk_cells:
-		var building = is_building_in_position(unit.position)
-		if building and (!owned and building.team != unit.team) and (owned and building.team == unit.team):
-			buildings_result.append(building)
+		var building = is_building_in_position(cell)
+		if building and (!owned and building.team != unit.team) or (owned and building.team == unit.team):
+			buildings_result.append(cell)
 	return buildings_result
 
 func select_unit_or_building(pos: Vector2) -> void:
@@ -280,6 +295,7 @@ func select_unit_or_building(pos: Vector2) -> void:
 	else:
 		open_status_menu()
 
+# TODO: can go back to the previous space from the turn before, clean last_pos
 func move_active_unit(target_pos: Vector2) -> void:
 	# TODO: if unit_blocking is a unit and the active_unit can attack it, do it
 	var unit_blocking = is_unit_in_position(target_pos)
@@ -339,14 +355,15 @@ func close_menus() -> void:
 
 # TODO: fix both functions yield, look at working yield example in code (no other code to continue) so it yields correctly
 
-func move_unit_ai(unit: Unit, path: Array) -> void:
-	unit.last_pos = unit.position
+func move_unit_ai(unit: Unit, path: Array) -> Array:
+	# unit.last_pos = unit.position
 	var path_world_coords = []
 	for point in path:
 		path_world_coords.append(PathTileMap.map_to_world(point))
-	unit.walk_along(path_world_coords)
-	yield(unit, "walk_finished")
-	unit.position = path_world_coords.back()
+	# unit.walk_along(path_world_coords)
+	return path_world_coords
+	#yield(unit, "walk_finished")
+	#unit.position = path_world_coords.back()
 
 func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), 1)
@@ -355,6 +372,16 @@ func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
 	unit.health -= calc_retaliation_damage(target_unit, unit, damage)
 	target_unit.health -= damage
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), -1)
+	unit.end_action()
+
+func capture_action_ai(unit: Unit) -> void:
+	unit.capture()
+	if unit.capture_points >= 20:
+		unit.capture_points = 0
+		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
+		building.capture(active_team.color)
+		active_team.add_building(building)
+	unit.end_action()
 
 ##########################
 # TILE CHECKER FUNCTIONS #
@@ -481,6 +508,7 @@ func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> int:
 	else:
 		return 0
 
+# TODO: damage is not calculated correctly (inf one shots on counter for example)
 func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> int:
 	if counter_attacker and counter_attacker.atk_type == gl.ATTACK_TYPE.DIRECT and target.atk_type == gl.ATTACK_TYPE.DIRECT and can_attack(counter_attacker, target):
 		var result = (counter_attacker.dmg_chart[target.id] * (counter_attacker.health - dmg_suffered / 10.0)) / 10.0
@@ -490,7 +518,7 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 	else:
 		return 0
 
-func calc_dmg_value(attacker: Unit, target: Unit) -> int:
+func calc_dmg_value(attacker: Unit, target: Unit) -> int: # TODO: why negative value with only inf and artillery?
 	var dmg = calc_damage(attacker, target, false)
 	var retaliation_dmg = calc_retaliation_damage(target, attacker, dmg, false)
 	var value = dmg * (target.cost / 1000.0) - retaliation_dmg * (attacker.cost / 1000.0)
@@ -517,7 +545,8 @@ func start_turn() -> void:
 		signals.emit_signal("start_ai_turn", active_team)
 
 func end_unit_action() -> void:
-	active_unit.last_pos = active_unit.position
+	# active_unit.last_pos = active_unit.position
+	active_unit.last_pos = null
 	active_unit.end_action()
 	clear_active_unit()
 	action_menu_open = false

@@ -18,7 +18,15 @@ credits:
 	- ~~repairing~~
 - basic AI:
 	- units
+		- attack
+		- capture
+		- repair
+		- move
+		- turn conflicts, recalculation
+		- make moves not simultaneous
 	- buildings
+		- ~~unit creation~~
+		- optimal creation
 - adding more units
 - adding more terrain and making it functional (bonuses, movement types for different units)
 - adding UI
