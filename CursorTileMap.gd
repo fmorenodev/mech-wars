@@ -25,9 +25,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			move_cursor(Main.targets[target_index], 1)
 			target_index = (target_index + 1) % (Main.targets.size())
 		elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
-			signals.emit_signal("target_selected", cursor_pos)
-			target_index = 1
-			set_cellv(cursor_pos, 0)
+			if Main.is_unit_in_position(cursor_pos):
+				signals.emit_signal("target_selected", cursor_pos)
+				target_index = 1
+				set_cellv(cursor_pos, 0)
 		elif event.is_action_pressed("right_click") or event.is_action_pressed("ui_cancel"):
 			signals.emit_signal("cancel_pressed")
 	elif event is InputEventMouseMotion:

@@ -18,3 +18,8 @@ signal unit_added(unit_id, team_id, pos)
 signal unit_deleted(unit)
 
 signal start_ai_turn(team)
+signal next_ai_unit_turn(unit)
+signal end_ai_turn
+
+signal move_completed(unit)
+signal action_completed

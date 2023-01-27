@@ -18,12 +18,12 @@ credits:
 	- ~~repairing~~
 - basic AI:
 	- units
-		- attack
-		- capture
-		- repair
-		- move
-		- turn conflicts, recalculation
-		- make moves not simultaneous
+		- ~~attack~~
+		- ~~capture~~
+		- ~~repair~~
+		- ~~move~~
+		- ~~turn conflicts, recalculation~~
+		- ~~make moves not simultaneous~~
 	- buildings
 		- ~~unit creation~~
 		- optimal creation
@@ -39,6 +39,11 @@ credits:
 - title screen, options, saving
 - campaign / normal maps
 - fog (see how much time it takes)
+
+## KNOWN BUGS
+- ai units sometimes move to another unit's space (unknown cause)
+- indirect units sometimes can attack after moving (unknown cause)
+- can select empty target when attacking (unsure if solved)
 
 ## IDEAS
 

@@ -50,12 +50,35 @@ func clamp(grid_position: Vector2) -> Vector2:
 	result.y = clamp(result.y, 0, map_size.y - 1.0)
 	return result
 
+# currently unused
 func delete_duplicates(array: Array) -> Array:
 	var result = []
 	for i in range(array.size()):
 		var duplicated = false
 		for j in range(i+1, array.size()):
 			if array[i] == array[j]:
+				duplicated = true
+				break
+		if not duplicated:
+			result += [array[i]]
+	return result
+
+# only for 2x2 matrix inside a normal array
+func delete_duplicates_unordered_matrix(array: Array) -> Array:
+	var result = []
+	for i in range(array.size()):
+		var duplicated = false
+		for j in range(i+1, array.size()):
+			if array[i][0] == array[j][0] and array[i][1] == array[j][1]:
+				duplicated = true
+				break
+			if array[i][1] == array[j][0] and array[i][0] == array[j][1]:
+				duplicated = true
+				break
+			if array[i][0] == array[j][1] and array[i][1] == array[j][0]:
+				duplicated = true
+				break
+			if array[i][1] == array[j][1] and array[i][0] == array[j][0]:
 				duplicated = true
 				break
 		if not duplicated:

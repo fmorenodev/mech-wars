@@ -33,22 +33,26 @@ var move_speed := 150.0
 var is_moving := false setget set_is_moving
 var is_selected := false
 var can_move := false
-var last_pos # Vector2
+var last_pos # Vector2 or null
 
 # turn values to decide turn actions
-var attack_turn_value
+var attack_turn_value: float
 var chosen_target
 var cell_to_move
 
-var capture_turn_value
-var chosen_building
+var capture_turn_value: float
+var chosen_capture_building
 
-var repair_turn_value
+var repair_turn_value: float
 var chosen_repair_building
 
-var chosen_action
+var move_path: Array
 
-var turn_conflicts
+var chosen_action: Array
+
+# TODO: bonus to incentivice certain actions, not implemented
+var stay_in_place_bonus: float
+var choose_diff_pos_bonus: float
 
 func set_health(value: int) -> void:
 	health = value
