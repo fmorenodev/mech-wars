@@ -63,7 +63,7 @@ func _ready() -> void:
 			add_building_data(child, randi() % gl.BUILDINGS.size(), gl.TEAM.RED)
 		else:
 			add_building_data(child, randi() % gl.BUILDINGS.size(), gl.TEAM.BLUE)
-	init_a_star()
+	astar.init_a_star()
 	start_turn()
 
 func create_unit(unit_id: int, team: int, position: Vector2) -> void:
@@ -88,116 +88,27 @@ func add_building_data(building: Building, type: int, team: int, funds: int = 10
 # A* FUNCTIONS
 ##############
 
-func init_a_star() -> void:
-	gl.a_star = AStar2D.new()
-	for x in gl.map_size.x:
-		for y in gl.map_size.y:
-			add_and_connect_point(Vector2(x, y))
+func update_all_a_star() -> void:
+	for team in teams:
+		for a_star in astar.a_star_maps[team.color]:
+			update_a_star(a_star, team.color)
 
-func update_a_star() -> void:
-	for unit in units:
-		if unit.team != active_team.color:
-			var pos = SelectionTileMap.world_to_map(unit.position)
-			var point = gl.a_star.get_closest_point(pos)
-			gl.a_star.add_point(point, pos, 99)
+func update_a_star(a_star: AStar2D, team: int) -> void:
 	for x in gl.map_size.x:
 		for y in gl.map_size.y:
 			var pos = Vector2(x, y)
-			if is_unit_in_position(pos):
-				pass
+			var unit_in_position = is_unit_in_position(pos)
+			if unit_in_position:
+				if unit_in_position.team != team:
+					var point = a_star.get_closest_point(pos)
+					a_star.add_point(point, pos, 99)
+				else:
+					astar.update_point(a_star, a_star.get_closest_point(pos), pos, team)
 			else:
-				update_point(gl.a_star.get_closest_point(pos), pos)
-
-# TODO: take into account movement types, adding them to the Unit type
-func update_point(id: int, pos: Vector2) -> void:
-	match TerrainTileMap.get_cellv(pos):
-		0: # plains
-			gl.a_star.add_point(id, pos, 1)
-		1: # forest
-			gl.a_star.add_point(id, pos, 2)
-		2, 3: # mountain
-			gl.a_star.add_point(id, pos, 3)
-		4: # water
-			gl.a_star.add_point(id, pos, 99)
-
-func add_and_connect_point(pos: Vector2) -> void:
-	var new_id = gl.a_star.get_available_point_id()
-	update_point(new_id, pos)
-	var points_to_connect = []
-	for direction in gl.DIRECTIONS:
-		for point in gl.a_star.get_points():
-			if gl.a_star.get_point_position(point) == pos + direction:
-				points_to_connect.append(gl.a_star.get_closest_point(pos + direction))
-	for point in points_to_connect:
-		gl.a_star.connect_points(new_id, point)
-
-func get_path_weight(from_id: int, to_id: int, to_enemy: bool = false) -> int:
-	var id_point_array: Array = gl.a_star.get_id_path(from_id, to_id)
-	id_point_array.pop_front()
-	if to_enemy:
-		id_point_array.pop_back()
-	var result = 0
-	for id in id_point_array:
-		result += gl.a_star.get_point_weight_scale(id)
-	return result
-
-func flood_fill(start_pos: Vector2, max_distance: int) -> Array:
-	var result := []
-	var stack := [start_pos]
-	var a_star_start_point = gl.a_star.get_closest_point(start_pos)
-	while not stack.empty():
-		var cur_pos = stack.pop_back()
-
-		if is_off_borders(cur_pos):
-			continue
-		if cur_pos in result:
-			continue
-
-		var a_star_cur_point = gl.a_star.get_closest_point(cur_pos)
-
-		var distance = get_path_weight(a_star_start_point, a_star_cur_point)
-		if distance > max_distance:
-			continue
-
-		result.append(cur_pos)
-		for direction in gl.DIRECTIONS:
-			var coordinates: Vector2 = cur_pos + direction
-			if coordinates in result:
-				continue
-
-			stack.append(coordinates)
-	return result
+				astar.update_point(a_star, a_star.get_closest_point(pos), pos, team)
 
 func get_walkable_cells(unit: Unit) -> Array:
-	return flood_fill(TerrainTileMap.world_to_map(unit.position), unit.movement)
-
-func get_partial_path(from_id: int, to_id: int, movement: int) -> Array:
-	var path = gl.a_star.get_id_path(from_id, to_id)
-	var remaining_movement = movement
-	var walkable_path = [gl.a_star.get_point_position(path[0])]
-	path.remove(0)
-	for point_id in path:
-		var weight = gl.a_star.get_point_weight_scale(point_id)
-		remaining_movement -= weight
-		if remaining_movement < 0:
-			break
-		else:
-			walkable_path.append(gl.a_star.get_point_position(path[0]))
-			path.remove(0)
-	walkable_path = ends_path_in_unit(walkable_path)
-	return walkable_path
-
-# TODO: find a way to remove last point, because i cant get allied units in a_star
-# problem: all move paths are calculated at the same time, so no if a unit moves to the last point, it will never know
-# apparently only happens with units of different types
-# or maybe not, i dont know what is the issue
-func ends_path_in_unit(point_path: Array) -> Array:
-	for i in range(point_path.size() - 1, -1, -1):
-		if is_unit_in_position(point_path[i]):
-			point_path.remove(i)
-		else:
-			return point_path
-	return point_path
+	return astar.flood_fill(unit.move_type, TerrainTileMap.world_to_map(unit.position), unit.movement, unit.team)
 
 ##########################
 # TILE ACTIONS FUNCTIONS # 
@@ -236,7 +147,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 func check_all_targets(unit: Unit) -> Array:
 	if gl.is_indirect(unit):
 		var th_cells = check_targets(unit, unit.position)
-		var unit_pos = SelectionTileMap.map_to_world(unit.position)
+		var unit_pos = unit.position
 		for i in th_cells.size():
 			th_cells[i] = [unit_pos, th_cells[i]]
 		return th_cells
@@ -261,13 +172,18 @@ func threatened_cells(unit: Unit) -> Array:
 	else:
 		var wk_cells = get_walkable_cells(unit)
 		for i in range(wk_cells.size() - 1, -1, -1):
-			if is_unit_in_position(wk_cells[i]):
-				wk_cells.remove(i)
+			var unit_in_pos = is_unit_in_position(wk_cells[i])
+			if unit_in_pos:
+				if unit.team != unit_in_pos.team:
+					wk_cells.remove(i)
 		for cell in wk_cells:
 			var tgs = check_targets(unit, SelectionTileMap.map_to_world(cell), true)
 			th_cells = th_cells + tgs
 		th_cells = th_cells + wk_cells
-		th_cells = gl.delete_duplicates_unordered_matrix(th_cells)
+		th_cells = gl.delete_duplicates(th_cells)
+		for i in range(th_cells.size() - 1, -1, -1):
+			if gl.is_off_borders(th_cells[i]):
+				th_cells.remove(i)
 	return th_cells
 
 func check_buildings(unit: Unit, owned: bool) -> Array:
@@ -395,9 +311,6 @@ func capture_action_ai(unit: Unit) -> void:
 # TILE CHECKER FUNCTIONS #
 ##########################
 
-func is_off_borders(pos: Vector2) -> bool:
-	return pos.x < Vector2.ZERO.x or pos.x >= gl.map_size.x or pos.y < Vector2.ZERO.y or pos.y >= gl.map_size.y
-
 func is_unit_in_position(pos: Vector2):
 	var global_pos = SelectionTileMap.map_to_world(pos)
 	for unit in units:
@@ -440,7 +353,7 @@ func _on_cancel_pressed() -> void:
 
 func _on_cursor_moved(target_pos: Vector2) -> void:
 	if active_unit and active_unit.is_selected:
-		PathTileMap.draw(PathTileMap.world_to_map(active_unit.position), target_pos)
+		PathTileMap.draw(PathTileMap.world_to_map(active_unit.position), target_pos, active_unit)
 
 func _on_move_action() -> void:
 	end_unit_action()
@@ -482,9 +395,7 @@ func _on_target_selected(pos: Vector2) -> void:
 	active_unit.health -= calc_retaliation_damage(target_unit, active_unit, damage)
 	target_unit.health -= damage
 	selecting_targets = false
-	active_unit.end_action()
-	clear_active_unit()
-	action_menu_open = false
+	end_unit_action()
 
 func _on_unit_added(unit_id: int, team: int, position: Vector2) -> void:
 	create_unit(unit_id, team, position)
@@ -508,24 +419,53 @@ func _on_turn_ended() -> void:
 # AUX FUNCTIONS #
 #################
 
-# TODO: missing terrain defense bonus and co bonus
-func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> int:
-	if can_attack(attacker, target):
-		var result = (attacker.dmg_chart[target.id] * (attacker.health / 10.0)) / 10.0
-		if add_random:
-			result += (randi() % 11 * attacker.health / 10.0) / 10.0
-		return int(result)
-	else:
-		return 0
+func get_terrain(pos):
+	var map_pos = TerrainTileMap.world_to_map(pos)
+	return TerrainTileMap.get_cellv(map_pos)
 
-func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> int:
-	if counter_attacker and counter_attacker.atk_type == gl.ATTACK_TYPE.DIRECT and target.atk_type == gl.ATTACK_TYPE.DIRECT and can_attack(counter_attacker, target):
-		var result = (counter_attacker.dmg_chart[target.id] * ((counter_attacker.health - dmg_suffered) / 10.0)) / 10.0
+func get_terrain_stars(pos: Vector2) -> int:
+	var map_pos = TerrainTileMap.world_to_map(pos)
+	var tile_value = TerrainTileMap.get_cellv(map_pos)
+	if is_building_in_position(map_pos):
+		return 3
+	match tile_value:
+		gl.TERRAIN.PLAINS:
+			return 1
+		gl.TERRAIN.FOREST, gl.TERRAIN.REEF, gl.TERRAIN.WASTELAND:
+			return 2
+		gl.TERRAIN.SMALL_MOUNTAIN:
+			return 3
+		gl.TERRAIN.MOUNTAIN:
+			return 4
+		gl.TERRAIN.WATER, gl.TERRAIN.ROAD, gl.TERRAIN.RIVER:
+			return 0
+		gl.TERRAIN.SPECIAL, _:
+			return -1
+
+# TODO: missing co bonus
+func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float:
+	if can_attack(attacker, target):
+		var attack_value = (attacker.dmg_chart[target.id] * (attacker.health / 10.0) * (attacker.atk_bonus)) / 10.0
 		if add_random:
-			result += (randi() % 11 * (counter_attacker.health - dmg_suffered) / 10.0) / 10.0
-		return int(result)
+			attack_value += (randi() % 11 * attacker.health / 10.0) / 10.0
+		var terrain_stars = get_terrain_stars(target.position)
+		var def_value = (100.0 - (terrain_stars * target.health)) / 100.0
+		var result = attack_value * def_value
+		return stepify(result, 0.01)
 	else:
-		return 0
+		return 0.0
+
+func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> float:
+	if counter_attacker and counter_attacker.atk_type == gl.ATTACK_TYPE.DIRECT and target.atk_type == gl.ATTACK_TYPE.DIRECT and can_attack(counter_attacker, target):
+		var attack_value = (counter_attacker.dmg_chart[target.id] * ((counter_attacker.health - dmg_suffered) / 10.0) * (counter_attacker.atk_bonus)) / 10.0
+		if add_random:
+			attack_value += (randi() % 11 * (counter_attacker.health - dmg_suffered) / 10.0) / 10.0
+		var terrain_stars = get_terrain_stars(target.position)
+		var def_value = (100.0 - (terrain_stars * target.health)) / 100.0
+		var result = attack_value * def_value
+		return stepify(result, 0.01)
+	else:
+		return 0.0
 
 func calc_dmg_value(attacker: Unit, target: Unit) -> int:
 	var dmg = calc_damage(attacker, target, false)
@@ -541,25 +481,26 @@ func start_turn() -> void:
 		active_team.funds += 1000
 	for unit in active_team.units:
 		unit.activate()
-		for building in active_team.buildings:
-			if unit.position == building.position:
-				var damage = 10 - unit.health
-				if damage > 0:
-					var repair_cost = unit.cost * min(0.2, damage / 10)
-					if repair_cost <= active_team.funds:
-						unit.health += min(damage, 2)
-						active_team.funds -= repair_cost
-	update_a_star()
+		if is_building_in_position(BuildingsTileMap.world_to_map(unit.position)):
+			var damage = 10 - unit.health
+			if damage > 0:
+				var repair_cost = unit.cost * min(0.2, damage / 10)
+				if repair_cost <= active_team.funds:
+					unit.health += min(damage, 2)
+					active_team.funds -= repair_cost
+		elif get_terrain(unit.position) == gl.TERRAIN.SPECIAL:
+			unit.atk_bonus = 1.2
+	update_all_a_star()
 	if !active_team.is_player:
 		signals.emit_signal("start_ai_turn", active_team)
 
+# for player units
 func end_unit_action() -> void:
-	# active_unit.last_pos = active_unit.position
 	active_unit.last_pos = null
 	active_unit.end_action()
 	clear_active_unit()
 	action_menu_open = false
-	update_a_star()
+	update_all_a_star()
 
 func disable_input(value: bool) -> void:
 	get_tree().get_root().set_disable_input(value)

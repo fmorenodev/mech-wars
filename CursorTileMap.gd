@@ -6,7 +6,7 @@ onready var Main = get_parent()
 var target_index: int = 1
 
 func move_cursor(new_pos: Vector2, cursor: int = 0) -> void:
-	if !Main.is_off_borders(new_pos) and (Main.active_unit == null \
+	if !gl.is_off_borders(new_pos) and (Main.active_unit == null \
 	or (new_pos in Main.walkable_cells and !Main.active_unit.is_moving) or (Main.selecting_targets)):
 		if new_pos != cursor_pos:
 			clear()

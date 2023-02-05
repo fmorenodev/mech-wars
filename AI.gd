@@ -35,6 +35,13 @@ onready var Main = get_parent()
 # - capture
 # - retreat to heal
 
+# TODO, corner cases:
+# - move out of grey buildings (non-infantry)
+
+# TODO:
+# - don't have all units go towards the same objective when moving
+# - finetune turn values
+
 func _ready() -> void:
 	var _err = signals.connect("start_ai_turn", self, "_on_start_turn")
 	_err = signals.connect("next_ai_unit_turn", self, "_on_next_unit_turn")
@@ -58,8 +65,8 @@ func _on_start_turn(team: Team) -> void:
 # TODO: refactor maybe
 func _on_next_unit_turn(unit: Unit):
 	calculate_turn(unit) # recalculate to avoid conflicts
-	var start_point = gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.position))
-	var path: Array = gl.a_star.get_point_path(start_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))
+	var start_point = astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
+	var path: Array = astar.a_star_maps[unit.team][unit.move_type].get_point_path(start_point, astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))
 	if unit.chosen_action[1] == gl.TURN_TYPE.ATTACK:
 		if !gl.is_indirect(unit):
 			if !unit.chosen_action[2] == unit.position and !path.empty():
@@ -99,7 +106,8 @@ func _on_move_completed(unit: Unit) -> void:
 
 func _on_end_ai_turn(team: Team) -> void:
 	for building in team.buildings:
-		if (building.type != gl.BUILDINGS.RUINS and building.type != gl.BUILDINGS.RUINS_2) and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
+		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
+		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
 			signals.emit_signal("unit_added", gl.UNITS.LIGHT_INFANTRY, team.color, building.position)
 		# TODO: build unit according to map type, starting from most expensive and then creating basic units
 		# or fill all buildings with units
@@ -182,14 +190,15 @@ func calc_repair_value(unit: Unit) -> Array:
 	return [repair_turn_value, chosen_repair_building]
 
 func calc_movement(unit: Unit) -> Array:
-	var starting_point = gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.position))
+	var unit_a_star = astar.a_star_maps[unit.team][unit.move_type]
+	var starting_point = unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.position))
 	var possible_paths = []
 	# MOVE TO ATTACK
 	var attack_turn_value = 0
 	var chosen_target = null
 	for target_unit in Main.units:
 		if unit.team != target_unit.team:
-			var weight = Main.get_path_weight(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(target_unit.position)), true)
+			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_unit.position)), unit.team, true)
 			if weight < 99 and weight > 0:
 				var value = Main.calc_dmg_value(unit, target_unit)
 				if value / weight > attack_turn_value:
@@ -200,7 +209,7 @@ func calc_movement(unit: Unit) -> Array:
 	var chosen_capture_building = null
 	for target_building in Main.buildings:
 		if unit.team != target_building.team:
-			var weight = Main.get_path_weight(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), true)
+			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team, true)
 			if weight < 99 and weight > 0:
 				var value = calc_cap_points(unit, target_building) / 2
 				if value / weight > capture_turn_value:
@@ -212,7 +221,7 @@ func calc_movement(unit: Unit) -> Array:
 	if unit.health <= 2:
 		for target_building in Main.buildings:
 			if unit.team == target_building.team:
-				var weight = Main.get_path_weight(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), true)
+				var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team, true)
 				if weight < 99 and weight > 0:
 					var value = calc_repair_points(unit)
 					if value / weight > capture_turn_value:
@@ -221,15 +230,15 @@ func calc_movement(unit: Unit) -> Array:
 
 	# CALCULATE BEST MOVEMENT
 	if attack_turn_value > repair_turn_value and attack_turn_value > capture_turn_value and chosen_target != null:
-		var path = Main.get_partial_path(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_target.position)), unit.movement)
+		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_target.position)))
 		if unit.atk_type == gl.ATTACK_TYPE.ARTILLERY: # TODO: improve
 			path.pop_back()
 		return path
 	elif capture_turn_value > attack_turn_value and capture_turn_value > repair_turn_value and chosen_capture_building != null:
-		var path = Main.get_partial_path(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_capture_building.position)), unit.movement)
+		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_capture_building.position)))
 		return path
 	elif repair_turn_value > attack_turn_value and repair_turn_value > capture_turn_value and chosen_repair_building != null:
-		var path = Main.get_partial_path(starting_point, gl.a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_repair_building.position)), unit.movement)
+		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_repair_building.position)))
 		return path
 	return []
 
@@ -250,11 +259,6 @@ func calculate_turn(unit: Unit) -> void:
 		unit.repair_turn_value = repair_values[0]
 		unit.chosen_repair_building = repair_values[1]
 		
-		print(unit.attack_turn_value)
-		print(unit.capture_turn_value)
-		print(unit.repair_turn_value)
-		print('---------------------------')
-	
 		# choose turn action and then compare
 		var chosen_action_value = [unit.attack_turn_value, unit.capture_turn_value, unit.repair_turn_value].max()
 		if unit.attack_turn_value > unit.repair_turn_value and unit.attack_turn_value > unit.capture_turn_value:
@@ -274,7 +278,7 @@ func calculate_turn(unit: Unit) -> void:
 			unit.chosen_action = [0, gl.TURN_TYPE.MOVE, unit.cell_to_move]
 
 func _on_action_completed() -> void:
-	Main.update_a_star()
+	Main.update_all_a_star()
 	goto_next()
 
 func get_current():

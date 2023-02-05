@@ -28,7 +28,7 @@ credits:
 		- ~~unit creation~~
 		- optimal creation
 - adding more units
-- adding more terrain and making it functional (bonuses, movement types for different units)
+- ~~adding more terrain and making it functional (bonuses, movement types for different units)~~
 - adding UI
 - adding victory and defeat
 - adding COs

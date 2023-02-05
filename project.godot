@@ -47,6 +47,7 @@ config/icon="res://icon.png"
 gl="*res://globals/Globals.gd"
 sp="*res://globals/Sprites.gd"
 signals="*res://globals/Signals.gd"
+astar="*res://globals/AStar.gd"
 
 [display]
 

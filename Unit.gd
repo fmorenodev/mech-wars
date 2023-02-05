@@ -14,7 +14,7 @@ var unit_data = gl.units
 var id: int
 var unit_name: String
 var movement: int
-var health: int = 10 setget set_health
+var health: float = 10.0 setget set_health
 var energy: int
 var move_type: int
 var atk_type: int
@@ -24,6 +24,9 @@ var can_capture: bool
 
 var team: int setget set_team
 var capture_points: int = 0
+
+var atk_bonus = 1
+var def_bonus = 1
 
 # variables for movement
 signal walk_finished
@@ -54,7 +57,7 @@ var chosen_action: Array
 var stay_in_place_bonus: float
 var choose_diff_pos_bonus: float
 
-func set_health(value: int) -> void:
+func set_health(value: float) -> void:
 	health = value
 	if health <= 0:
 		health = 0
@@ -69,7 +72,7 @@ func set_health(value: int) -> void:
 		HealthLabel.text = ''
 
 func round_health(value: float) -> float:
-	return abs(round(value))
+	return abs(ceil(value))
 
 func set_texture(value: SpriteFrames) -> void:
 	texture = value
@@ -118,7 +121,7 @@ func _process(delta: float) -> void:
 func walk_along(path: PoolVector2Array) -> void:
 	if path.empty():
 		return
-
+		
 	curve.add_point(Vector2.ZERO)
 	for point in path:
 		curve.add_point(point - position)
@@ -135,10 +138,12 @@ func end_turn() -> void:
 	UnitSprite.material = null
 
 func activate() -> void:
+	atk_bonus = 1
+	def_bonus = 1
 	can_move = true
 
 func capture() -> void:
-	capture_points += health
+	capture_points += int(ceil(health))
 	if capture_points >= 20:
 		AuxLabel.text = ''
 	else:
