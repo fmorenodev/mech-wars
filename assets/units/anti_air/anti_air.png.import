@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex"
+path="res://.import/anti_air.png-d436d500f123f94f6532abcb820b4cd2.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/map/green_tileset.png"
-dest_files=[ "res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex" ]
+source_file="res://assets/units/anti_air/anti_air.png"
+dest_files=[ "res://.import/anti_air.png-d436d500f123f94f6532abcb820b4cd2.stex" ]
 
 [params]
 

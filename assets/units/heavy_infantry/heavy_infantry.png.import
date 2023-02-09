@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/artillery_blue.png-91e5e51783a3f1a891de818edf7edc13.stex"
+path="res://.import/heavy_infantry.png-52f2cd9f4f2ca6548cd968e8defb2f80.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/units/artillery/artillery_blue.png"
-dest_files=[ "res://.import/artillery_blue.png-91e5e51783a3f1a891de818edf7edc13.stex" ]
+source_file="res://assets/units/heavy_infantry/heavy_infantry.png"
+dest_files=[ "res://.import/heavy_infantry.png-52f2cd9f4f2ca6548cd968e8defb2f80.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=false

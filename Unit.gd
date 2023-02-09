@@ -11,7 +11,7 @@ onready var AuxLabel: Label = $PathFollow2D/AnimatedSprite/AuxLabel
 
 var unit_data = gl.units
 
-var id: int
+export var id: int
 var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
@@ -87,11 +87,10 @@ func set_is_moving(value: bool) -> void:
 func set_team(value: int) -> void:
 	team = value
 	set_texture(sp.get_sprite(id))
+	UnitSprite.animation = "idle"
 	match value:
 		gl.TEAM.RED:
-			UnitSprite.animation = "red"
-		gl.TEAM.BLUE:
-			UnitSprite.animation = "blue"
+			UnitSprite.material = sp.swap_mat
 
 func initialize(unit: int) -> void:
 	id = unit
@@ -132,15 +131,22 @@ func end_action() -> void:
 	UnitSprite.stop()
 	UnitSprite.material = sp.greyscale_mat
 
+func change_material_to_color() -> void:
+	if team == gl.TEAM.RED:
+		UnitSprite.material = sp.swap_mat
+	elif team == gl.TEAM.BLUE:
+		UnitSprite.material = null
+
 func end_turn() -> void:
 	can_move = false
 	UnitSprite.play()
-	UnitSprite.material = null
+	change_material_to_color()
 
 func activate() -> void:
 	atk_bonus = 1
 	def_bonus = 1
 	can_move = true
+	change_material_to_color()
 
 func capture() -> void:
 	capture_points += int(ceil(health))

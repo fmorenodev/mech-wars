@@ -60,7 +60,10 @@ func _on_start_turn(team: Team) -> void:
 	# sort by turn value, the "best" turns happen first
 	insertion_sort_by_turn_value(team.units)
 	
-	signals.emit_signal("next_ai_unit_turn", get_current())
+	if !Main.active_team.units.empty():
+		signals.emit_signal("next_ai_unit_turn", get_current())
+	else:
+		signals.emit_signal("end_ai_turn", Main.active_team) # TODO: victory
 
 # TODO: refactor maybe
 func _on_next_unit_turn(unit: Unit):
@@ -231,7 +234,7 @@ func calc_movement(unit: Unit) -> Array:
 	# CALCULATE BEST MOVEMENT
 	if attack_turn_value > repair_turn_value and attack_turn_value > capture_turn_value and chosen_target != null:
 		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_target.position)))
-		if unit.atk_type == gl.ATTACK_TYPE.ARTILLERY: # TODO: improve
+		if gl.is_indirect(unit):
 			path.pop_back()
 		return path
 	elif capture_turn_value > attack_turn_value and capture_turn_value > repair_turn_value and chosen_capture_building != null:
@@ -290,14 +293,15 @@ func goto_next() -> void:
 		current_index = 0
 		signals.emit_signal("end_ai_turn", Main.active_team)
 	else:
-		signals.emit_signal("next_ai_unit_turn", get_current())
+		if !Main.active_team.units.empty():
+			signals.emit_signal("next_ai_unit_turn", get_current())
 
 func insertion_sort_by_turn_value(arr: Array) -> void: 
 	for i in range(1, len(arr)):
 		var key = arr[i]
 		var j = i-1
 		while j >= 0 and key.chosen_action[0] > arr[j].chosen_action[0]:
-			# For ascending order, change key> arr[j] to key < arr[j]
+			# For ascending order, change key > arr[j] to key < arr[j]
 			arr[j + 1] = arr[j]
 			j = j - 1
 			arr[j + 1] = key

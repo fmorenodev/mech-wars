@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex"
+path="res://.import/battleship.png-40691d0410f88d8485dfe8c300300df3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/map/green_tileset.png"
-dest_files=[ "res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex" ]
+source_file="res://assets/units/battleship/battleship.png"
+dest_files=[ "res://.import/battleship.png-40691d0410f88d8485dfe8c300300df3.stex" ]
 
 [params]
 

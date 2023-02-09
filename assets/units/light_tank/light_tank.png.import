@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/light_infantry_red.png-c6c48429909442863a4fa4431a62746f.stex"
+path="res://.import/light_tank.png-81394d4b245d137ef328832abc4aec4c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/units/light_infantry/light_infantry_red.png"
-dest_files=[ "res://.import/light_infantry_red.png-c6c48429909442863a4fa4431a62746f.stex" ]
+source_file="res://assets/units/light_tank/light_tank.png"
+dest_files=[ "res://.import/light_tank.png-81394d4b245d137ef328832abc4aec4c.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=false

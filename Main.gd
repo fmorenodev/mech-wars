@@ -54,15 +54,16 @@ func _ready() -> void:
 	var i = 0
 	for child in SelectionTileMap.get_children():
 		if i % 2 == 0:
-			add_unit_data(child, randi() % 2, gl.TEAM.RED)
+			add_unit_data(child, randi() % gl.UNITS.size(), gl.TEAM.RED)
 		else:
-			add_unit_data(child, randi() % 2, gl.TEAM.BLUE)
+			add_unit_data(child, randi() % gl.UNITS.size(), gl.TEAM.BLUE)
+		child.change_material_to_color()
 		i = i + 1
 	for child in BuildingsTileMap.get_children():
 		if i % 2 == 0:
-			add_building_data(child, randi() % gl.BUILDINGS.size(), gl.TEAM.RED)
+			add_building_data(child, child.frame, gl.TEAM.RED)
 		else:
-			add_building_data(child, randi() % gl.BUILDINGS.size(), gl.TEAM.BLUE)
+			add_building_data(child, child.frame, gl.TEAM.BLUE)
 	astar.init_a_star()
 	start_turn()
 
@@ -70,13 +71,13 @@ func create_unit(unit_id: int, team: int, position: Vector2) -> void:
 	var new_unit = UnitScene.instance()
 	SelectionTileMap.add_child(new_unit)
 	new_unit.position = position
-	new_unit.end_action()
 	add_unit_data(new_unit, unit_id, team)
 
 func add_unit_data(unit: Unit, unit_id: int, team: int) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
 	teams[team].add_unit(unit)
+	unit.end_action()
 
 func add_building_data(building: Building, type: int, team: int, funds: int = 1000, available_units: PoolIntArray = []):
 	building.initialize(type, team, funds, available_units)
@@ -137,6 +138,8 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 			directions = gl.DIRECTIONS
 		gl.ATTACK_TYPE.ARTILLERY:
 			directions = gl.IND_DIRECTIONS_ARTILLERY
+		gl.ATTACK_TYPE.HEAVY_ARTILLERY:
+			directions = gl.IND_DIRECTIONS_HEAVY_ARTILLERY
 	for direction in directions:
 		var coordinates: Vector2 = TerrainTileMap.world_to_map(pos) + direction
 		var target_unit = is_unit_in_position(coordinates)
@@ -167,8 +170,13 @@ func check_all_targets(unit: Unit) -> Array:
 func threatened_cells(unit: Unit) -> Array:
 	var th_cells := []
 	if gl.is_indirect(unit):
-		for dir in gl.IND_DIRECTIONS_ARTILLERY:
-			th_cells.append(dir + SelectionTileMap.world_to_map(unit.position))
+		match unit.atk_type:
+			gl.ATTACK_TYPE.ARTILLERY:
+				for dir in gl.IND_DIRECTIONS_ARTILLERY:
+					th_cells.append(dir + SelectionTileMap.world_to_map(unit.position))
+			gl.ATTACK_TYPE.HEAVY_ARTILLERY:
+				for dir in gl.IND_DIRECTIONS_HEAVY_ARTILLERY:
+					th_cells.append(dir + SelectionTileMap.world_to_map(unit.position))
 	else:
 		var wk_cells = get_walkable_cells(unit)
 		for i in range(wk_cells.size() - 1, -1, -1):
@@ -359,7 +367,7 @@ func _on_move_action() -> void:
 	end_unit_action()
 
 func _on_cancel_action() -> void:
-	if active_unit.last_pos:
+	if active_unit.last_pos != null:
 		active_unit.position = active_unit.last_pos
 	select_unit()
 	action_menu_open = false
@@ -433,14 +441,16 @@ func get_terrain_stars(pos: Vector2) -> int:
 			return 1
 		gl.TERRAIN.FOREST, gl.TERRAIN.REEF, gl.TERRAIN.WASTELAND:
 			return 2
-		gl.TERRAIN.SMALL_MOUNTAIN:
+		gl.TERRAIN.SMALL_MOUNTAIN, gl.TERRAIN.SCRAPYARD:
 			return 3
 		gl.TERRAIN.MOUNTAIN:
 			return 4
-		gl.TERRAIN.WATER, gl.TERRAIN.ROAD, gl.TERRAIN.RIVER:
+		gl.TERRAIN.WATER, gl.TERRAIN.ROAD, gl.TERRAIN.RIVER, gl.TERRAIN.BEACH:
 			return 0
-		gl.TERRAIN.SPECIAL, _:
+		gl.TERRAIN.ENERGY_RELAY:
 			return -1
+		_:
+			return 0
 
 # TODO: missing co bonus
 func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float:
@@ -488,7 +498,7 @@ func start_turn() -> void:
 				if repair_cost <= active_team.funds:
 					unit.health += min(damage, 2)
 					active_team.funds -= repair_cost
-		elif get_terrain(unit.position) == gl.TERRAIN.SPECIAL:
+		elif get_terrain(unit.position) == gl.TERRAIN.ENERGY_RELAY:
 			unit.atk_bonus = 1.2
 	update_all_a_star()
 	if !active_team.is_player:

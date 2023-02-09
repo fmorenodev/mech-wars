@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex"
+path="res://.import/heavy_artillery.png-f85f1d6f83ab97f6c53dfb1e58126be8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/map/green_tileset.png"
-dest_files=[ "res://.import/green_tileset.png-f2890e097564f34afe1b56daeae46f61.stex" ]
+source_file="res://assets/units/heavy_artillery/heavy_artillery.png"
+dest_files=[ "res://.import/heavy_artillery.png-f85f1d6f83ab97f6c53dfb1e58126be8.stex" ]
 
 [params]
 

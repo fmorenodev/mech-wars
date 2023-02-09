@@ -85,12 +85,26 @@ func update_point(a_star: AStar2D, id: int, pos: Vector2, team: int) -> void:
 						a_star.add_point(id, pos, 2)
 					gl.MOVE_TYPE.INFANTRY, gl.MOVE_TYPE.LIGHT_VEHICLE, gl.MOVE_TYPE.HEAVY_VEHICLE:
 						a_star.add_point(id, pos, 99)
-			gl.TERRAIN.SPECIAL:
+			gl.TERRAIN.ENERGY_RELAY:
 				match move_type:
 					gl.MOVE_TYPE.INFANTRY, gl.MOVE_TYPE.LIGHT_VEHICLE, gl.MOVE_TYPE.HEAVY_VEHICLE, gl.MOVE_TYPE.AIR:
 						a_star.add_point(id, pos, 1)
 					gl.MOVE_TYPE.WATER:
 						a_star.add_point(id, pos, 99)
+			gl.TERRAIN.SCRAPYARD:
+				match move_type:
+					gl.MOVE_TYPE.AIR:
+						a_star.add_point(id, pos, 1)
+					gl.MOVE_TYPE.INFANTRY, gl.MOVE_TYPE.LIGHT_VEHICLE, gl.MOVE_TYPE.HEAVY_VEHICLE:
+						a_star.add_point(id, pos, 2)
+					gl.MOVE_TYPE.WATER:
+						a_star.add_point(id, pos, 99)
+			gl.TERRAIN.BEACH:
+				match move_type:
+					gl.MOVE_TYPE.AIR, gl.MOVE_TYPE.INFANTRY, gl.MOVE_TYPE.WATER:
+						a_star.add_point(id, pos, 1)
+					gl.MOVE_TYPE.LIGHT_VEHICLE, gl.MOVE_TYPE.HEAVY_VEHICLE:
+						a_star.add_point(id, pos, 2)
 
 func add_and_connect_point(a_star: AStar2D, pos: Vector2, team: int) -> void:
 	var new_id = a_star.get_available_point_id()

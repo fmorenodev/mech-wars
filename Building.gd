@@ -28,9 +28,13 @@ func set_type(value: int) -> void:
 func set_available_units() -> void:
 	match type:
 		gl.BUILDINGS.FACTORY:
-			available_units = [gl.UNITS.LIGHT_INFANTRY, gl.UNITS.ARTILLERY]
-		gl.BUILDINGS.AIRPORT, gl.BUILDINGS.PORT:
-			available_units = [gl.UNITS.LIGHT_INFANTRY]
+			available_units = [ gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
+								gl.UNITS.RECON, gl.UNITS.LIGHT_TANK, gl.UNITS.MEDIUM_TANK,
+								gl.UNITS.ANTI_AIR, gl.UNITS.ARTILLERY, gl.UNITS.HEAVY_ARTILLERY ]
+		gl.BUILDINGS.AIRPORT:
+			available_units = [gl.UNITS.DRONE]
+		gl.BUILDINGS.PORT:
+			available_units = [gl.UNITS.BATTLESHIP]
 		_:
 			available_units = []
 
