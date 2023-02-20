@@ -1,0 +1,11 @@
+[gd_scene format=2]
+
+[node name="EntityInfo" type="VBoxContainer"]
+margin_bottom = 24.0
+
+[node name="EntityName" type="Label" parent="."]
+margin_bottom = 14.0
+
+[node name="EntitySprite" type="TextureRect" parent="."]
+margin_top = 18.0
+margin_bottom = 18.0

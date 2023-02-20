@@ -7,6 +7,7 @@ var units := []
 var buildings := []
 var funds := 0
 var is_player: bool
+var lost_units := 0
 var co
 
 func _init(_color: int, _is_player: bool) -> void:

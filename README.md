@@ -28,13 +28,20 @@ credits:
 	- buildings
 		- ~~unit creation~~
 		- optimal creation
-- adding more units
+- ~~adding more units~~
 - ~~adding more terrain and making it functional (bonuses, movement types for different units)~~
-- adding UI
-- adding victory and defeat
+- ~~adding UI~~
+- adding ammo, weapon and energy mechanics
 - adding COs
+- adding victory and defeat
+- adding powers
+- adding surrender
 - making a playable map
 - adding sounds
+- adding building mechanics (research, power plant)
+- adding other mechanics (unit merging, etc)
+- adding all the missing units
+- adding factions
 - advanced AI
 - adding more animations
 - title screen, options, saving

@@ -23,3 +23,7 @@ signal end_ai_turn
 
 signal move_completed(unit)
 signal action_completed
+
+signal send_units_to_table(units)
+signal send_teams_to_table(teams)
+signal open_detailed_info_menu(pos)

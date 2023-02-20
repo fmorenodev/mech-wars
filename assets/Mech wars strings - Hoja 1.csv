@@ -1,0 +1,145 @@
+keys,en
+--UNITS--,--------------------
+LIGHT_INF,Light Infantry
+HEAVY_INF,Heavy Infantry
+RECON,Recon Mech
+TANK,Tank
+MEDIUM_TANK,Medium tank
+ARTILLERY,Artillery
+HEAVY_ARTILLERY,Heavy artillery
+ANTI_AIR,Anti air mech
+DRONE,Drone
+BATTLESHIP,Battleship
+,
+,
+,
+,
+,
+,
+--UNIT DESCRIPTIONS--,--------------------
+LIGHT_INF_DESC,Small mechs that can capture bases and are the base of any army.
+HEAVY_INF_DESC,Small mechs armed with cannons. Can capture bases.
+RECON_DESC,Agile robot that scouts the field and fends off infantry.
+TANK_DESC,Strong but mobile mech that serves as the main armored unit of land forces.
+MEDIUM_TANK_DESC,"Slower and stronger than a Tank, this unit requires an answer from the enemy army."
+ARTILLERY_DESC,Useful for defending positions and making the enemy think twice.
+HEAVY_ARTILLERY_DESC,"With longer range and firepower than Artillery, this is the ultimate deterrence unit."
+ANTI_AIR_DESC,This mech excels at taking down aerial opponents.
+DRONE_DESC,"Powerful and versatile air unit, with excellent mobility"
+BATTLESHIP_DESC,"A mobile battle station, can hit positions from very far away and cause severe damage."
+,
+,
+,
+,
+,
+--WEAPONS--,--------------------
+LASER_GUN,Laser gun
+CANNON,Cannon
+MEDIUM_CANNON,Medium cannon
+ARTILLERY_CANNON,Artillery cannon
+ENERGY_CANNON,Energy cannon
+FLAK_CANNON,Flak cannon
+ATG_MISSILE,ATG missile
+DESTROYER_CANNON,Destroyer cannon
+NONE,None
+,
+,
+--BUILDINGS--,--------------------
+RUINS,Ruins
+FACTORY,Factory
+AIRPORT,Airport
+PORT,Port
+RESEARCH,Research plant
+POWER_PLANT,Power plant
+,
+,
+,
+--BUILDING DESCRIPTIONS--,--------------------
+RUINS_DESC,"Remnants of destroyed human cities, they can be pillaged for scrap to build robots."
+FACTORY_DESC,"Old workshop used to mass produce land mechs. With enough parts, more can be made even now."
+AIRPORT_DESC,Factory for air units.
+PORT_DESC,Ancient harbor fitted to construct and repair naval mechs.
+RESEARCH_DESC,Building complex dedicated to research and development of weapons and tactics.
+POWER_PLANT_DESC,"Power station that provides additional power to your army, enhancing it."
+,
+,
+--TERRAIN--,--------------------
+PLAINS,Plains
+FOREST,Forest
+HILL,Hill
+MOUNTAIN,Mountain
+SEA,Sea
+ROAD,Road
+RIVER,River
+WASTELAND,Wasteland
+REEF,Reef
+ENERGY_RELAY,Energy relay
+SCRAPYARD,Scrapyard
+BEACH,Beach
+,
+,
+,
+--TERRAIN DESCRIPTIONS--,--------------------
+PLAINS_DESC,Flat terrain that offers little protection for troops.
+FOREST_DESC,Woodlands that hinder movement but give shelter to units.
+HILL_DESC,"High terrain that's very difficult to traverse, but offers high defense."
+MOUNTAIN_DESC,"High terrain that's very difficult to traverse, but offers the highest defense."
+SEA_DESC,"Open salty waters, which allow for naval movement, while presenting no hiding spots."
+ROAD_DESC,"Paved terrain that allows for easy troop movement, but gives no protection."
+RIVER_DESC,Water stream that cannot be crossed by most units and is not navigable.
+WASTELAND_DESC,"Rough landscape that's littered with holes, making travel a pain."
+REEF_DESC,"Rocky waters that give some protection to naval units, although they are harder to navigate"
+ENERGY_RELAY_DESC,"Located in exposed terrain, these give you an attack boost for a round if the unit starts its turn here."
+SCRAPYARD_DESC,Treacherous rocks and lots of scrap make crossing without suffering damage nearly impossible.
+BEACH_DESC,Sandy seashore that gives both land and naval units a place to stand.
+,
+,
+,
+,
+--MOVE TYPES--,--------------------
+INFANTRY_MOVE,Infantry
+LIGHT_VEHICLE_MOVE,Light vehicle
+HEAVY_VEHICLE_MOVE,Heavy vehicle
+AIR_MOVE,Air
+WATER_MOVE,Water
+,
+,
+,
+,
+,
+,
+,
+-----MENUS-----,--------------------
+--IN GAME MENU--,--------------------
+END_TURN,End turn
+TO_UNIT_MENU,Units
+TO_STATUS_MENU,Status
+,
+,
+,
+--ACTION MENU--,
+MOVE_ACTION,Move
+CANCEL_ACTION,Cancel
+ATTACK_ACTION,Attack
+CAPTURE_ACTION,Capture
+,
+,
+--UNIT MENU--,--------------------
+UNIT_ICON_HEADER,Unit
+UNIT_TYPE_HEADER,Type
+UNIT_HP_HEADER,HP
+UNIT_AMMO_HEADER,Ammo
+UNIT_ENERGY_HEADER,Energy
+,
+--STATUS MENU--,--------------------
+STATUS_TEAM_HEADER,Team
+STATUS_UNITS_HEADER,Units
+STATUS_LOST_HEADER,Lost
+STATUS_BASES_HEADER,Bases
+STATUS_INCOME_HEADER,Income
+,
+--DETAILED INFO MENU--,--------------------
+AMMO,Ammo
+ENERGY,Energy
+MOVE,Move
+TERRAIN_MOVE_TITLE,Movement data

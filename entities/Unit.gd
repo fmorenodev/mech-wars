@@ -16,6 +16,7 @@ var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
 var energy: int
+var ammo: int
 var move_type: int
 var atk_type: int
 var dmg_chart: Dictionary
@@ -97,6 +98,7 @@ func initialize(unit: int) -> void:
 	unit_name = gl.units[unit].unit_name
 	movement = gl.units[unit].movement
 	energy = gl.units[unit].energy
+	ammo = gl.units[unit].ammo
 	move_type = gl.units[unit].move_type
 	dmg_chart = gl.units[unit].dmg_chart
 	atk_type = gl.units[unit].atk_type

@@ -12,22 +12,22 @@ _global_script_classes=[ {
 "base": "Sprite",
 "class": "Building",
 "language": "GDScript",
-"path": "res://Building.gd"
+"path": "res://entities/Building.gd"
 }, {
 "base": "TileMap",
 "class": "PathTileMap",
 "language": "GDScript",
-"path": "res://PathTileMap.gd"
+"path": "res://engine/PathTileMap.gd"
 }, {
 "base": "Resource",
 "class": "Team",
 "language": "GDScript",
-"path": "res://Team.gd"
+"path": "res://entities/Team.gd"
 }, {
 "base": "Path2D",
 "class": "Unit",
 "language": "GDScript",
-"path": "res://Unit.gd"
+"path": "res://entities/Unit.gd"
 } ]
 _global_script_class_icons={
 "Building": "",
@@ -39,7 +39,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Mech Wars"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://engine/Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -89,6 +89,15 @@ right_click={
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
+ui_detailed_info={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[locale]
+
+translations=PoolStringArray( "res://assets/Mech wars strings - Hoja 1.en.translation" )
 
 [rendering]
 

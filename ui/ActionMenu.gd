@@ -30,13 +30,13 @@ func _on_id_pressed(id: int) -> void:
 func add_option(id: int) -> void:
 	match id:
 		menu_options.MOVE:
-			add_icon_item(move_icon, "Move", id)
+			add_icon_item(move_icon, tr("MOVE_ACTION"), id)
 		menu_options.CANCEL:
-			add_icon_item(cancel_icon, "Cancel", id)
+			add_icon_item(cancel_icon, tr("CANCEL_ACTION"), id)
 		menu_options.ATTACK:
-			add_icon_item(attack_icon, "Attack", id)
+			add_icon_item(attack_icon, tr("ATTACK_ACTION"), id)
 		menu_options.CAPTURE:
-			add_icon_item(capture_icon, "Capture", id)
+			add_icon_item(capture_icon, tr("CAPTURE_ACTION"), id)
 
 func generate_menu(options: PoolIntArray) -> void:
 	clear()

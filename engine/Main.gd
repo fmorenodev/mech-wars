@@ -6,11 +6,11 @@ onready var TerrainTileMap: TileMap = $TerrainTileMap
 onready var BuildingsTileMap: TileMap = $BuildingsTileMap
 onready var PathTileMap: PathTileMap = $PathTileMap
 onready var ActionMenu: PopupMenu = $GUI/GUIContainer/ActionMenu
-onready var StatusMenu: PopupMenu = $GUI/GUIContainer/StatusMenu
+onready var GameMenu: PopupMenu = $GUI/GUIContainer/GameMenu
 onready var BuildingMenu: PopupMenu = $GUI/GUIContainer/BuildingMenu
 
-const Team = preload("res://Team.gd")
-const UnitScene = preload("res://Unit.tscn")
+const Team = preload("res://entities/Team.gd")
+const UnitScene = preload("res://entities/Unit.tscn")
 
 var active_team: Team
 var active_unit: Unit
@@ -39,6 +39,9 @@ func initialize(new_teams: Array) -> void:
 	current_index = 0
 
 func _ready() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	var cells = TerrainTileMap.get_used_cells()
+	gl.map_size = cells.back()
 	var _err = signals.connect("accept_pressed", self, "_on_accept_pressed")
 	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
 	_err = signals.connect("cursor_moved", self, "_on_cursor_moved")
@@ -59,11 +62,16 @@ func _ready() -> void:
 			add_unit_data(child, randi() % gl.UNITS.size(), gl.TEAM.BLUE)
 		child.change_material_to_color()
 		i = i + 1
+	i = 0
 	for child in BuildingsTileMap.get_children():
 		if i % 2 == 0:
 			add_building_data(child, child.frame, gl.TEAM.RED)
 		else:
 			add_building_data(child, child.frame, gl.TEAM.BLUE)
+	i = 0
+	for child in BuildingsTileMap.get_children():
+		if i > 6:
+			child.team = -1
 	astar.init_a_star()
 	start_turn()
 
@@ -224,7 +232,7 @@ func select_unit_or_building(pos: Vector2) -> void:
 	elif selected_entity is Building and selected_entity.team == active_team.color:
 		open_building_menu(selected_entity)
 	else:
-		open_status_menu()
+		open_game_menu()
 
 func move_active_unit(target_pos: Vector2) -> void:
 	# TODO: if unit_blocking is a unit and the active_unit can attack it, do it
@@ -274,14 +282,14 @@ func open_building_menu(building: Building) -> void:
 	BuildingMenu.generate_menu(building.available_units, active_team.funds, active_team.color, building.position)
 	if BuildingMenu.get_item_count() > 0:
 		BuildingMenu.show()
-		StatusMenu.hide()
+		GameMenu.hide()
 
-func open_status_menu() -> void:
-	StatusMenu.show()
+func open_game_menu() -> void:
+	GameMenu.show()
 	BuildingMenu.hide()
 
 func close_menus() -> void:
-	StatusMenu.hide()
+	GameMenu.hide()
 	BuildingMenu.hide()
 
 # AI auxiliar functions
@@ -412,6 +420,7 @@ func _on_unit_added(unit_id: int, team: int, position: Vector2) -> void:
 func _on_unit_deleted(unit: Unit) -> void:
 	units.erase(unit)
 	teams[unit.team].units.erase(unit)
+	teams[unit.team].lost_units += 1
 	unit.queue_free()
 
 func _on_turn_ended() -> void:
@@ -427,7 +436,7 @@ func _on_turn_ended() -> void:
 # AUX FUNCTIONS #
 #################
 
-func get_terrain(pos):
+func get_terrain(pos: Vector2) -> int:
 	var map_pos = TerrainTileMap.world_to_map(pos)
 	return TerrainTileMap.get_cellv(map_pos)
 
@@ -441,7 +450,7 @@ func get_terrain_stars(pos: Vector2) -> int:
 			return 1
 		gl.TERRAIN.FOREST, gl.TERRAIN.REEF, gl.TERRAIN.WASTELAND:
 			return 2
-		gl.TERRAIN.SMALL_MOUNTAIN, gl.TERRAIN.SCRAPYARD:
+		gl.TERRAIN.HILL, gl.TERRAIN.SCRAPYARD:
 			return 3
 		gl.TERRAIN.MOUNTAIN:
 			return 4
@@ -514,3 +523,9 @@ func end_unit_action() -> void:
 
 func disable_input(value: bool) -> void:
 	get_tree().get_root().set_disable_input(value)
+
+func _on_UnitMenu_visibility_changed() -> void:
+	signals.emit_signal("send_units_to_table", active_team.units)
+
+func _on_StatusInfoMenu_visibility_changed() -> void:
+	signals.emit_signal("send_teams_to_table", teams)
