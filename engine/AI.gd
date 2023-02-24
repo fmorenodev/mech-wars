@@ -181,17 +181,19 @@ func calc_repair_value(unit: Unit) -> Array:
 		# TODO: if unit is repairing, allow it to take another action
 		# find a way to prioritize actions taken on the same position without passing the turn
 		pass
-	if unit.health <= 2:
+	if unit.health <= 2 or unit.ammo == 0 or unit.energy < 11:
 		var repair_targets = Main.check_buildings(unit, true)
 		for target_pos in repair_targets:
 			var target = Main.is_building_in_position(target_pos)
 			if target.type == gl.BUILDINGS.RUINS or target.type == gl.BUILDINGS.RUINS_2:
 				if calc_repair_points(unit) > 0:
-					repair_turn_value = unit.cost / 1000.0 * 2
+					# repair_turn_value = unit.cost / 1000.0 * 2
+					repair_turn_value = 100
 					chosen_repair_building = target
 					break
 	return [repair_turn_value, chosen_repair_building]
 
+# TODO: better movement limitation with energy
 func calc_movement(unit: Unit) -> Array:
 	var unit_a_star = astar.a_star_maps[unit.team][unit.move_type]
 	var starting_point = unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.position))

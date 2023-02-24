@@ -35,10 +35,10 @@ func set_row(unit: Unit) -> void:
 	if unit.team == gl.TEAM.RED:
 		get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).material = sp.swap_mat
 	get_node(instance_path % [row_instance.name, "/Label"]).text = gl.units[unit.id].unit_name
-	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(unit.health)
+	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(unit.rounded_health)
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(unit.ammo)
 	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(unit.energy)
 
 func _on_row_button_pressed(row_name: String) -> void:
 	get_parent().hide()
-	Input.warp_mouse_position(table_units[int(row_name)].position)
+	gl.move_mouse_global(table_units[int(row_name)].position)

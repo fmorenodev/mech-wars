@@ -31,7 +31,8 @@ credits:
 - ~~adding more units~~
 - ~~adding more terrain and making it functional (bonuses, movement types for different units)~~
 - ~~adding UI~~
-- adding ammo, weapon and energy mechanics
+- ~~adding ammo, weapon and energy mechanics~~
+- ~~adding damage preview for combat~~
 - adding COs
 - adding victory and defeat
 - adding powers

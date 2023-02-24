@@ -8,10 +8,11 @@ var available_units : PoolIntArray
 var funds: int
 var extra # for campaign objectives TODO
 
-func initialize(_type: int, _team: int, _funds: int = 1000, _available_units: PoolIntArray = []) -> void:
+func initialize(_type: int, _team: int, _available_units: PoolIntArray = []) -> void:
 	set_team(_team)
-	set_type(_type)
-	funds = _funds
+	type = _type
+	frame = type
+	funds = gl.buildings[type].funds
 	if _available_units.size() > 0:
 		available_units = _available_units
 	else:
@@ -20,10 +21,6 @@ func initialize(_type: int, _team: int, _funds: int = 1000, _available_units: Po
 func set_team(value: int) -> void:
 	team = value
 	texture = sp.building_sprites[value]
-
-func set_type(value: int) -> void:
-	type = value
-	frame = type
 
 func set_available_units() -> void:
 	match type:

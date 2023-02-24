@@ -78,7 +78,7 @@ func flood_fill(a_star_num: int, start_pos: Vector2, max_distance: int, team: in
 func get_partial_path(unit: Unit, from_id: int, to_id: int) -> Array:
 	var a_star = a_star_maps[unit.team][unit.move_type]
 	var path = a_star.get_id_path(from_id, to_id)
-	var remaining_movement = unit.movement
+	var remaining_movement = min(unit.movement, unit.energy)
 	var walkable_path = [a_star.get_point_position(path[0])]
 	path.remove(0)
 	for point_id in path:

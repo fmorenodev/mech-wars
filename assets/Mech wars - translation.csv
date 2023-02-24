@@ -25,7 +25,7 @@ MEDIUM_TANK_DESC,"Slower and stronger than a Tank, this unit requires an answer 
 ARTILLERY_DESC,Useful for defending positions and making the enemy think twice.
 HEAVY_ARTILLERY_DESC,"With longer range and firepower than Artillery, this is the ultimate deterrence unit."
 ANTI_AIR_DESC,This mech excels at taking down aerial opponents.
-DRONE_DESC,"Powerful and versatile air unit, with excellent mobility"
+DRONE_DESC,"Powerful and versatile air unit, with excellent mobility. Spends energy each turn to stay airborne."
 BATTLESHIP_DESC,"A mobile battle station, can hit positions from very far away and cause severe damage."
 ,
 ,

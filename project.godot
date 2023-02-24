@@ -49,6 +49,10 @@ sp="*res://globals/Sprites.gd"
 signals="*res://globals/Signals.gd"
 astar="*res://globals/AStar.gd"
 
+[debug]
+
+gdscript/warnings/integer_division=false
+
 [display]
 
 window/size/width=960
@@ -97,7 +101,7 @@ ui_detailed_info={
 
 [locale]
 
-translations=PoolStringArray( "res://assets/Mech wars strings - Hoja 1.en.translation" )
+translations=PoolStringArray( "res://assets/Mech wars - translation.en.translation" )
 
 [rendering]
 

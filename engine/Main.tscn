@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
@@ -27,6 +27,8 @@
 [ext_resource path="res://assets/gui/def_star.png" type="Texture" id=25]
 [ext_resource path="res://ui/StatusTable.gd" type="Script" id=26]
 [ext_resource path="res://ui/DetailedInfoMenu.gd" type="Script" id=27]
+[ext_resource path="res://assets/gui/health_icon.png" type="Texture" id=28]
+[ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=29]
 
 [sub_resource type="TileSet" id=1]
 0/name = "green_tileset.png 0"
@@ -283,6 +285,13 @@
 1/shapes = [  ]
 1/z_index = 0
 
+[sub_resource type="Gradient" id=5]
+offsets = PoolRealArray( -3.75768e-20, 7.25873e-43 )
+colors = PoolColorArray( 0.2, 0.862745, 0.737255, 1, 0, 0, 0, 1 )
+
+[sub_resource type="GradientTexture2D" id=6]
+gradient = SubResource( 5 )
+
 [node name="Main" type="Node2D"]
 script = ExtResource( 15 )
 
@@ -315,7 +324,7 @@ texture = ExtResource( 8 )
 centered = false
 hframes = 4
 vframes = 2
-frame = 2
+frame = 1
 script = ExtResource( 18 )
 
 [node name="Building3" type="Sprite" parent="BuildingsTileMap"]
@@ -333,7 +342,7 @@ texture = ExtResource( 8 )
 centered = false
 hframes = 4
 vframes = 2
-frame = 4
+frame = 1
 script = ExtResource( 18 )
 
 [node name="Building5" type="Sprite" parent="BuildingsTileMap"]
@@ -351,7 +360,7 @@ texture = ExtResource( 8 )
 centered = false
 hframes = 4
 vframes = 2
-frame = 3
+frame = 1
 script = ExtResource( 18 )
 
 [node name="Building7" type="Sprite" parent="BuildingsTileMap"]
@@ -424,40 +433,11 @@ centered_textures = true
 format = 1
 
 [node name="Unit" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 24, 0 )
+position = Vector2( 72, 0 )
 
 [node name="Unit2" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 48, 72 )
-
-[node name="Unit3" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 216, 288 )
-id = 9
-
-[node name="Unit4" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 120, 120 )
-
-[node name="Unit5" parent="SelectionTileMap" instance=ExtResource( 13 )]
-
-[node name="Unit6" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 144, 192 )
-
-[node name="Unit7" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 264, 48 )
-
-[node name="Unit8" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 264, 144 )
-
-[node name="Unit9" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 432, 0 )
-
-[node name="Unit10" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 384, 168 )
-
-[node name="Unit11" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 168, 72 )
-
-[node name="Unit12" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 72, 168 )
+position = Vector2( 240, 96 )
+id = 4
 
 [node name="CursorTileMap" type="TileMap" parent="."]
 tile_set = SubResource( 4 )
@@ -512,7 +492,6 @@ margin_bottom = 8.0
 script = ExtResource( 17 )
 
 [node name="DetailedInfoMenu" type="PopupPanel" parent="GUI/GUIContainer"]
-visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -785,69 +764,134 @@ margin_right = 7.0
 margin_bottom = 7.0
 script = ExtResource( 20 )
 
-[node name="TileUnitInfo" type="PanelContainer" parent="GUI/GUIContainer"]
+[node name="TileUnitInfo" type="VBoxContainer" parent="GUI/GUIContainer"]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = -84.0
-margin_right = 64.0
-margin_bottom = 2.0
+margin_top = -196.0
+margin_right = 108.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo"]
+[node name="DamagePreview" type="PanelContainer" parent="GUI/GUIContainer/TileUnitInfo"]
+visible = false
+margin_right = 14.0
+margin_bottom = 82.0
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 125.0
-margin_bottom = 79.0
+margin_right = 7.0
+margin_bottom = 75.0
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview/VBoxContainer"]
+margin_bottom = 20.0
+size_flags_vertical = 1
+
+[node name="Gradient" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview/VBoxContainer"]
+margin_top = 24.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource( 6 )
+expand = true
+
+[node name="Percent" type="Label" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview/VBoxContainer/Gradient"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 1
+align = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="GUI/GUIContainer/TileUnitInfo"]
+margin_right = 108.0
+margin_bottom = 110.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 101.0
+margin_bottom = 103.0
 script = ExtResource( 19 )
 
-[node name="EntityInfo" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer" instance=ExtResource( 21 )]
-margin_right = 44.0
-margin_bottom = 72.0
+[node name="EntityInfo" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer" instance=ExtResource( 21 )]
+margin_right = 20.0
+margin_bottom = 96.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo"]
 margin_top = 28.0
-margin_right = 44.0
-margin_bottom = 48.0
+margin_right = 20.0
+margin_bottom = 96.0
 
-[node name="Ammo" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer"]
+[node name="Health" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer"]
 margin_right = 20.0
 margin_bottom = 20.0
 
-[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer/Ammo"]
+[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Health"]
+margin_right = 16.0
+margin_bottom = 20.0
+texture = ExtResource( 28 )
+
+[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Health"]
+margin_left = 20.0
+margin_right = 20.0
+margin_bottom = 20.0
+
+[node name="Ammo" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer"]
+margin_top = 24.0
+margin_right = 20.0
+margin_bottom = 44.0
+
+[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Ammo"]
 margin_right = 16.0
 margin_bottom = 20.0
 texture = ExtResource( 23 )
 
-[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer/Ammo"]
+[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Ammo"]
 margin_left = 20.0
 margin_right = 20.0
 margin_bottom = 20.0
 
-[node name="Energy" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer"]
-margin_left = 24.0
-margin_right = 44.0
-margin_bottom = 20.0
+[node name="Energy" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer"]
+margin_top = 48.0
+margin_right = 20.0
+margin_bottom = 68.0
 
-[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer/Energy"]
+[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Energy"]
 margin_right = 16.0
 margin_bottom = 20.0
 texture = ExtResource( 24 )
 
-[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo/HBoxContainer/Energy"]
+[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Energy"]
 margin_left = 20.0
 margin_right = 20.0
 margin_bottom = 20.0
 
-[node name="EntityInfo2" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer" instance=ExtResource( 21 )]
-margin_left = 48.0
-margin_right = 118.0
-margin_bottom = 72.0
+[node name="EntityInfo2" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer" instance=ExtResource( 21 )]
+margin_left = 24.0
+margin_right = 94.0
+margin_bottom = 96.0
 
-[node name="TextureProgress" type="TextureProgress" parent="GUI/GUIContainer/TileUnitInfo/HBoxContainer/EntityInfo2"]
+[node name="TextureProgress" type="TextureProgress" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo2"]
 margin_top = 28.0
 margin_right = 70.0
 margin_bottom = 44.0
 max_value = 4.0
 texture_progress = ExtResource( 25 )
+
+[node name="CapturePoints" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo2"]
+margin_top = 48.0
+margin_right = 70.0
+margin_bottom = 68.0
+
+[node name="TextureRect" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo2/CapturePoints"]
+margin_right = 16.0
+margin_bottom = 20.0
+texture = ExtResource( 29 )
+
+[node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer/EntityInfo2/CapturePoints"]
+margin_left = 20.0
+margin_right = 20.0
+margin_bottom = 20.0
 
 [node name="AI" type="Node" parent="."]
 script = ExtResource( 4 )

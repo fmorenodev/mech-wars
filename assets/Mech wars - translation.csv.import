@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://assets/Mech wars - translation.en.translation" ]
+
+source_file="res://assets/Mech wars - translation.csv"
+dest_files=[ "res://assets/Mech wars - translation.en.translation" ]
+
+[params]
+
+compress=true
+delimiter=0

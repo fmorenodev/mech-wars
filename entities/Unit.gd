@@ -19,15 +19,18 @@ var energy: int
 var ammo: int
 var move_type: int
 var atk_type: int
-var dmg_chart: Dictionary
+var w1_dmg_chart: Dictionary
+var w2_dmg_chart: Dictionary
 var cost: int
 var can_capture: bool
-
 var team: int setget set_team
-var capture_points: int = 0
 
+# change during play
+var capture_points: int = 0
 var atk_bonus = 1
 var def_bonus = 1
+var current_energy_cost: int = 0
+var rounded_health: int = 10
 
 # variables for movement
 signal walk_finished
@@ -67,6 +70,7 @@ func set_health(value: float) -> void:
 	elif health > 10:
 		health = 10
 	var label_value = round_health(health)
+	rounded_health = label_value
 	if label_value < 10:
 		HealthLabel.text = str(label_value)
 	elif label_value == 10:
@@ -100,7 +104,8 @@ func initialize(unit: int) -> void:
 	energy = gl.units[unit].energy
 	ammo = gl.units[unit].ammo
 	move_type = gl.units[unit].move_type
-	dmg_chart = gl.units[unit].dmg_chart
+	w1_dmg_chart = gl.units[unit].w1_dmg_chart
+	w2_dmg_chart = gl.units[unit].w2_dmg_chart
 	atk_type = gl.units[unit].atk_type
 	cost = gl.units[unit].cost
 	can_capture = gl.units[unit].can_capture

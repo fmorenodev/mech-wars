@@ -26,8 +26,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				move_cursor(adjusted_pos, 1)
 		elif event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") \
 		or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
-			move_cursor(Main.targets[target_index], 1)
-			target_index = (target_index + 1) % (Main.targets.size())
+			if Main.targets.size() > 1:
+				move_cursor(Main.targets[target_index], 1)
+				target_index = (target_index + 1) % (Main.targets.size())
 		elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
 			if Main.is_unit_in_position(cursor_pos):
 				signals.emit_signal("target_selected", cursor_pos)
