@@ -143,3 +143,7 @@ AMMO,Ammo
 ENERGY,Energy
 MOVE,Move
 TERRAIN_MOVE_TITLE,Movement data
+DAMAGE,Damage
+FUNDS,Funds
+CAN_REPAIR,Can repair
+LAND,Land

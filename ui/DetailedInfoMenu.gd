@@ -18,8 +18,10 @@ onready var UnitWeapon1Info = $HBoxContainer/UnitInfo/WeaponsInfo/Weapon1Info
 onready var UnitWeapon2Info = $HBoxContainer/UnitInfo/WeaponsInfo/Weapon2Info
 onready var UnitInfoContainer = $HBoxContainer/UnitInfo
 
-onready var TileName = $HBoxContainer/DetailedTileInfo/Name
-onready var TileSprite = $HBoxContainer/DetailedTileInfo/TileSprite
+onready var TileName = $HBoxContainer/DetailedTileInfo/HBoxContainer/VBoxContainer/Name
+onready var TileSprite = $HBoxContainer/DetailedTileInfo/HBoxContainer/VBoxContainer/TileSprite
+onready var TileFunds = $HBoxContainer/DetailedTileInfo/HBoxContainer/VBoxContainer2/Funds
+onready var TileRepair = $HBoxContainer/DetailedTileInfo/HBoxContainer/VBoxContainer2/Repair
 onready var TileDesc = $HBoxContainer/DetailedTileInfo/Desc
 onready var TerrainStars = $HBoxContainer/DetailedTileInfo/TerrainStars
 onready var MovementTitle = $HBoxContainer/DetailedTileInfo/Movement/Title
@@ -83,10 +85,24 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 		TileName.text = gl.buildings[building.type].name
 		TileSprite.texture = building_texture.get_frame(str(building.team), building.type)
 		TileDesc.text = gl.buildings[building.type].desc
+		TileFunds.text = '%s: %s' % [tr('FUNDS'), building.funds]
+		var can_repair: String
+		var building_data = gl.buildings[building.type].repairs
+		if building_data.has(gl.MOVE_TYPE.AIR):
+			can_repair = tr('AIR_MOVE')
+		if building_data.has(gl.MOVE_TYPE.WATER):
+			can_repair = tr('WATER_MOVE')
+		if building_data.has(gl.MOVE_TYPE.INFANTRY):
+			can_repair = tr('LAND')
+		else:
+			can_repair = tr('NONE')
+		TileRepair.text = '%s: %s' % [tr('CAN_REPAIR'), can_repair]
 	else:
 		TileName.text = gl.terrain[tile_id].name
 		TileSprite.texture = tileset_texture.get_frame('default', tile_id)
 		TileDesc.text = gl.terrain[tile_id].desc
+		TileFunds.text = ''
+		TileRepair.text = ''
 	
 	for child in MovementInfo.get_children():
 		MovementInfo.remove_child(child)

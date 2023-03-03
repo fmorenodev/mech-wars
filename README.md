@@ -34,8 +34,8 @@ credits:
 - ~~adding ammo, weapon and energy mechanics~~
 - ~~adding damage preview for combat~~
 - adding COs
-- adding victory and defeat
 - adding powers
+- adding victory and defeat
 - adding surrender
 - making a playable map
 - adding sounds
@@ -43,6 +43,7 @@ credits:
 - adding other mechanics (unit merging, etc)
 - adding all the missing units
 - adding factions
+- demo?
 - advanced AI
 - adding more animations
 - title screen, options, saving
