@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
@@ -29,9 +29,6 @@
 [ext_resource path="res://ui/DetailedInfoMenu.gd" type="Script" id=27]
 [ext_resource path="res://assets/gui/health_icon.png" type="Texture" id=28]
 [ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=29]
-[ext_resource path="res://ui/COMenu.gd" type="Script" id=30]
-[ext_resource path="res://ui/COTab.tscn" type="PackedScene" id=31]
-[ext_resource path="res://engine/COPowers.gd" type="Script" id=32]
 
 [sub_resource type="TileSet" id=1]
 0/name = "green_tileset.png 0"
@@ -719,19 +716,6 @@ margin_bottom = 256.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="COMenu" type="PopupPanel" parent="GUI/GUIContainer"]
-margin_right = 14.0
-margin_bottom = 14.0
-
-[node name="TabContainer" type="TabContainer" parent="GUI/GUIContainer/COMenu"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 12.0
-margin_bottom = 46.0
-script = ExtResource( 30 )
-
-[node name="COTab" parent="GUI/GUIContainer/COMenu/TabContainer" instance=ExtResource( 31 )]
-
 [node name="StatusInfoMenu" type="PopupPanel" parent="GUI/GUIContainer"]
 anchor_left = 0.5
 anchor_top = 0.5
@@ -965,11 +949,7 @@ margin_bottom = 20.0
 [node name="AI" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="COPowers" type="Node" parent="."]
-script = ExtResource( 32 )
-
 [connection signal="visibility_changed" from="GUI/GUIContainer/UnitMenu" to="." method="_on_UnitMenu_visibility_changed"]
-[connection signal="visibility_changed" from="GUI/GUIContainer/COMenu" to="." method="_on_COMenu_visibility_changed"]
 [connection signal="visibility_changed" from="GUI/GUIContainer/StatusInfoMenu" to="." method="_on_StatusInfoMenu_visibility_changed"]
 [connection signal="mouse_entered" from="GUI/GUIContainer/FixedInfo" to="GUI/GUIContainer/FixedInfo" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="GUI/GUIContainer/TileUnitInfo" to="GUI/GUIContainer/TileUnitInfo" method="_on_mouse_entered"]
