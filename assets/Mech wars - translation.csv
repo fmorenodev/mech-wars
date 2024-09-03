@@ -115,9 +115,7 @@ END_TURN,End turn
 TO_UNIT_MENU,Units
 TO_STATUS_MENU,Status
 ,
-,
-,
---ACTION MENU--,
+--ACTION MENU--,--------------------
 MOVE_ACTION,Move
 CANCEL_ACTION,Cancel
 ATTACK_ACTION,Attack
@@ -147,3 +145,9 @@ DAMAGE,Damage
 FUNDS,Funds
 CAN_REPAIR,Can repair
 LAND,Land
+,
+,
+,
+,
+,
+INFINITE,Infinite

@@ -54,6 +54,7 @@ credits:
 - ai units sometimes move to another unit's space (unknown cause)
 - indirect units sometimes can attack after moving (unknown cause)
 - can select empty target when attacking (unsure if solved)
+- info panels prevent you from clicking 
 
 ## IDEAS
 
@@ -63,13 +64,14 @@ The protag has the ability to "infect" other mechs and control them or turn them
 - there are some surviving humans: 
 	- One is the main antagonist, which has created the protagonist. Wants to kill the surviving humans so he is the only human alive, and seeks world domination. Knows how to create sentient robots.
 	- Another one is trying to find other humans and stumbles into the protag, and the protag offers to help him.
+There could be rumours of a real or fake place with humans still alive, could be the lair of the villain.
 
 COs: 
 - protag: Mark-0 "Polo" an advanced mech with a good natured ai that is programmed to scout the world. In reality, he is a sleeper agent, and will be activated when he locates enough humans.
 	It has the capacity to take control of battle mechs, but won't show it until he is activated by his master.
 	day-to-day: recons have +20% atk
 	powers: - Scouting Mission: +1 movement to all units, recons have +40% atk
-			- Target Located: +2 movement to all units, recons have +40% atk and attack like tanks for a turn
+			- Target Located: +2 movement to all units, recons have +40% atk and attack like tanks for a turn.
 	design: sleek android with a kind face, designed for speed and evasion
 
 - first enemy co: B.A.N.D.I.T. (Big Android Nuisance Designed Incredibly Thick). A first generation android, built when the technology was still new. As a result, he is a low-ranked CO, having only mastered infantry tactics
@@ -93,7 +95,7 @@ COs:
 - final boss CO: 
 	day-to-day: units have 11 or 12 base hp
 	powers: - Humanity's Bane: lowers the max HP of enemy units by 1 for the rest of the match
-			- Will of the Machine Lord: choose a superpower between all / the android COs
+			- Will of the Machine Lord: choose a superpower between all / the android COs ???
 	design: an old but bulky cyborg, dressed with tight clothes and a military cut, with arms crossed and standing with his chest puffed.
 
 possible mechanics:
@@ -101,6 +103,9 @@ possible mechanics:
 - unit merging makes a different unit or a more powerful version
 - unit producing buildings give less funds?
 - ability to redo missions
+- upgrades in the campaign mode via spending funds or finding upgrades in buildings
+- power plants fill power meter faster
+- secondary objectives in maps
 
 Units:
 - Faster and more expensive infantry?

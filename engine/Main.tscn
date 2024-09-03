@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
@@ -29,6 +29,9 @@
 [ext_resource path="res://ui/DetailedInfoMenu.gd" type="Script" id=27]
 [ext_resource path="res://assets/gui/health_icon.png" type="Texture" id=28]
 [ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=29]
+[ext_resource path="res://ui/COMenu.gd" type="Script" id=30]
+[ext_resource path="res://ui/COTab.tscn" type="PackedScene" id=31]
+[ext_resource path="res://engine/COPowers.gd" type="Script" id=32]
 
 [sub_resource type="TileSet" id=1]
 0/name = "green_tileset.png 0"
@@ -316,6 +319,7 @@ texture = ExtResource( 8 )
 centered = false
 hframes = 4
 vframes = 2
+frame = 2
 script = ExtResource( 18 )
 
 [node name="Building2" type="Sprite" parent="BuildingsTileMap"]
@@ -433,11 +437,20 @@ centered_textures = true
 format = 1
 
 [node name="Unit" parent="SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 72, 0 )
+position = Vector2( 240, 144 )
+id = 2
 
 [node name="Unit2" parent="SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 240, 96 )
-id = 4
+id = 2
+
+[node name="Unit3" parent="SelectionTileMap" instance=ExtResource( 13 )]
+position = Vector2( 216, 120 )
+id = 3
+
+[node name="Unit4" parent="SelectionTileMap" instance=ExtResource( 13 )]
+position = Vector2( 264, 96 )
+id = 1
 
 [node name="CursorTileMap" type="TileMap" parent="."]
 tile_set = SubResource( 4 )
@@ -710,6 +723,15 @@ size_flags_vertical = 3
 margin_right = 14.0
 margin_bottom = 14.0
 
+[node name="TabContainer" type="TabContainer" parent="GUI/GUIContainer/COMenu"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 12.0
+margin_bottom = 46.0
+script = ExtResource( 30 )
+
+[node name="COTab" parent="GUI/GUIContainer/COMenu/TabContainer" instance=ExtResource( 31 )]
+
 [node name="StatusInfoMenu" type="PopupPanel" parent="GUI/GUIContainer"]
 anchor_left = 0.5
 anchor_top = 0.5
@@ -774,26 +796,52 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="FixedInfo" type="PanelContainer" parent="GUI/GUIContainer"]
-margin_right = 14.0
-margin_bottom = 14.0
+margin_right = 58.0
+margin_bottom = 58.0
+script = ExtResource( 20 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUI/GUIContainer/FixedInfo"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 7.0
-margin_bottom = 7.0
-script = ExtResource( 20 )
+margin_right = 51.0
+margin_bottom = 51.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_right = 44.0
+margin_bottom = 20.0
+
+[node name="Funds" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
+margin_bottom = 20.0
+
+[node name="FundsPerTurn" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
+margin_left = 4.0
+margin_right = 4.0
+margin_bottom = 20.0
+
+[node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_top = 24.0
+margin_right = 44.0
+margin_bottom = 24.0
+
+[node name="PowerStars" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_top = 28.0
+margin_right = 44.0
+margin_bottom = 28.0
 
 [node name="TileUnitInfo" type="VBoxContainer" parent="GUI/GUIContainer"]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = -196.0
-margin_right = 108.0
+margin_top = -188.0
+margin_right = 144.0
+mouse_filter = 0
+custom_constants/separation = 0
+alignment = 2
+script = ExtResource( 19 )
 
 [node name="DamagePreview" type="PanelContainer" parent="GUI/GUIContainer/TileUnitInfo"]
 visible = false
 margin_right = 14.0
-margin_bottom = 82.0
+margin_bottom = 78.0
 size_flags_horizontal = 0
 size_flags_vertical = 3
 
@@ -801,7 +849,7 @@ size_flags_vertical = 3
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 7.0
-margin_bottom = 75.0
+margin_bottom = 71.0
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview/VBoxContainer"]
@@ -810,7 +858,7 @@ size_flags_vertical = 1
 
 [node name="Gradient" type="TextureRect" parent="GUI/GUIContainer/TileUnitInfo/DamagePreview/VBoxContainer"]
 margin_top = 24.0
-margin_bottom = 68.0
+margin_bottom = 64.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = SubResource( 6 )
@@ -821,17 +869,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_vertical = 1
 align = 1
+valign = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="GUI/GUIContainer/TileUnitInfo"]
-margin_right = 108.0
-margin_bottom = 110.0
+margin_top = 78.0
+margin_right = 144.0
+margin_bottom = 188.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 101.0
+margin_right = 137.0
 margin_bottom = 103.0
-script = ExtResource( 19 )
 
 [node name="EntityInfo" parent="GUI/GUIContainer/TileUnitInfo/PanelContainer/HBoxContainer" instance=ExtResource( 21 )]
 margin_right = 20.0
@@ -916,5 +965,11 @@ margin_bottom = 20.0
 [node name="AI" type="Node" parent="."]
 script = ExtResource( 4 )
 
+[node name="COPowers" type="Node" parent="."]
+script = ExtResource( 32 )
+
 [connection signal="visibility_changed" from="GUI/GUIContainer/UnitMenu" to="." method="_on_UnitMenu_visibility_changed"]
+[connection signal="visibility_changed" from="GUI/GUIContainer/COMenu" to="." method="_on_COMenu_visibility_changed"]
 [connection signal="visibility_changed" from="GUI/GUIContainer/StatusInfoMenu" to="." method="_on_StatusInfoMenu_visibility_changed"]
+[connection signal="mouse_entered" from="GUI/GUIContainer/FixedInfo" to="GUI/GUIContainer/FixedInfo" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="GUI/GUIContainer/TileUnitInfo" to="GUI/GUIContainer/TileUnitInfo" method="_on_mouse_entered"]

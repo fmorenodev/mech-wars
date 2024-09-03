@@ -21,6 +21,8 @@ var move_type: int
 var atk_type: int
 var w1_dmg_chart: Dictionary
 var w2_dmg_chart: Dictionary
+var w1_can_attack: Array
+var w2_can_attack: Array
 var cost: int
 var can_capture: bool
 var team: int setget set_team
@@ -106,6 +108,8 @@ func initialize(unit: int) -> void:
 	move_type = gl.units[unit].move_type
 	w1_dmg_chart = gl.units[unit].w1_dmg_chart
 	w2_dmg_chart = gl.units[unit].w2_dmg_chart
+	w1_can_attack = gl.units[unit].w1_can_attack
+	w2_can_attack = gl.units[unit].w2_can_attack
 	atk_type = gl.units[unit].atk_type
 	cost = gl.units[unit].cost
 	can_capture = gl.units[unit].can_capture

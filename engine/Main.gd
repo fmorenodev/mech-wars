@@ -500,8 +500,8 @@ func calc_dmg_value(attacker: Unit, target: Unit) -> int:
 	return value
 
 func can_attack(attacker: Unit, target: Unit) -> bool:
-	if gl.units[attacker.id].w1_can_attack.has(target.id) and attacker.ammo > 0 \
-		or gl.units[attacker.id].w2_can_attack.has(target.id):
+	if attacker.w1_can_attack.has(target.id) and attacker.ammo > 0 \
+		or attacker.w2_can_attack.has(target.id):
 		return true
 	else:
 		return false
@@ -510,8 +510,9 @@ func can_use_w1(attacker: Unit, target: Unit) -> bool:
 	return gl.units[attacker.id].w1_can_attack.has(target.id) and attacker.ammo > 0
 
 func start_turn() -> void:
-	for building in active_team.buildings:
-		active_team.funds += building.funds
+	active_team.calculate_funds_per_turn()
+	active_team.funds += active_team.funds_per_turn
+	signals.emit_signal("turn_started", active_team)
 	for unit in active_team.units:
 		unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))

@@ -1,26 +1,26 @@
-extends HBoxContainer
+extends VBoxContainer
 
 onready var building_texture: SpriteFrames = load("res://assets/map/individual_buildings.tres")
 onready var tileset_texture: SpriteFrames = load("res://assets/map/green_tileset_individual.tres")
 
 onready var Main = get_node("/root/Main")
-onready var EntityName = $EntityInfo/EntityName
-onready var EntitySprite = $EntityInfo/EntitySprite
-onready var EntityHealth = $EntityInfo/VBoxContainer/Health/Label
-onready var EntityAmmoContainer = $EntityInfo/VBoxContainer/Ammo
-onready var EntityAmmo = $EntityInfo/VBoxContainer/Ammo/Label
-onready var EntityEnergy = $EntityInfo/VBoxContainer/Energy/Label
-onready var UnitInfoContainer = $EntityInfo
+onready var EntityName = $PanelContainer/HBoxContainer/EntityInfo/EntityName
+onready var EntitySprite = $PanelContainer/HBoxContainer/EntityInfo/EntitySprite
+onready var EntityHealth = $PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Health/Label
+onready var EntityAmmoContainer = $PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Ammo
+onready var EntityAmmo = $PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Ammo/Label
+onready var EntityEnergy = $PanelContainer/HBoxContainer/EntityInfo/VBoxContainer/Energy/Label
+onready var UnitInfoContainer = $PanelContainer/HBoxContainer/EntityInfo
 
-onready var EntityName2 = $EntityInfo2/EntityName
-onready var EntitySprite2 = $EntityInfo2/EntitySprite
-onready var TerrainStars = $EntityInfo2/TextureProgress
-onready var TileCaptureContainer = $EntityInfo2/CapturePoints
-onready var TileCapturePoints = $EntityInfo2/CapturePoints/Label
+onready var EntityName2 = $PanelContainer/HBoxContainer/EntityInfo2/EntityName
+onready var EntitySprite2 = $PanelContainer/HBoxContainer/EntityInfo2/EntitySprite
+onready var TerrainStars = $PanelContainer/HBoxContainer/EntityInfo2/TextureProgress
+onready var TileCaptureContainer = $PanelContainer/HBoxContainer/EntityInfo2/CapturePoints
+onready var TileCapturePoints = $PanelContainer/HBoxContainer/EntityInfo2/CapturePoints/Label
 
-onready var DamagePreview = $'../../DamagePreview'
-onready var DamagePreviewNumber = $'../../DamagePreview/VBoxContainer/Gradient/Percent'
-onready var DamagePreviewGradientColors = $'../../DamagePreview/VBoxContainer/Gradient'.texture.gradient
+onready var DamagePreview = $DamagePreview
+onready var DamagePreviewNumber = $DamagePreview/VBoxContainer/Gradient/Percent
+onready var DamagePreviewGradientColors = $DamagePreview/VBoxContainer/Gradient.texture.gradient
 
 var unit
 
@@ -29,7 +29,7 @@ func _ready():
 	_err = signals.connect("attack_action", self, "_on_attack_action")
 	_err = signals.connect("target_selected", self, "_on_target_selected")
 	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
-	$'../../DamagePreview/VBoxContainer/Label'.text = tr('DAMAGE')
+	$DamagePreview/VBoxContainer/Label.text = tr('DAMAGE')
 
 func _on_cursor_moved(pos: Vector2) -> void:
 	var tile_id = Main.TerrainTileMap.get_cellv(pos)
@@ -44,9 +44,8 @@ func _on_cursor_moved(pos: Vector2) -> void:
 			EntitySprite.material = null
 		EntityHealth.text = str(unit.rounded_health)
 		if unit.ammo == -1:
-			EntityAmmoContainer.visible = false
+			EntityAmmo.text = tr("INFINITE")
 		else:
-			EntityAmmoContainer.visible = true
 			EntityAmmo.text = str(unit.ammo)
 		EntityEnergy.text = str(unit.energy)
 		UnitInfoContainer.visible = true
@@ -105,3 +104,9 @@ func _on_target_selected(_pos: Vector2) -> void:
 
 func _on_cancel_pressed() -> void:
 	DamagePreview.visible = false
+
+func _on_mouse_entered():
+	if get_anchor(MARGIN_LEFT) == 0:
+		set_anchors_and_margins_preset(Control.PRESET_BOTTOM_RIGHT, 3)
+	else:
+		set_anchors_and_margins_preset(Control.PRESET_BOTTOM_LEFT, 3)

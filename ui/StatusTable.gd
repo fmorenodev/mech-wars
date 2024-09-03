@@ -33,4 +33,4 @@ func set_row(team: Team) -> void:
 	get_node(instance_path % [row_instance.name, "/Label"]).text = str(team.units.size())
 	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(team.lost_units)
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(team.buildings.size())
-	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(team.buildings.size() * 1000)
+	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(team.funds_per_turn)

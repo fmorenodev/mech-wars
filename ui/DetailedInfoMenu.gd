@@ -60,7 +60,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 			UnitWeapon2Info.remove_child(child)
 			child.queue_free()
 		if gl.units[unit.id].weapon_1 != tr('NONE'):
-			for can_attack in gl.units[unit.id].w1_can_attack:
+			for can_attack in unit.w1_can_attack:
 				var trec_node = TextureRect.new()
 				trec_node.texture = sp.sprites[can_attack].get_frame('idle', 0)
 				UnitWeapon1Info.add_child(trec_node)
@@ -69,7 +69,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 			trec_node.texture = none_texture
 			UnitWeapon1Info.add_child(trec_node)
 		if gl.units[unit.id].weapon_2 != tr('NONE'):
-			for can_attack in gl.units[unit.id].w2_can_attack:
+			for can_attack in unit.w2_can_attack:
 				var trec_node = TextureRect.new()
 				trec_node.texture = sp.sprites[can_attack].get_frame('idle', 0)
 				UnitWeapon2Info.add_child(trec_node)
