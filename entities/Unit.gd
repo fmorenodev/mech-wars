@@ -8,6 +8,7 @@ onready var AnimPlayer: AnimationPlayer = $AnimationPlayer
 onready var PathF: PathFollow2D = $PathFollow2D
 onready var HealthLabel: Label = $PathFollow2D/AnimatedSprite/HealthLabel
 onready var AuxLabel: Label = $PathFollow2D/AnimatedSprite/AuxLabel
+onready var AuxTexture: TextureRect = $PathFollow2D/AnimatedSprite/AuxTexture
 
 var unit_data = gl.units
 
@@ -26,6 +27,11 @@ var w2_can_attack: Array
 var cost: int
 var can_capture: bool
 var team: int setget set_team
+
+# CO variables
+var co: int setget set_co
+var atk_mod: float = 1.0
+var def_mod: float = 1.0
 
 # change during play
 var capture_points: int = 0
@@ -59,7 +65,7 @@ var move_path: Array
 
 var chosen_action: Array
 
-# TODO: bonus to incentivice certain actions, not implemented
+# TODO: bonus to incentivise certain actions, not implemented
 var stay_in_place_bonus: float
 var choose_diff_pos_bonus: float
 
@@ -87,6 +93,9 @@ func set_texture(value: SpriteFrames) -> void:
 		yield(self, "ready")
 	UnitSprite.frames = value
 
+func set_aux_texture(value) -> void:
+	AuxTexture.texture = value
+
 func set_is_moving(value: bool) -> void:
 	is_moving = value
 	set_process(is_moving)
@@ -98,6 +107,16 @@ func set_team(value: int) -> void:
 	match value:
 		gl.TEAM.RED:
 			UnitSprite.material = sp.swap_mat
+
+func set_co(value: int) -> void:
+	co = value
+	if (gl.co_data[co].unit_stats.keys().has(id)):
+		atk_mod = gl.co_data[co].unit_stats[id].x
+		def_mod = gl.co_data[co].unit_stats[id].y
+		movement += gl.co_data[co].unit_stats[id].z
+	else:
+		atk_mod = 1.0
+		def_mod = 1.0
 
 func initialize(unit: int) -> void:
 	id = unit

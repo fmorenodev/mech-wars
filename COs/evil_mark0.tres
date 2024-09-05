@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://resources/COData.gd" type="Script" id=1]
+[ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=2]
+
+[resource]
+script = ExtResource( 1 )
+texture = ExtResource( 2 )
+name = "EVIL_MARK0_NAME"
+desc = "EVIL_MARK0_DESC"
+d2d = "EVIL_MARK0_D2D"
+power_name = "EVIL_MARK0_POWER_NAME"
+power_desc = "EVIL_MARK0_POWER_DESC"
+super_name = "EVIL_MARK0_SUPER_NAME"
+super_desc = "EVIL_MARK0_SUPER_DESC"

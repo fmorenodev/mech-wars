@@ -33,8 +33,10 @@ credits:
 - ~~adding UI~~
 - ~~adding ammo, weapon and energy mechanics~~
 - ~~adding damage preview for combat~~
-- adding COs
-- adding powers
+- ~~adding COs~~
+- ~~adding powers~~
+	- power bar and power bar mechanics
+	- AI can use powers
 - adding victory and defeat
 - adding surrender
 - making a playable map
@@ -43,6 +45,7 @@ credits:
 - adding other mechanics (unit merging, etc)
 - adding all the missing units
 - adding factions
+- ui overhaul
 - demo?
 - advanced AI
 - adding more animations

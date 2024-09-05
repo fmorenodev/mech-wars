@@ -9,7 +9,12 @@ var funds := 0 setget set_funds
 var funds_per_turn := 0
 var is_player: bool
 var lost_units := 0
-var co
+var co setget set_co
+var is_power_active: bool = false
+var is_super_active: bool = false
+
+# new resource implementation
+var co_resource: COData
 
 func _init(_color: int, _is_player: bool) -> void:
 	color = _color
@@ -32,3 +37,9 @@ func calculate_funds_per_turn() -> void:
 func set_funds(value: int) -> void:
 	funds = value
 	signals.emit_signal("funds_updated", funds)
+
+func set_co(value: int) -> void:
+	co = value
+	co_resource = load(gl.co_data[co].co_res)
+	for unit in units:
+		unit.set_co(co)

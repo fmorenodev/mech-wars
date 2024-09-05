@@ -8,6 +8,7 @@ onready var PathTileMap: PathTileMap = $PathTileMap
 onready var ActionMenu: PopupMenu = $GUI/GUIContainer/ActionMenu
 onready var GameMenu: PopupMenu = $GUI/GUIContainer/GameMenu
 onready var BuildingMenu: PopupMenu = $GUI/GUIContainer/BuildingMenu
+onready var COPowers: Node = $COPowers
 
 const Team = preload("res://entities/Team.gd")
 const UnitScene = preload("res://entities/Unit.tscn")
@@ -22,6 +23,8 @@ var action_menu_open := false
 var targets := []
 var selecting_targets := false
 var current_index: int
+var is_power_active := false
+var is_super_active := false
 
 ##################
 # INITIALIZATION #
@@ -53,6 +56,8 @@ func _ready() -> void:
 	_err = signals.connect("unit_added", self, "_on_unit_added")
 	_err = signals.connect("unit_deleted", self, "_on_unit_deleted")
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
+
+	# for testing purposes
 	initialize([Team.new(gl.TEAM.RED, true), Team.new(gl.TEAM.BLUE, false)])
 	var i = 0
 	for child in SelectionTileMap.get_children():
@@ -69,6 +74,8 @@ func _ready() -> void:
 		else:
 			add_building_data(child, child.frame, gl.TEAM.BLUE)
 		i += 1
+	teams[0].co = gl.COS.MARK0
+	teams[1].co = gl.COS.BANDIT
 	astar.init_a_star()
 	start_turn()
 
@@ -76,6 +83,10 @@ func create_unit(unit_id: int, team: int, position: Vector2) -> void:
 	var new_unit = UnitScene.instance()
 	SelectionTileMap.add_child(new_unit)
 	new_unit.position = position
+	if (teams[team].is_power_active):
+		COPowers.apply_power(new_unit, teams[team].co)
+	if (teams[team].is_super_active):
+		COPowers.apply_super(new_unit, teams[team].co)
 	add_unit_data(new_unit, unit_id, team)
 
 func add_unit_data(unit: Unit, unit_id: int, team: int) -> void:
@@ -447,7 +458,6 @@ func get_terrain_stars(pos: Vector2) -> int:
 	else:
 		return gl.terrain[tile_id].stars
 
-# TODO: missing co bonus
 # since add_random is only false when calculating dmg value, if add_random is true
 # and w1 is used, ammo is substracted in this function
 func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float:
@@ -459,13 +469,15 @@ func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float
 				attacker.ammo -= 1
 		else:
 			wpn_used = attacker.w2_dmg_chart[target.id]
-		var attack_value = (wpn_used * (attacker.health / 10.0) * (attacker.atk_bonus)) / 10.0
+		var attack_value = (wpn_used * (attacker.health / 10.0) * (attacker.atk_bonus) \
+			* (attacker.atk_mod)) / 10.0
 		if add_random:
 			attack_value += (randi() % 11 * attacker.health / 10.0) / 10.0
 		var terrain_stars = 0
 		if target.move_type != gl.MOVE_TYPE.AIR:
 			terrain_stars = get_terrain_stars(target.position)
-		var def_value = (100.0 - (terrain_stars * target.health)) / 100.0
+		var def_value = (100.0 - (terrain_stars * target.health) * (target.def_bonus) \
+			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
 		return stepify(result, 0.01)
 	else:
@@ -481,13 +493,15 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 				counter_attacker.ammo -= 1
 		else:
 			wpn_used = counter_attacker.w2_dmg_chart[target.id]
-		var attack_value = (wpn_used * ((counter_attacker.health - dmg_suffered) / 10.0) * (counter_attacker.atk_bonus)) / 10.0
+		var attack_value = (wpn_used * ((counter_attacker.health - dmg_suffered) / 10.0) \
+			* (counter_attacker.atk_bonus) * (counter_attacker.atk_mod)) / 10.0
 		if add_random:
 			attack_value += (randi() % 11 * (counter_attacker.health - dmg_suffered) / 10.0) / 10.0
 		var terrain_stars = 0
 		if target.move_type != gl.MOVE_TYPE.AIR:
 			terrain_stars = get_terrain_stars(target.position)
-		var def_value = (100.0 - (terrain_stars * target.health)) / 100.0
+		var def_value = (100.0 - (terrain_stars * target.health) * (target.def_bonus) \
+			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
 		return stepify(result, 0.01)
 	else:
@@ -532,6 +546,10 @@ func start_turn() -> void:
 			if unit.energy <= 0:
 				signals.emit_signal("unit_deleted", unit)
 	update_all_a_star()
+	if is_power_active:
+		signals.emit_signal("power_end")
+	elif is_super_active:
+		signals.emit_signal("super_end")
 	if !active_team.is_player:
 		signals.emit_signal("start_ai_turn", active_team)
 
@@ -553,3 +571,6 @@ func _on_UnitMenu_visibility_changed() -> void:
 
 func _on_StatusInfoMenu_visibility_changed() -> void:
 	signals.emit_signal("send_teams_to_table", teams)
+
+func _on_COMenu_visibility_changed() -> void:
+	signals.emit_signal("send_cos_to_menu", [teams[0].co_resource, teams[1].co_resource])

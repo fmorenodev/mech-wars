@@ -17,13 +17,13 @@ BATTLESHIP,Battleship
 ,
 ,
 --UNIT DESCRIPTIONS--,--------------------
-LIGHT_INF_DESC,Small mechs that can capture bases and are the base of any army.
-HEAVY_INF_DESC,Small mechs armed with cannons. Can capture bases.
+LIGHT_INF_DESC,Small mechs that can capture buildings and are the base of any army.
+HEAVY_INF_DESC,Small mechs armed with anti-mech cannons. Can capture buildings.
 RECON_DESC,Agile robot that scouts the field and fends off infantry.
 TANK_DESC,Strong but mobile mech that serves as the main armored unit of land forces.
 MEDIUM_TANK_DESC,"Slower and stronger than a Tank, this unit requires an answer from the enemy army."
 ARTILLERY_DESC,Useful for defending positions and making the enemy think twice.
-HEAVY_ARTILLERY_DESC,"With longer range and firepower than Artillery, this is the ultimate deterrence unit."
+HEAVY_ARTILLERY_DESC,"With longer range and better firepower than Artillery, this is the ultimate deterrence unit."
 ANTI_AIR_DESC,This mech excels at taking down aerial opponents.
 DRONE_DESC,"Powerful and versatile air unit, with excellent mobility. Spends energy each turn to stay airborne."
 BATTLESHIP_DESC,"A mobile battle station, can hit positions from very far away and cause severe damage."
@@ -106,6 +106,47 @@ WATER_MOVE,Water
 ,
 ,
 ,
+--COS--,
+MARK0_NAME,Mark 0
+MARK0_DESC,"Mark-0 ""Polo"" is an advanced mech with a good natured AI \nthat is programmed to scout the world for survivors and other things of interest."
+MARK0_D2D,Recon mechs have +20% atk.
+MARK0_POWER_NAME,Scouting Mission
+MARK0_POWER_DESC,"All units gain +1 movement, recon mechs gain +20% atk."
+MARK0_SUPER_NAME,Target Located
+MARK0_SUPER_DESC,"All units gain +2 movement, recon mechs gain +20% atk and attack like tanks for a turn."
+BANDIT_NAME,B.A.N.D.I.T.
+BANDIT_DESC,"Its name stands for Big Android Nuisance Designed Incredibly Thick. \nA first generation android, built when the technology was still new. \nAs a result, he is a low-ranked CO, having only mastered infantry tactics."
+BANDIT_D2D,Infantry units gain 10% atk and def. All other units lose -10% def.
+BANDIT_POWER_NAME,Old Reliable
+BANDIT_POWER_DESC,Infantry gains +30% atk and def. All other units gain +10% atk and def.
+BANDIT_SUPER_NAME,A Broken Clock...
+BANDIT_SUPER_DESC,"Infantry gains +50% atk and def, and +1 movement. All other units gain +20% atk and def."
+HUMAN_NAME,Human
+HUMAN_DESC,"A human survivor, looking for other people to make a human colony and ensure humanity's survival.\n Has fought countless mechs to get to where he is now, and has become very proficient in repairs.\n Specializes in land vehicles."
+HUMAN_D2D,Vehicle-type land mechs gain +20% atk and +10% def. Other units lose -10% atk.
+HUMAN_POWER_NAME,Fight On!
+HUMAN_POWER_DESC,Repairs all units by 2 HP.
+HUMAN_SUPER_NAME,Beacon of Hope
+HUMAN_SUPER_DESC,Repairs all units by 3 HP and they gain 20% atk and def.
+EVIL_MARK0_NAME,Mark 01
+EVIL_MARK0_DESC,"Mark-01 ""Genghis"" is a merciless hunter, its true nature revealed at the call of its master. \nHe is designed to find humans and, when the time is right, kill them."
+EVIL_MARK0_D2D,All units gain +30% atk.
+EVIL_MARK0_POWER_NAME,Hunter's Call
+EVIL_MARK0_POWER_DESC,"All units gain +2 movement and +30% atk, but lose -30% def in the opponent's turn."
+EVIL_MARK0_SUPER_NAME,Absolute Control
+EVIL_MARK0_SUPER_DESC,Take control of two enemy units for a turn cycle.
+BOSS_NAME,Toa 
+BOSS_DESC,"Self proclaimed ""Master of machines"" and creator of Mark 01, \nthis brilliant renaissance cyborg excels in every field, except morals. \nHis ultimate goal is to become the sole human survivor, and to achieve it, \nhe will use whatever means necessary."
+BOSS_D2D,Units have 12 base HP instead of 10.
+BOSS_POWER_NAME,Humanity's Bane
+BOSS_POWER_DESC,Lowers the max HP of enemy units by 1 for the rest of the game.
+BOSS_SUPER_NAME,Will of the Machine Lord
+BOSS_SUPER_DESC,TODO
+,
+,
+,
+,
+,
 ,
 ,
 ,
@@ -114,6 +155,9 @@ WATER_MOVE,Water
 END_TURN,End turn
 TO_UNIT_MENU,Units
 TO_STATUS_MENU,Status
+TO_CO_MENU,COs
+POWER_START,Power
+SUPER_START,Superpower
 ,
 --ACTION MENU--,--------------------
 MOVE_ACTION,Move

@@ -14,7 +14,7 @@ func _ready() -> void:
 
 func _on_turn_started(value: Team) -> void:
 	active_team = value
-	# co_icon.texture = active_team.co_resource.texture
+	co_icon.texture = active_team.co_resource.texture
 	# TODO: make a repeatable star texture or a bar for the power charge
 
 func _on_funds_updated(new_funds: int) -> void:

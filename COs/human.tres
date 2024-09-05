@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://resources/COData.gd" type="Script" id=1]
+[ext_resource path="res://assets/gui/ammo_icon.png" type="Texture" id=2]
+
+[resource]
+script = ExtResource( 1 )
+texture = ExtResource( 2 )
+name = "HUMAN_NAME"
+desc = "HUMAN_DESC"
+d2d = "HUMAN_D2D"
+power_name = "HUMAN_POWER_NAME"
+power_desc = "HUMAN_POWER_DESC"
+super_name = "HUMAN_SUPER_NAME"
+super_desc = "HUMAN_SUPER_DESC"
