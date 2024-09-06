@@ -13,3 +13,5 @@ power_name = "BANDIT_POWER_NAME"
 power_desc = "BANDIT_POWER_DESC"
 super_name = "BANDIT_SUPER_NAME"
 super_desc = "BANDIT_SUPER_DESC"
+power_meter_size = 18000
+super_meter_size = 45000

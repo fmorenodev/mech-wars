@@ -16,6 +16,7 @@ export var id: int
 var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
+var max_health: float = 10.0
 var energy: int
 var ammo: int
 var move_type: int
@@ -75,13 +76,13 @@ func set_health(value: float) -> void:
 		health = 0
 		signals.emit_signal("unit_deleted", self)
 		return
-	elif health > 10:
-		health = 10
+	elif health > max_health:
+		health = max_health
 	var label_value = round_health(health)
 	rounded_health = label_value
-	if label_value < 10:
+	if label_value < 10 or (co == gl.COS.BOSS and label_value < 12):
 		HealthLabel.text = str(label_value)
-	elif label_value == 10:
+	elif label_value == 10 or (co == gl.COS.BOSS and label_value == 12):
 		HealthLabel.text = ''
 
 func round_health(value: float) -> float:
@@ -117,6 +118,9 @@ func set_co(value: int) -> void:
 	else:
 		atk_mod = 1.0
 		def_mod = 1.0
+	if co == gl.COS.BOSS:
+		max_health = 12
+		set_health(12)
 
 func initialize(unit: int) -> void:
 	id = unit

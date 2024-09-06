@@ -13,3 +13,5 @@ power_name = "HUMAN_POWER_NAME"
 power_desc = "HUMAN_POWER_DESC"
 super_name = "HUMAN_SUPER_NAME"
 super_desc = "HUMAN_SUPER_DESC"
+power_meter_size = 18000
+super_meter_size = 36000

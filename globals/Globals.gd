@@ -405,7 +405,7 @@ var co_data: Dictionary = {
 				COS.HUMAN_CO: {
 					co_res = "res://COs/human.tres",
 					unit_stats = {UNITS.LIGHT_INFANTRY: Vector3(0.9, 1, 0),
-					UNITS.HEAVY_INFANTRY: Vector3(0.9, 1, 0), UNITS.RECON: Vector3(1, 0.9, 1),
+					UNITS.HEAVY_INFANTRY: Vector3(0.9, 1, 0), UNITS.RECON: Vector3(1.2, 1.1, 0),
 					UNITS.LIGHT_TANK: Vector3(1.2, 1.1, 0), UNITS.MEDIUM_TANK: Vector3(1.2, 1.1, 0),
 					UNITS.ARTILLERY: Vector3(1.2, 1.1, 0), UNITS.HEAVY_ARTILLERY: Vector3(1.2, 1.1, 0),
 					UNITS.ANTI_AIR: Vector3(1.2, 1.1, 0), UNITS.DRONE: Vector3(0.9, 1, 0),

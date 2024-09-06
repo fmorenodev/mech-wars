@@ -13,3 +13,5 @@ power_name = "BOSS_POWER_NAME"
 power_desc = "BOSS_POWER_DESC"
 super_name = "BOSS_SUPER_NAME"
 super_desc = "BOSS_SUPER_DESC"
+power_meter_size = 45000
+super_meter_size = -1
