@@ -5,7 +5,7 @@ var current_index = 0
 
 onready var Main = get_parent()
 
-# final objectives: 
+# final objectives: TODO 
 # - kill all enemy units
 # - capture a building
 # - defend a building
@@ -22,7 +22,7 @@ onready var Main = get_parent()
 # - if the turn values are better or in a certain threshold, or there are more > 0 turn values, do the turn
 # - else, go with the second most optimal, then repeat until the best set of turns are chosen
 
-# kinds of ai
+# kinds of ai TODO 
 # - aggresive
 # - defensive
 # - easy: will move forward and attack everything
@@ -41,6 +41,7 @@ onready var Main = get_parent()
 # TODO:
 # - don't have all units go towards the same objective when moving
 # - finetune turn values
+# - don't use power immediately
 
 func _ready() -> void:
 	var _err = signals.connect("start_ai_turn", self, "_on_start_turn")
@@ -61,12 +62,19 @@ func _on_start_turn(team: Team) -> void:
 	insertion_sort_by_turn_value(team.units)
 	
 	if !Main.active_team.units.empty():
+		use_powers()
 		signals.emit_signal("next_ai_unit_turn", get_current())
 	else:
 		signals.emit_signal("end_ai_turn", Main.active_team) # TODO: victory
 
+func use_powers() -> void:
+	if Main.active_team.is_super_enabled:
+		signals.emit_signal("super_start", Main.active_team)
+	elif Main.active_team.is_power_enabled:
+		signals.emit_signal("power_start", Main.active_team)
+
 # TODO: refactor maybe
-func _on_next_unit_turn(unit: Unit):
+func _on_next_unit_turn(unit: Unit) -> void:
 	calculate_turn(unit) # recalculate to avoid conflicts
 	var start_point = astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
 	var path: Array = astar.a_star_maps[unit.team][unit.move_type].get_point_path(start_point, astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))

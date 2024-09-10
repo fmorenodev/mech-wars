@@ -9,5 +9,9 @@ export var power_name: String
 export var power_desc: String
 export var super_name: String
 export var super_desc: String
-export var power_meter_size: int
-export var super_meter_size: int
+export var power_meter_size: float
+export var super_meter_size: float
+export var power_star: Texture
+export var power_star_empty: Texture
+export var super_star: Texture
+export var super_star_empty: Texture

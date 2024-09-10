@@ -10,8 +10,14 @@ func _ready() -> void:
 	_err = signals.connect("turn_started", self, "_on_turn_started")
 
 func _on_power_start(active_team: Team) -> void:
-	if !active_team.is_power_active and !active_team.is_super_active:
+	if !active_team.is_power_active and !active_team.is_super_active\
+	and active_team.is_power_enabled:
+		
+		active_team.is_power_enabled = false
 		active_team.is_power_active = true
+		active_team.powers_used += 1
+		active_team.power_meter_amount = 0
+		
 		match active_team.co:
 			# other team effects
 			gl.COS.BOSS:
@@ -25,8 +31,14 @@ func _on_power_start(active_team: Team) -> void:
 					apply_power(unit, active_team.co)
 
 func _on_super_start(active_team: Team) -> void:
-	if !active_team.is_power_active and !active_team.is_super_active:
+	if !active_team.is_power_active and !active_team.is_super_active\
+	and active_team.is_super_enabled:
+		
+		active_team.is_super_enabled = false
 		active_team.is_super_active = true
+		active_team.powers_used += 1
+		active_team.power_meter_amount = 0
+		
 		match active_team.co:
 			# other team effects
 			gl.COS.EVIL_MARK0:
@@ -63,7 +75,6 @@ func _on_turn_started(team: Team) -> void:
 		for unit in team.units:
 			remove_super(unit, team.co)
 
-# positive power ups
 func apply_power(unit: Unit, co: int):
 	unit.set_aux_texture(power_up)
 	match co:

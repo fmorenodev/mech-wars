@@ -18,7 +18,7 @@ loop = false
 material = ExtResource( 4 )
 frames = ExtResource( 2 )
 animation = "idle"
-frame = 5
+frame = 2
 playing = true
 centered = false
 

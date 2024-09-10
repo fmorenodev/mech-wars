@@ -11,7 +11,11 @@ var is_player: bool
 var lost_units := 0
 var co setget set_co
 var is_power_active: bool = false
+var is_power_enabled: bool = false
 var is_super_active: bool = false
+var is_super_enabled: bool = false
+var power_meter_amount: float = 0 setget set_power_meter_amount # same for both super and power
+var powers_used := 0
 
 # new resource implementation
 var co_resource: COData
@@ -43,3 +47,19 @@ func set_co(value: int) -> void:
 	co_resource = load(gl.co_data[co].co_res)
 	for unit in units:
 		unit.set_co(co)
+
+func set_power_meter_amount(value: float) -> void:
+	print(co_resource.name)
+	print(value)
+	power_meter_amount = value
+	if (value >= co_resource.power_meter_size):
+		is_power_enabled = true
+	else:
+		is_power_enabled = false
+	if (value >= co_resource.super_meter_size + co_resource.power_meter_size):
+		if co != gl.COS.BOSS:
+			is_super_enabled = true
+	else:
+		is_super_enabled = false
+	
+	signals.emit_signal("update_meter", self)

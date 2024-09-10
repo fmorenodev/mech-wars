@@ -39,6 +39,5 @@ signal funds_per_turn_updated(funds_per_turn)
 
 # CO #
 signal power_start(team)
-signal power_end(team)
 signal super_start(team)
-signal super_end(team)
+signal update_meter(team)

@@ -132,9 +132,9 @@ EVIL_MARK0_NAME,Mark 01
 EVIL_MARK0_DESC,"Mark-01 ""Genghis"" is a merciless hunter, its true nature revealed at the call of its master. \nHe is designed to find humans and, when the time is right, kill them."
 EVIL_MARK0_D2D,All units gain +30% atk.
 EVIL_MARK0_POWER_NAME,Hunter's Call
-EVIL_MARK0_POWER_DESC,"All units gain +2 movement and +30% atk, but lose -30% def in the opponent's turn."
+EVIL_MARK0_POWER_DESC,"All units gain +2 movement and +30% atk, but lose -30% def."
 EVIL_MARK0_SUPER_NAME,Absolute Control
-EVIL_MARK0_SUPER_DESC,Take control of two enemy units for a turn cycle.
+EVIL_MARK0_SUPER_DESC,Take control of the enemies' two most powerful units.
 BOSS_NAME,Toa 
 BOSS_DESC,"Self proclaimed ""Master of machines"" and creator of Mark 01, \nthis brilliant renaissance cyborg excels in every field, except morals. \nHis ultimate goal is to become the sole human survivor, and to achieve it, \nhe will use whatever means necessary."
 BOSS_D2D,Units have 12 base HP instead of 10.
@@ -191,6 +191,9 @@ CAN_REPAIR,Can repair
 LAND,Land
 ,
 ,
+--POWER POPUP--,--------------------
+POWER_USED,POWER!!
+SUPER_USED,SUPER!!
 ,
 ,
 ,

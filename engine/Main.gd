@@ -316,8 +316,17 @@ func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), 1)
 	yield(get_tree().create_timer(1.0), "timeout")
 	var damage = calc_damage(unit, target_unit)
-	unit.health -= calc_retaliation_damage(target_unit, unit, damage)
+	var retaliation_damage = calc_retaliation_damage(target_unit, unit, damage)
+	unit.health -= retaliation_damage
 	target_unit.health -= damage
+	
+	var defender_meter_amount: float = target_unit.cost * (damage / 10)
+	var attacker_meter_amount: float = defender_meter_amount/ 2
+	attacker_meter_amount += unit.cost * (retaliation_damage / 10)
+	defender_meter_amount += (unit.cost * (retaliation_damage / 10)) / 2
+	teams[unit.team].power_meter_amount += attacker_meter_amount
+	teams[target_unit.team].power_meter_amount += defender_meter_amount
+	
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), -1)
 	unit.end_action()
 	signals.emit_signal("action_completed")
@@ -417,8 +426,18 @@ func capture_action(unit: Unit) -> void:
 func _on_target_selected(pos: Vector2) -> void:
 	var target_unit: Unit = is_unit_in_position(pos)
 	var damage = calc_damage(active_unit, target_unit)
+	
 	targets = []
-	active_unit.health -= calc_retaliation_damage(target_unit, active_unit, damage)
+	var retaliation_damage = calc_retaliation_damage(target_unit, active_unit, damage)
+	active_unit.health -= retaliation_damage
+	
+	var defender_meter_amount: float = target_unit.cost * (damage / 10)
+	var attacker_meter_amount: float = defender_meter_amount/ 2
+	attacker_meter_amount += active_unit.cost * (retaliation_damage / 10)
+	defender_meter_amount += (active_unit.cost * (retaliation_damage / 10)) / 2
+	teams[active_unit.team].power_meter_amount += attacker_meter_amount
+	teams[target_unit.team].power_meter_amount += defender_meter_amount
+	
 	target_unit.health -= damage
 	selecting_targets = false
 	end_unit_action()
@@ -546,10 +565,6 @@ func start_turn() -> void:
 			if unit.energy <= 0:
 				signals.emit_signal("unit_deleted", unit)
 	update_all_a_star()
-	if is_power_active:
-		signals.emit_signal("power_end")
-	elif is_super_active:
-		signals.emit_signal("super_end")
 	if !active_team.is_player:
 		signals.emit_signal("start_ai_turn", active_team)
 

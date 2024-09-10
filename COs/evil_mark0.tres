@@ -1,7 +1,11 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://resources/COData.gd" type="Script" id=1]
 [ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=2]
+[ext_resource path="res://assets/gui/power_stars/power_star_empty_3.png" type="Texture" id=3]
+[ext_resource path="res://assets/gui/power_stars/super_star_5.png" type="Texture" id=4]
+[ext_resource path="res://assets/gui/power_stars/power_star_3.png" type="Texture" id=5]
+[ext_resource path="res://assets/gui/power_stars/super_star_empty_5.png" type="Texture" id=6]
 
 [resource]
 script = ExtResource( 1 )
@@ -13,5 +17,9 @@ power_name = "EVIL_MARK0_POWER_NAME"
 power_desc = "EVIL_MARK0_POWER_DESC"
 super_name = "EVIL_MARK0_SUPER_NAME"
 super_desc = "EVIL_MARK0_SUPER_DESC"
-power_meter_size = 27000
-super_meter_size = 63000
+power_meter_size = 27000.0
+super_meter_size = 45000.0
+power_star = ExtResource( 5 )
+power_star_empty = ExtResource( 3 )
+super_star = ExtResource( 4 )
+super_star_empty = ExtResource( 6 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
@@ -31,6 +31,12 @@
 [ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=29]
 [ext_resource path="res://ui/COMenu.gd" type="Script" id=30]
 [ext_resource path="res://engine/COPowers.gd" type="Script" id=31]
+[ext_resource path="res://assets/gui/power_stars/power_star_5.png" type="Texture" id=32]
+[ext_resource path="res://assets/gui/power_stars/super_star_5.png" type="Texture" id=33]
+[ext_resource path="res://assets/gui/power_stars/power_star_empty_5.png" type="Texture" id=34]
+[ext_resource path="res://assets/gui/power_stars/super_star_empty_5.png" type="Texture" id=35]
+[ext_resource path="res://ui/PowerPopup.gd" type="Script" id=36]
+[ext_resource path="res://assets/font_data.tres" type="DynamicFontData" id=37]
 
 [sub_resource type="TileSet" id=1]
 0/name = "green_tileset.png 0"
@@ -293,6 +299,11 @@ colors = PoolColorArray( 0.2, 0.862745, 0.737255, 1, 0, 0, 0, 1 )
 
 [sub_resource type="GradientTexture2D" id=6]
 gradient = SubResource( 5 )
+
+[sub_resource type="DynamicFont" id=7]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 37 )
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 15 )
@@ -790,37 +801,60 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="FixedInfo" type="PanelContainer" parent="GUI/GUIContainer"]
-margin_right = 58.0
+margin_right = 104.0
 margin_bottom = 58.0
 script = ExtResource( 20 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUI/GUIContainer/FixedInfo"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 51.0
-margin_bottom = 51.0
+margin_right = 206.0
+margin_bottom = 78.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
-margin_right = 44.0
+margin_right = 199.0
 margin_bottom = 20.0
 
 [node name="Funds" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
+margin_right = 32.0
 margin_bottom = 20.0
+text = "3000"
 
 [node name="FundsPerTurn" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
-margin_left = 4.0
-margin_right = 4.0
+margin_left = 36.0
+margin_right = 36.0
 margin_bottom = 20.0
 
-[node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
 margin_top = 24.0
-margin_right = 44.0
-margin_bottom = 24.0
+margin_right = 199.0
+margin_bottom = 43.0
 
-[node name="PowerStars" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
-margin_top = 28.0
-margin_right = 44.0
-margin_bottom = 28.0
+[node name="PowerStars" type="TextureProgress" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer2"]
+margin_right = 90.0
+margin_bottom = 19.0
+step = 1000.0
+texture_under = ExtResource( 34 )
+texture_progress = ExtResource( 32 )
+
+[node name="SuperStars" type="TextureProgress" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer2"]
+margin_left = 94.0
+margin_right = 199.0
+margin_bottom = 19.0
+step = 1000.0
+texture_under = ExtResource( 35 )
+texture_progress = ExtResource( 33 )
+
+[node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_top = 47.0
+margin_right = 199.0
+margin_bottom = 47.0
+
+[node name="Status" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_top = 51.0
+margin_right = 199.0
+margin_bottom = 71.0
+text = "POWER ACTIVE!"
 
 [node name="TileUnitInfo" type="VBoxContainer" parent="GUI/GUIContainer"]
 anchor_top = 1.0
@@ -981,6 +1015,38 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 30 )
 
+[node name="PowerPopup" type="PopupPanel" parent="GUI/GUIContainer"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -4.0
+margin_top = -4.0
+margin_right = 4.0
+margin_bottom = 4.0
+script = ExtResource( 36 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/GUIContainer/PowerPopup"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="GUI/GUIContainer/PowerPopup/VBoxContainer"]
+margin_right = 298.0
+margin_bottom = 40.0
+custom_fonts/font = SubResource( 7 )
+text = "POWERRRRRRRRRRRRRR "
+
+[node name="PowerName" type="Label" parent="GUI/GUIContainer/PowerPopup/VBoxContainer"]
+margin_top = 44.0
+margin_right = 298.0
+margin_bottom = 84.0
+custom_fonts/font = SubResource( 7 )
+text = "POWERRRRRRRRRRRRRR "
+
+[node name="Timer" type="Timer" parent="GUI/GUIContainer/PowerPopup"]
+one_shot = true
+
 [node name="AI" type="Node" parent="."]
 script = ExtResource( 4 )
 
@@ -992,3 +1058,4 @@ script = ExtResource( 31 )
 [connection signal="mouse_entered" from="GUI/GUIContainer/FixedInfo" to="GUI/GUIContainer/FixedInfo" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="GUI/GUIContainer/TileUnitInfo" to="GUI/GUIContainer/TileUnitInfo" method="_on_mouse_entered"]
 [connection signal="visibility_changed" from="GUI/GUIContainer/COMenu" to="." method="_on_COMenu_visibility_changed"]
+[connection signal="timeout" from="GUI/GUIContainer/PowerPopup/Timer" to="GUI/GUIContainer/PowerPopup" method="_on_Timer_timeout"]

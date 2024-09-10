@@ -1,7 +1,9 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://resources/COData.gd" type="Script" id=1]
 [ext_resource path="res://assets/gui/energy_icon.png" type="Texture" id=2]
+[ext_resource path="res://assets/gui/power_stars/power_star_5.png" type="Texture" id=3]
+[ext_resource path="res://assets/gui/power_stars/power_star_empty_5.png" type="Texture" id=4]
 
 [resource]
 script = ExtResource( 1 )
@@ -13,5 +15,7 @@ power_name = "BOSS_POWER_NAME"
 power_desc = "BOSS_POWER_DESC"
 super_name = "BOSS_SUPER_NAME"
 super_desc = "BOSS_SUPER_DESC"
-power_meter_size = 45000
-super_meter_size = -1
+power_meter_size = 45000.0
+super_meter_size = 0.0
+power_star = ExtResource( 3 )
+power_star_empty = ExtResource( 4 )

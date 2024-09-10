@@ -1,7 +1,11 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://resources/COData.gd" type="Script" id=1]
 [ext_resource path="res://assets/gui/health_icon.png" type="Texture" id=2]
+[ext_resource path="res://assets/gui/power_stars/power_star_2.png" type="Texture" id=3]
+[ext_resource path="res://assets/gui/power_stars/super_star_empty_3.png" type="Texture" id=4]
+[ext_resource path="res://assets/gui/power_stars/power_star_empty_2.png" type="Texture" id=5]
+[ext_resource path="res://assets/gui/power_stars/super_star_3.png" type="Texture" id=6]
 
 [resource]
 script = ExtResource( 1 )
@@ -13,5 +17,9 @@ power_name = "BANDIT_POWER_NAME"
 power_desc = "BANDIT_POWER_DESC"
 super_name = "BANDIT_SUPER_NAME"
 super_desc = "BANDIT_SUPER_DESC"
-power_meter_size = 18000
-super_meter_size = 45000
+power_meter_size = 18000.0
+super_meter_size = 27000.0
+power_star = ExtResource( 3 )
+power_star_empty = ExtResource( 5 )
+super_star = ExtResource( 6 )
+super_star_empty = ExtResource( 4 )
