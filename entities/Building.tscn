@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://entities/Building.gd" type="Script" id=1]
+[ext_resource path="res://assets/map/building_tileset.png" type="Texture" id=2]
+
+[node name="Building" type="Sprite"]
+position = Vector2( 24, 192 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 4
+vframes = 2
+frame = 2
+script = ExtResource( 1 )

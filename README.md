@@ -26,7 +26,7 @@ credits:
 		- ~~turn conflicts, recalculation~~
 		- ~~make moves not simultaneous~~
 	- buildings
-		- ~~unit creation~~
+		- unit creation
 		- optimal creation
 - ~~adding more units~~
 - ~~adding more terrain and making it functional (bonuses, movement types for different units)~~
@@ -35,10 +35,11 @@ credits:
 - ~~adding damage preview for combat~~
 - ~~adding COs~~
 - ~~adding powers~~
-	- power bar and power bar mechanics
-	- AI can use powers
-- adding victory and defeat
-- adding surrender
+	- ~~power bar and power bar mechanics~~
+	- ~~AI can use powers~~
+- ~~adding victory and defeat~~
+- ~~adding surrender~~
+- add testing utilities and change initialization for units and buildings
 - making a playable map
 - adding sounds
 - adding building mechanics (research, power plant)
@@ -57,7 +58,6 @@ credits:
 - ai units sometimes move to another unit's space (unknown cause)
 - indirect units sometimes can attack after moving (unknown cause)
 - can select empty target when attacking (unsure if solved)
-- info panels prevent you from clicking 
 
 ## IDEAS
 

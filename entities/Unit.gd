@@ -13,6 +13,7 @@ onready var AuxTexture: TextureRect = $PathFollow2D/AnimatedSprite/AuxTexture
 var unit_data = gl.units
 
 export var id: int
+export var team: int setget set_team
 var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
@@ -27,21 +28,20 @@ var w1_can_attack: Array
 var w2_can_attack: Array
 var cost: int
 var can_capture: bool
-var team: int setget set_team
 
 # CO variables
 var co: int setget set_co
 var atk_mod: float = 1.0
 var def_mod: float = 1.0
 
-# change during play
+# other variables
 var capture_points: int = 0
 var atk_bonus = 1
 var def_bonus = 1
 var current_energy_cost: int = 0
 var rounded_health: int = 10
 
-# variables for movement
+# movement animation variables
 signal walk_finished
 var texture: SpriteFrames setget set_texture
 var move_sound
@@ -104,10 +104,6 @@ func set_is_moving(value: bool) -> void:
 func set_team(value: int) -> void:
 	team = value
 	set_texture(sp.get_sprite(id))
-	UnitSprite.animation = "idle"
-	match value:
-		gl.TEAM.RED:
-			UnitSprite.material = sp.swap_mat
 
 func set_co(value: int) -> void:
 	co = value

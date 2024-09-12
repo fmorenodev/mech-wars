@@ -57,23 +57,12 @@ func _ready() -> void:
 	_err = signals.connect("unit_deleted", self, "_on_unit_deleted")
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
-	# for testing purposes
 	initialize([Team.new(gl.TEAM.RED, true), Team.new(gl.TEAM.BLUE, false)])
-	var i = 0
 	for child in SelectionTileMap.get_children():
-		if i % 2 == 0:
-			add_unit_data(child, child.id, gl.TEAM.RED)
-		else:
-			add_unit_data(child, child.id, gl.TEAM.BLUE)
+		add_unit_data(child, child.id, child.team)
 		child.change_material_to_color()
-		i = i + 1
-	i = 0
 	for child in BuildingsTileMap.get_children():
-		if i % 2 == 0:
-			add_building_data(child, child.frame, gl.TEAM.RED)
-		else:
-			add_building_data(child, child.frame, gl.TEAM.BLUE)
-		i += 1
+		add_building_data(child, child.type, child.team)
 	teams[0].co = gl.COS.MARK0
 	teams[1].co = gl.COS.BANDIT
 	astar.init_a_star()
@@ -92,6 +81,7 @@ func create_unit(unit_id: int, team: int, position: Vector2) -> void:
 func add_unit_data(unit: Unit, unit_id: int, team: int) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
+	unit.set_team(team)
 	teams[team].add_unit(unit)
 	unit.end_action()
 
@@ -107,8 +97,8 @@ func add_building_data(building: Building, type: int, team: int, available_units
 
 func update_all_a_star() -> void:
 	for team in teams:
-		for a_star in astar.a_star_maps[team.color]:
-			update_a_star(a_star, team.color)
+		for a_star in astar.a_star_maps[team.team_id]:
+			update_a_star(a_star, team.team_id)
 
 func update_a_star(a_star: AStar2D, team: int) -> void:
 	for x in gl.map_size.x:
@@ -232,12 +222,12 @@ func select_unit_or_building(pos: Vector2) -> void:
 		if active_unit.can_move:
 			select_unit()
 		else:
-			if active_unit.team != active_team.color:
+			if active_unit.team != active_team.team_id:
 				var th_cells = threatened_cells(selected_entity)
 				for pos in th_cells:
 					SelectionTileMap.set_cellv(pos, 1)
 			active_unit = null
-	elif selected_entity is Building and selected_entity.team == active_team.color:
+	elif selected_entity is Building and selected_entity.team == active_team.team_id:
 		open_building_menu(selected_entity)
 	else:
 		open_game_menu()
@@ -273,7 +263,7 @@ func move_active_unit(target_pos: Vector2) -> void:
 	if !targets.empty():
 		menu_options.append(2) # attack
 	var building = is_building_in_position(target_pos)
-	if building and active_unit.can_capture and building.team != active_team.color:
+	if building and active_unit.can_capture and building.team != active_team.team_id:
 		menu_options.append(3) # capture
 	else:
 		active_unit.capture_points = 0
@@ -287,7 +277,7 @@ func open_action_menu(menu_options: PoolIntArray, pos: Vector2) -> void:
 	ActionMenu.show()
 
 func open_building_menu(building: Building) -> void:
-	BuildingMenu.generate_menu(building.available_units, active_team.funds, active_team.color, building.position)
+	BuildingMenu.generate_menu(building.available_units, active_team.funds, active_team.team_id, building.position)
 	if BuildingMenu.get_item_count() > 0:
 		BuildingMenu.show()
 		GameMenu.hide()
@@ -336,7 +326,7 @@ func capture_action_ai(unit: Unit) -> void:
 	if unit.capture_points >= 20:
 		unit.capture_points = 0
 		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
-		building.capture(active_team.color)
+		building.capture(active_team.team_id)
 		active_team.add_building(building)
 	unit.end_action()
 	signals.emit_signal("action_completed")
@@ -418,7 +408,7 @@ func capture_action(unit: Unit) -> void:
 	if unit.capture_points >= 20:
 		unit.capture_points = 0
 		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
-		building.capture(active_team.color)
+		building.capture(active_team.team_id)
 		active_team.add_building(building)
 	end_unit_action()
 
@@ -447,10 +437,13 @@ func _on_unit_added(unit_id: int, team: int, position: Vector2) -> void:
 	teams[team].funds -= gl.units[unit_id].cost
 
 func _on_unit_deleted(unit: Unit) -> void:
+	var team = teams[unit.team]
 	units.erase(unit)
-	teams[unit.team].units.erase(unit)
-	teams[unit.team].lost_units += 1
+	team.units.erase(unit)
+	team.lost_units += 1
 	unit.queue_free()
+	if team.units.size() <= 0:
+		signals.emit_signal("team_defeated", team)
 
 func _on_turn_ended() -> void:
 	for unit in active_team.units:
@@ -565,8 +558,8 @@ func start_turn() -> void:
 			if unit.energy <= 0:
 				signals.emit_signal("unit_deleted", unit)
 	update_all_a_star()
-	if !active_team.is_player:
-		signals.emit_signal("start_ai_turn", active_team)
+	#if !active_team.is_player:
+	#	signals.emit_signal("start_ai_turn", active_team)
 
 # for player units
 func end_unit_action() -> void:

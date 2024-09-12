@@ -4,6 +4,9 @@ extends Node
 signal turn_ended
 signal turn_started(active_team)
 
+# VICTORY AND DEFEAT
+signal team_defeated(team)
+
 # PLAYER INPUT #
 signal cursor_moved(pos)
 signal accept_pressed(pos)
@@ -22,7 +25,7 @@ signal unit_deleted(unit)
 
 # AI TURN #
 signal start_ai_turn(team)
-signal next_ai_unit_turn(unit)
+signal next_ai_unit_turn
 signal end_ai_turn
 
 # UNIT MOVEMENT #

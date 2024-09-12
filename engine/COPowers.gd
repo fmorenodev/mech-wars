@@ -121,9 +121,9 @@ func apply_super(unit: Unit, co: int):
 			unit.def_mod += 0.2
 
 func remove_power(unit: Unit, co: int):
+	unit.set_aux_texture(null)
 	match co:
 		gl.COS.MARK0:
-			unit.set_aux_texture(null)
 			unit.movement -= 1
 			if unit.id == gl.UNITS.RECON:
 				unit.atk_mod -= 0.2
@@ -140,9 +140,9 @@ func remove_power(unit: Unit, co: int):
 			unit.movement -= 2
 
 func remove_super(unit: Unit, co: int):
+	unit.set_aux_texture(null)
 	match co:
 		gl.COS.MARK0:
-			unit.set_aux_texture(null)
 			unit.movement -= 2
 			if unit.id == gl.UNITS.RECON:
 				unit.atk_mod -= 0.2

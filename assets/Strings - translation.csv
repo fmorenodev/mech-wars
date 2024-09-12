@@ -158,6 +158,7 @@ TO_STATUS_MENU,Status
 TO_CO_MENU,COs
 POWER_START,Power
 SUPER_START,Superpower
+SURRENDER,Surrender
 ,
 --ACTION MENU--,--------------------
 MOVE_ACTION,Move
@@ -179,6 +180,7 @@ STATUS_UNITS_HEADER,Units
 STATUS_LOST_HEADER,Lost
 STATUS_BASES_HEADER,Bases
 STATUS_INCOME_HEADER,Income
+STATUS_FUNDS_HEADER,Funds
 ,
 --DETAILED INFO MENU--,--------------------
 AMMO,Ammo
@@ -191,9 +193,8 @@ CAN_REPAIR,Can repair
 LAND,Land
 ,
 ,
---POWER POPUP--,--------------------
-POWER_USED,POWER!!
-SUPER_USED,SUPER!!
+,
+,
 ,
 ,
 ,

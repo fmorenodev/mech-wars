@@ -2,7 +2,8 @@ extends Resource
 
 class_name Team
 
-var color: int
+var team_id: int
+var color: Color # TODO: use team color for UIs
 var units := []
 var buildings := []
 var funds := 0 setget set_funds
@@ -20,12 +21,17 @@ var powers_used := 0
 # new resource implementation
 var co_resource: COData
 
-func _init(_color: int, _is_player: bool) -> void:
-	color = _color
+func _init(_team_id: int, _is_player: bool) -> void:
+	team_id = _team_id
 	is_player = _is_player
+	match team_id:
+		0:
+			color = Color.firebrick
+		1:
+			color = Color.dodgerblue
 
 func add_unit(unit: Unit) -> void:
-	unit.team = color
+	unit.team = team_id
 	units.append(unit)
 
 func add_building(building) -> void:
@@ -49,8 +55,6 @@ func set_co(value: int) -> void:
 		unit.set_co(co)
 
 func set_power_meter_amount(value: float) -> void:
-	print(co_resource.name)
-	print(value)
 	power_meter_amount = value
 	if (value >= co_resource.power_meter_size):
 		is_power_enabled = true

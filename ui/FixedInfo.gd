@@ -18,8 +18,8 @@ func _ready() -> void:
 	_err = signals.connect("power_start", self, "_on_power_start")
 	_err = signals.connect("super_start", self, "_on_super_start")
 
-func _on_turn_started(value: Team) -> void:
-	active_team = value
+func _on_turn_started(team: Team) -> void:
+	active_team = team
 	co = active_team.co_resource
 	co_icon.texture = co.texture
 	

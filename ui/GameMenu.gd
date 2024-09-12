@@ -18,6 +18,7 @@ func _ready() -> void:
 	add_item(tr('TO_CO_MENU'), 3)
 	add_item(tr('POWER_START'), 4)
 	add_item(tr('SUPER_START'), 5)
+	add_item(tr('SURRENDER'), 6)
 	
 	disable_powers()
 
@@ -37,6 +38,8 @@ func _on_id_pressed(id: int) -> void:
 		5:
 			signals.emit_signal("super_start", active_team)
 			disable_powers()
+		6:
+			signals.emit_signal("team_defeated", active_team)
 
 func _on_cancel_pressed() -> void:
 	hide()

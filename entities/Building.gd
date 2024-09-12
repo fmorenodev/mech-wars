@@ -2,8 +2,8 @@ extends Sprite
 
 class_name Building
 
-var team: int setget set_team
-var type: int
+export var team: int setget set_team
+export var type: int
 var available_units : PoolIntArray
 var funds: int
 var extra # for campaign objectives TODO

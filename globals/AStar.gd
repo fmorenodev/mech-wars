@@ -10,8 +10,8 @@ func init_a_star() -> void:
 			var a_star = AStar2D.new()
 			for x in gl.map_size.x:
 				for y in gl.map_size.y:
-					add_and_connect_point(a_star, Vector2(x, y), team.color)
-			a_star_maps[team.color].append(a_star)
+					add_and_connect_point(a_star, Vector2(x, y), team.team_id)
+			a_star_maps[team.team_id].append(a_star)
 
 func get_a_star_type(a_star: AStar2D, team: int) -> int:
 	for i in a_star_maps[team].size():

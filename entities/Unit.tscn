@@ -9,6 +9,7 @@
 curve = null
 script = ExtResource( 1 )
 id = null
+team = null
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
 rotate = false
@@ -18,7 +19,7 @@ loop = false
 material = ExtResource( 4 )
 frames = ExtResource( 2 )
 animation = "idle"
-frame = 2
+frame = 6
 playing = true
 centered = false
 

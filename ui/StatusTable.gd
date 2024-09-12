@@ -11,6 +11,7 @@ func _ready():
 	$Header/Units.text = tr("STATUS_UNITS_HEADER")
 	$Header/Lost.text = tr("STATUS_LOST_HEADER")
 	$Header/Bases.text = tr("STATUS_BASES_HEADER")
+	$Header/Funds.text = tr("STATUS_FUNDS_HEADER")
 	$Header/Income.text = tr("STATUS_INCOME_HEADER")
 
 func set_data(teams: Array) -> void:
@@ -33,4 +34,5 @@ func set_row(team: Team) -> void:
 	get_node(instance_path % [row_instance.name, "/Label"]).text = str(team.units.size())
 	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(team.lost_units)
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(team.buildings.size())
-	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(team.funds_per_turn)
+	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(team.funds)
+	get_node(instance_path % [row_instance.name, "/Label5"]).text = str(team.funds_per_turn)

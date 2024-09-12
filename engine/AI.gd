@@ -2,6 +2,7 @@
 extends Node
 
 var current_index = 0
+var game_ended := false
 
 onready var Main = get_parent()
 
@@ -22,7 +23,7 @@ onready var Main = get_parent()
 # - if the turn values are better or in a certain threshold, or there are more > 0 turn values, do the turn
 # - else, go with the second most optimal, then repeat until the best set of turns are chosen
 
-# kinds of ai TODO 
+# kinds of ai: TODO 
 # - aggresive
 # - defensive
 # - easy: will move forward and attack everything
@@ -47,9 +48,13 @@ func _ready() -> void:
 	var _err = signals.connect("start_ai_turn", self, "_on_start_turn")
 	_err = signals.connect("next_ai_unit_turn", self, "_on_next_unit_turn")
 	_err = signals.connect("end_ai_turn", self, "_on_end_ai_turn")
+	_err = signals.connect("team_defeated", self, "_on_team_defeated")
 	
 	_err = signals.connect("move_completed", self, "_on_move_completed")
 	_err = signals.connect("action_completed", self, "_on_action_completed")
+
+func _on_team_defeated(_team: Team) -> void:
+	game_ended = true
 
 func _on_start_turn(team: Team) -> void:
 	Main.disable_input(true)
@@ -62,19 +67,18 @@ func _on_start_turn(team: Team) -> void:
 	insertion_sort_by_turn_value(team.units)
 	
 	if !Main.active_team.units.empty():
-		use_powers()
-		signals.emit_signal("next_ai_unit_turn", get_current())
+		if Main.active_team.is_super_enabled:
+			signals.emit_signal("super_start", Main.active_team)
+		elif Main.active_team.is_power_enabled:
+			signals.emit_signal("power_start", Main.active_team)
+		else:
+			signals.emit_signal("next_ai_unit_turn")
 	else:
-		signals.emit_signal("end_ai_turn", Main.active_team) # TODO: victory
-
-func use_powers() -> void:
-	if Main.active_team.is_super_enabled:
-		signals.emit_signal("super_start", Main.active_team)
-	elif Main.active_team.is_power_enabled:
-		signals.emit_signal("power_start", Main.active_team)
+		signals.emit_signal("end_ai_turn", Main.active_team)
 
 # TODO: refactor maybe
-func _on_next_unit_turn(unit: Unit) -> void:
+func _on_next_unit_turn() -> void:
+	var unit = get_current()
 	calculate_turn(unit) # recalculate to avoid conflicts
 	var start_point = astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
 	var path: Array = astar.a_star_maps[unit.team][unit.move_type].get_point_path(start_point, astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))
@@ -119,8 +123,9 @@ func _on_end_ai_turn(team: Team) -> void:
 	for building in team.buildings:
 		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
 		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
-			signals.emit_signal("unit_added", gl.UNITS.LIGHT_INFANTRY, team.color, building.position)
-		# TODO: build unit according to map type, starting from most expensive and then creating basic units
+			signals.emit_signal("unit_added", gl.UNITS.LIGHT_INFANTRY, team.team_id, building.position)
+		# TODO: implement ai unit creation
+		# build unit according to map type, starting from most expensive and then creating basic units
 		# or fill all buildings with units
 	
 	Main.disable_input(false)
@@ -291,8 +296,9 @@ func calculate_turn(unit: Unit) -> void:
 			unit.chosen_action = [0, gl.TURN_TYPE.MOVE, unit.cell_to_move]
 
 func _on_action_completed() -> void:
-	Main.update_all_a_star()
-	goto_next()
+	if !game_ended: # prevents code from continuing execution when the player is dead
+		Main.update_all_a_star()
+		goto_next()
 
 func get_current():
 	return Main.active_team.units[current_index]
@@ -304,7 +310,7 @@ func goto_next() -> void:
 		signals.emit_signal("end_ai_turn", Main.active_team)
 	else:
 		if !Main.active_team.units.empty():
-			signals.emit_signal("next_ai_unit_turn", get_current())
+			signals.emit_signal("next_ai_unit_turn")
 
 func insertion_sort_by_turn_value(arr: Array) -> void: 
 	for i in range(1, len(arr)):
