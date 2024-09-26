@@ -1,10 +1,10 @@
 extends Node2D
 
-onready var CursorTileMap: TileMap = $CursorTileMap
-onready var SelectionTileMap: TileMap = $SelectionTileMap
-onready var TerrainTileMap: TileMap = $TerrainTileMap
-onready var BuildingsTileMap: TileMap = $BuildingsTileMap
-onready var PathTileMap: PathTileMap = $PathTileMap
+onready var CursorTileMap: TileMap = $Map/CursorTileMap
+onready var SelectionTileMap: TileMap = $Map/SelectionTileMap
+onready var TerrainTileMap: TileMap = $Map/TerrainTileMap
+onready var BuildingsTileMap: TileMap = $Map/BuildingsTileMap
+onready var PathTileMap: PathTileMap = $Map/PathTileMap
 onready var ActionMenu: PopupMenu = $GUI/GUIContainer/ActionMenu
 onready var GameMenu: PopupMenu = $GUI/GUIContainer/GameMenu
 onready var BuildingMenu: PopupMenu = $GUI/GUIContainer/BuildingMenu
@@ -42,7 +42,9 @@ func initialize(new_teams: Array) -> void:
 	current_index = 0
 
 func _ready() -> void:
+	# TODO: change this
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	
 	var cells = TerrainTileMap.get_used_cells()
 	gl.map_size = cells.back()
 	var _err = signals.connect("accept_pressed", self, "_on_accept_pressed")
@@ -408,6 +410,7 @@ func capture_action(unit: Unit) -> void:
 	if unit.capture_points >= 20:
 		unit.capture_points = 0
 		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
+		teams[building.team].buildings.erase(building)
 		building.capture(active_team.team_id)
 		active_team.add_building(building)
 	end_unit_action()

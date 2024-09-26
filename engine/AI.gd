@@ -119,12 +119,24 @@ func _on_move_completed(unit: Unit) -> void:
 	else:
 		signals.emit_signal("action_completed")
 
+# creates the most expensive unit it can afford on each building
 func _on_end_ai_turn(team: Team) -> void:
-	for building in team.buildings:
+	for i in range(team.buildings.size() - 1, -1, -1): # start from the latest captured buildings
+		var building = team.buildings[i]
 		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
 		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
-			signals.emit_signal("unit_added", gl.UNITS.LIGHT_INFANTRY, team.team_id, building.position)
-		# TODO: implement ai unit creation
+			var highest_cost = 0
+			var chosen_unit = null
+			for unit_code in gl.units.keys():
+				if building.available_units.has(unit_code):
+					var unit = gl.units[unit_code]
+					if unit.cost > highest_cost and team.funds >= unit.cost:
+						highest_cost = unit.cost
+						chosen_unit = unit_code
+					
+			if chosen_unit != null:
+				signals.emit_signal("unit_added", chosen_unit, team.team_id, building.position)
+		# TODO: better unit creation
 		# build unit according to map type, starting from most expensive and then creating basic units
 		# or fill all buildings with units
 	

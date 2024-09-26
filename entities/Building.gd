@@ -37,4 +37,9 @@ func set_available_units() -> void:
 
 func capture(value: int) -> void:
 	set_team(value)
-	# extra
+	match type: # TODO: implement building mechanics
+		gl.BUILDINGS.RESEARCH:
+			pass
+		gl.BUILDINGS.POWER_PLANT:
+			pass
+	

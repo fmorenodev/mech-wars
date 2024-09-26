@@ -39,12 +39,12 @@ credits:
 	- ~~AI can use powers~~
 - ~~adding victory and defeat~~
 - ~~adding surrender~~
-- add testing utilities and change initialization for units and buildings
-- making a playable map
-- adding sounds
+- add testing utilities and ~~change initialization for units and buildings~~
 - adding building mechanics (research, power plant)
 - adding other mechanics (unit merging, etc)
 - adding all the missing units
+- making a playable map
+- adding sounds
 - adding factions
 - ui overhaul
 - demo?
@@ -55,7 +55,7 @@ credits:
 - fog (see how much time it takes)
 
 ## KNOWN BUGS
-- ai units sometimes move to another unit's space (unknown cause)
+- ai units sometimes move to another unit's space (unknown cause, unsure if solved)
 - indirect units sometimes can attack after moving (unknown cause)
 - can select empty target when attacking (unsure if solved)
 
@@ -109,6 +109,9 @@ possible mechanics:
 - upgrades in the campaign mode via spending funds or finding upgrades in buildings
 - power plants fill power meter faster
 - secondary objectives in maps
+- secret objectives?
+- unit limit (units have point values)
+- modify unit limit by capturing
 
 Units:
 - Faster and more expensive infantry?

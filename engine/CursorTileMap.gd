@@ -2,7 +2,7 @@ extends TileMap
 
 var cursor_pos: Vector2
 var global_cursor_pos: Vector2
-onready var Main = get_parent()
+onready var Main = $"../.."
 onready var GameCamera = $GameCamera
 
 var zoomed: bool = false

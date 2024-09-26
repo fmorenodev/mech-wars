@@ -12,7 +12,8 @@ func _on_id_pressed(id: int) -> void:
 	signals.emit_signal("unit_added", id, team, building_pos)
 
 func add_option(position: int, id: int) -> void:
-	add_icon_item(sp.get_sprite(id), gl.units[id].unit_name, id)
+	var unit_info: String = gl.units[id].unit_name + ": " + str(gl.units[id].cost)
+	add_icon_item(sp.get_sprite(id), unit_info , id)
 	if available_funds < gl.units[id].cost:
 		set_item_disabled(position, true)
 
