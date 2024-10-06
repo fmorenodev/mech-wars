@@ -25,6 +25,8 @@ var co_resource: COData
 var unit_points := 0
 var max_unit_points := 40
 
+var unlocked_factory_units := false setget set_unlocked_factory_units
+
 func _init(_team_id: int, _is_player: bool) -> void:
 	team_id = _team_id
 	is_player = _is_player
@@ -35,7 +37,7 @@ func _init(_team_id: int, _is_player: bool) -> void:
 			color = Color.dodgerblue
 
 func add_unit(unit: Unit) -> void:
-	unit.team = team_id
+	unit.team_id = team_id
 	units.append(unit)
 
 func add_building(building) -> void:
@@ -71,3 +73,7 @@ func set_power_meter_amount(value: float) -> void:
 		is_super_enabled = false
 	
 	signals.emit_signal("update_meter", self)
+
+func set_unlocked_factory_units(value: bool) -> void:
+	unlocked_factory_units = value
+	signals.emit_signal("change_unlocked_factory_units", value, team_id)

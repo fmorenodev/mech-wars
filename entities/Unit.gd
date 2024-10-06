@@ -10,10 +10,8 @@ onready var HealthLabel: Label = $PathFollow2D/AnimatedSprite/HealthLabel
 onready var AuxLabel: Label = $PathFollow2D/AnimatedSprite/AuxLabel
 onready var AuxTexture: TextureRect = $PathFollow2D/AnimatedSprite/AuxTexture
 
-var unit_data = gl.units
-
 export var id: int
-export var team: int setget set_team
+export var team_id: int setget set_team
 var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
@@ -27,6 +25,7 @@ var w2_dmg_chart: Dictionary
 var w1_can_attack: Array
 var w2_can_attack: Array
 var cost: int
+var point_cost: int
 var can_capture: bool
 
 # CO variables
@@ -66,7 +65,7 @@ var move_path: Array
 
 var chosen_action: Array
 
-# TODO: bonus to incentivise certain actions, not implemented
+# TODO: bonus to incentivise certain ai actions, not implemented
 var stay_in_place_bonus: float
 var choose_diff_pos_bonus: float
 
@@ -102,7 +101,7 @@ func set_is_moving(value: bool) -> void:
 	set_process(is_moving)
 
 func set_team(value: int) -> void:
-	team = value
+	team_id = value
 	set_texture(sp.get_sprite(id))
 
 func set_co(value: int) -> void:
@@ -120,18 +119,20 @@ func set_co(value: int) -> void:
 
 func initialize(unit: int) -> void:
 	id = unit
-	unit_name = gl.units[unit].unit_name
-	movement = gl.units[unit].movement
-	energy = gl.units[unit].energy
-	ammo = gl.units[unit].ammo
-	move_type = gl.units[unit].move_type
-	w1_dmg_chart = gl.units[unit].w1_dmg_chart
-	w2_dmg_chart = gl.units[unit].w2_dmg_chart
-	w1_can_attack = gl.units[unit].w1_can_attack
-	w2_can_attack = gl.units[unit].w2_can_attack
-	atk_type = gl.units[unit].atk_type
-	cost = gl.units[unit].cost
-	can_capture = gl.units[unit].can_capture
+	var unit_data = gl.units[unit]
+	unit_name = unit_data.unit_name
+	movement = unit_data.movement
+	energy = unit_data.energy
+	ammo = unit_data.ammo
+	move_type = unit_data.move_type
+	w1_dmg_chart = unit_data.w1_dmg_chart
+	w2_dmg_chart = unit_data.w2_dmg_chart
+	w1_can_attack = unit_data.w1_can_attack
+	w2_can_attack = unit_data.w2_can_attack
+	atk_type = unit_data.atk_type
+	cost = unit_data.cost
+	point_cost = unit_data.point_cost
+	can_capture = unit_data.can_capture
 
 func _ready() -> void:
 	set_process(false)
@@ -162,9 +163,9 @@ func end_action() -> void:
 	UnitSprite.material = sp.greyscale_mat
 
 func change_material_to_color() -> void:
-	if team == gl.TEAM.RED:
+	if team_id == gl.TEAM.RED:
 		UnitSprite.material = sp.swap_mat
-	elif team == gl.TEAM.BLUE:
+	elif team_id == gl.TEAM.BLUE:
 		UnitSprite.material = null
 
 func end_turn() -> void:

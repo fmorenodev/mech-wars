@@ -80,8 +80,8 @@ func _on_start_turn(team: Team) -> void:
 func _on_next_unit_turn() -> void:
 	var unit = get_current()
 	calculate_turn(unit) # recalculate to avoid conflicts
-	var start_point = astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
-	var path: Array = astar.a_star_maps[unit.team][unit.move_type].get_point_path(start_point, astar.a_star_maps[unit.team][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))
+	var start_point = astar.a_star_maps[unit.team_id][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
+	var path: Array = astar.a_star_maps[unit.team_id][unit.move_type].get_point_path(start_point, astar.a_star_maps[unit.team_id][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2])))
 	if unit.chosen_action[1] == gl.TURN_TYPE.ATTACK:
 		if !gl.is_indirect(unit):
 			if !unit.chosen_action[2] == unit.position and !path.empty():
@@ -131,7 +131,7 @@ func _on_end_ai_turn(team: Team) -> void:
 				if building.available_units.has(unit_code):
 					var unit = gl.units[unit_code]
 					if unit.cost > highest_cost and team.funds >= unit.cost \
-					and (team.unit_points + unit.point_cost) >= team.max_unit_points:
+					and (team.unit_points + unit.point_cost) <= team.max_unit_points:
 						highest_cost = unit.cost
 						chosen_unit = unit_code
 					
@@ -163,9 +163,9 @@ func calc_target_value(unit: Unit) -> Array:
 
 func calc_cap_points(unit: Unit, target: Building) -> float:
 	var value
-	if target.team == -1:
+	if target.team_id == -1:
 		value = 100
-	elif target.team != unit.team:
+	elif target.team_id != unit.team_id:
 		value = 150
 	if target.type != gl.BUILDINGS.RUINS or target.type != gl.BUILDINGS.RUINS_2:
 		value += 51
@@ -182,9 +182,9 @@ func calc_capture_value(unit: Unit) -> Array:
 		for target_pos in building_targets:
 			var target = Main.is_building_in_position(target_pos)
 			var value = 0
-			if target.team == -1:
+			if target.team_id == -1:
 				value = 100
-			elif target.team != unit.team:
+			elif target.team_id != unit.team_id:
 				value = 150
 			if target.type != gl.BUILDINGS.RUINS or target.type != gl.BUILDINGS.RUINS_2:
 				value += 51
@@ -203,7 +203,7 @@ func calc_repair_value(unit: Unit) -> Array:
 	var repair_turn_value = 0
 	var chosen_repair_building = null
 	var building_in_same_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
-	if building_in_same_pos and building_in_same_pos.team == unit.team and unit.health <= 8:
+	if building_in_same_pos and building_in_same_pos.team_id == unit.team_id and unit.health <= 8:
 		# TODO: if unit is repairing, allow it to take another action
 		# find a way to prioritize actions taken on the same position without passing the turn
 		pass
@@ -221,15 +221,15 @@ func calc_repair_value(unit: Unit) -> Array:
 
 # TODO: better movement limitation with energy
 func calc_movement(unit: Unit) -> Array:
-	var unit_a_star = astar.a_star_maps[unit.team][unit.move_type]
+	var unit_a_star = astar.a_star_maps[unit.team_id][unit.move_type]
 	var starting_point = unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(unit.position))
 	var possible_paths = []
 	# MOVE TO ATTACK
 	var attack_turn_value = 0
 	var chosen_target = null
 	for target_unit in Main.units:
-		if unit.team != target_unit.team:
-			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_unit.position)), unit.team, true)
+		if unit.team_id != target_unit.team_id:
+			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_unit.position)), unit.team_id, true)
 			if weight < 99 and weight > 0:
 				var value = Main.calc_dmg_value(unit, target_unit)
 				if value / weight > attack_turn_value:
@@ -239,8 +239,8 @@ func calc_movement(unit: Unit) -> Array:
 	var capture_turn_value = 0
 	var chosen_capture_building = null
 	for target_building in Main.buildings:
-		if unit.team != target_building.team:
-			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team, true)
+		if unit.team_id != target_building.team_id:
+			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team_id, true)
 			if weight < 99 and weight > 0:
 				var value = calc_cap_points(unit, target_building) / 2
 				if value / weight > capture_turn_value:
@@ -251,8 +251,8 @@ func calc_movement(unit: Unit) -> Array:
 	var chosen_repair_building = null
 	if unit.health <= 2:
 		for target_building in Main.buildings:
-			if unit.team == target_building.team:
-				var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team, true)
+			if unit.team_id == target_building.team_id:
+				var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team_id, true)
 				if weight < 99 and weight > 0:
 					var value = calc_repair_points(unit)
 					if value / weight > capture_turn_value:

@@ -44,3 +44,5 @@ signal funds_per_turn_updated(funds_per_turn)
 signal power_start(team)
 signal super_start(team)
 signal update_meter(team)
+
+signal change_unlocked_factory_units(unlocked, team_id)

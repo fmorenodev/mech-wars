@@ -23,8 +23,6 @@ var action_menu_open := false
 var targets := []
 var selecting_targets := false
 var current_index: int
-var is_power_active := false
-var is_super_active := false
 
 ##################
 # INITIALIZATION #
@@ -42,7 +40,7 @@ func initialize(new_teams: Array) -> void:
 	current_index = 0
 
 func _ready() -> void:
-	# TODO: change this
+	# TODO: change this for window mode, but right now it makes the tile system kinda break
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 	
 	var cells = TerrainTileMap.get_used_cells()
@@ -61,37 +59,39 @@ func _ready() -> void:
 
 	initialize([Team.new(gl.TEAM.RED, true), Team.new(gl.TEAM.BLUE, false)])
 	for child in SelectionTileMap.get_children():
-		add_unit_data(child, child.id, child.team)
+		add_unit_data(child, child.id, child.team_id)
 		child.change_material_to_color()
 	for child in BuildingsTileMap.get_children():
-		add_building_data(child, child.type, child.team)
+		add_building_data(child, child.type, child.team_id)
 	teams[0].co = gl.COS.MARK0
 	teams[1].co = gl.COS.BANDIT
 	astar.init_a_star()
 	start_turn()
 
-func create_unit(unit_id: int, team: int, position: Vector2) -> void:
+func create_unit(unit_id: int, team_id: int, position: Vector2) -> void:
 	var new_unit = UnitScene.instance()
 	SelectionTileMap.add_child(new_unit)
 	new_unit.position = position
-	if (teams[team].is_power_active):
-		COPowers.apply_power(new_unit, teams[team].co)
-	if (teams[team].is_super_active):
-		COPowers.apply_super(new_unit, teams[team].co)
-	add_unit_data(new_unit, unit_id, team)
+	if (teams[team_id].is_power_active):
+		COPowers.apply_power(new_unit, teams[team_id].co)
+	if (teams[team_id].is_super_active):
+		COPowers.apply_super(new_unit, teams[team_id].co)
+	add_unit_data(new_unit, unit_id, team_id)
 
-func add_unit_data(unit: Unit, unit_id: int, team: int) -> void:
+func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
-	unit.set_team(team)
-	teams[team].add_unit(unit)
+	unit.set_team(team_id)
+	teams[team_id].add_unit(unit)
+	teams[team_id].unit_points += gl.units[unit_id].point_cost
 	unit.end_action()
 
-func add_building_data(building: Building, type: int, team: int, available_units: PoolIntArray = []):
-	building.initialize(type, team, available_units)
+func add_building_data(building: Building, type: int, team_id: int, available_units: PoolIntArray = []):
+	building.initialize(type, team_id, available_units)
 	buildings.append(building)
-	if (team >= 0):
-		teams[team].add_building(building)
+	if team_id >= 0:
+		building.capture(teams[team_id])
+		teams[team_id].add_building(building)
 
 ##############
 # A* FUNCTIONS
@@ -102,22 +102,22 @@ func update_all_a_star() -> void:
 		for a_star in astar.a_star_maps[team.team_id]:
 			update_a_star(a_star, team.team_id)
 
-func update_a_star(a_star: AStar2D, team: int) -> void:
+func update_a_star(a_star: AStar2D, team_id: int) -> void:
 	for x in gl.map_size.x:
 		for y in gl.map_size.y:
 			var pos = Vector2(x, y)
 			var unit_in_position = is_unit_in_position(pos)
 			if unit_in_position:
-				if unit_in_position.team != team:
+				if unit_in_position.team_id != team_id:
 					var point = a_star.get_closest_point(pos)
 					a_star.add_point(point, pos, 99)
 				else:
-					astar.update_point(a_star, a_star.get_closest_point(pos), pos, team)
+					astar.update_point(a_star, a_star.get_closest_point(pos), pos, team_id)
 			else:
-				astar.update_point(a_star, a_star.get_closest_point(pos), pos, team)
+				astar.update_point(a_star, a_star.get_closest_point(pos), pos, team_id)
 
 func get_walkable_cells(unit: Unit) -> Array:
-	return astar.flood_fill(unit.move_type, TerrainTileMap.world_to_map(unit.position), int(min(unit.movement, unit.energy)), unit.team)
+	return astar.flood_fill(unit.move_type, TerrainTileMap.world_to_map(unit.position), int(min(unit.movement, unit.energy)), unit.team_id)
 
 ##########################
 # TILE ACTIONS FUNCTIONS # 
@@ -151,7 +151,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 	for direction in directions:
 		var coordinates: Vector2 = TerrainTileMap.world_to_map(pos) + direction
 		var target_unit = is_unit_in_position(coordinates)
-		if all_possible or (target_unit and target_unit.team != unit.team and can_attack(unit, target_unit)):
+		if all_possible or (target_unit and target_unit.team_id != unit.team_id and can_attack(unit, target_unit)):
 			result.append(coordinates)
 	return result
 
@@ -190,7 +190,7 @@ func threatened_cells(unit: Unit) -> Array:
 		for i in range(wk_cells.size() - 1, -1, -1):
 			var unit_in_pos = is_unit_in_position(wk_cells[i])
 			if unit_in_pos:
-				if unit.team != unit_in_pos.team:
+				if unit.team_id != unit_in_pos.team_id:
 					wk_cells.remove(i)
 		for cell in wk_cells:
 			var tgs = check_targets(unit, SelectionTileMap.map_to_world(cell), true)
@@ -211,7 +211,7 @@ func check_buildings(unit: Unit, owned: bool) -> Array:
 	for cell in wk_cells:
 		var building = is_building_in_position(cell)
 		if building:
-			if (!owned and building.team != unit.team) or (owned and building.team == unit.team):
+			if (!owned and building.team_id != unit.team_id) or (owned and building.team_id == unit.team_id):
 				buildings_result.append(cell)
 	return buildings_result
 
@@ -224,12 +224,12 @@ func select_unit_or_building(pos: Vector2) -> void:
 		if active_unit.can_move:
 			select_unit()
 		else:
-			if active_unit.team != active_team.team_id:
+			if active_unit.team_id != active_team.team_id:
 				var th_cells = threatened_cells(selected_entity)
 				for pos in th_cells:
 					SelectionTileMap.set_cellv(pos, 1)
 			active_unit = null
-	elif selected_entity is Building and selected_entity.team == active_team.team_id \
+	elif selected_entity is Building and selected_entity.team_id == active_team.team_id \
 	and selected_entity.is_production_building():
 		open_building_menu(selected_entity)
 	else:
@@ -266,7 +266,7 @@ func move_active_unit(target_pos: Vector2) -> void:
 	if !targets.empty():
 		menu_options.append(2) # attack
 	var building = is_building_in_position(target_pos)
-	if building and active_unit.can_capture and building.team != active_team.team_id:
+	if building and active_unit.can_capture and building.team_id != active_team.team_id:
 		menu_options.append(3) # capture
 	else:
 		active_unit.capture_points = 0
@@ -318,13 +318,7 @@ func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
 	signals.emit_signal("action_completed")
 
 func capture_action_ai(unit: Unit) -> void:
-	unit.capture()
-	if unit.capture_points >= 20:
-		unit.capture_points = 0
-		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
-		building.capture(active_team.team_id)
-		active_team.add_building(building)
-	unit.end_action()
+	common_capture_logic(unit)
 	signals.emit_signal("action_completed")
 
 ##########################
@@ -400,14 +394,20 @@ func _on_capture_action() -> void:
 	capture_action(active_unit)
 
 func capture_action(unit: Unit) -> void:
+	common_capture_logic(unit)
+	end_unit_action()
+
+func common_capture_logic(unit: Unit) -> void:
 	unit.capture()
 	if unit.capture_points >= 20:
 		unit.capture_points = 0
 		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
-		teams[building.team].buildings.erase(building)
-		building.capture(active_team.team_id)
+		teams[building.team_id].buildings.erase(building)
+		if building.team_id != -1:
+			building.capture(active_team, teams[building.team_id])
+		else:
+			building.capture(active_team)
 		active_team.add_building(building)
-	end_unit_action()
 
 # TODO: can select an empty target when attacking (unsure if solved)
 func _on_target_selected(pos: Vector2) -> void:
@@ -434,7 +434,7 @@ func special_attack_cases(target_unit: Unit) -> void:
 				for direction in gl.DIRECTIONS:
 					var coordinates: Vector2 = TerrainTileMap.world_to_map(target_pos) + direction
 					var possible_target = is_unit_in_position(coordinates)
-					if possible_target and possible_target.team != active_unit.team \
+					if possible_target and possible_target.team_id != active_unit.team_id \
 					and !selected_targets.has(possible_target):
 						possible_targets.append(possible_target)
 				if possible_targets.size() > 0:
@@ -450,13 +450,12 @@ func special_attack_cases(target_unit: Unit) -> void:
 		_:
 			return
 
-func _on_unit_added(unit_id: int, team: int, position: Vector2) -> void:
-	create_unit(unit_id, team, position)
-	teams[team].funds -= gl.units[unit_id].cost
-	teams[team].unit_points += gl.units[unit_id].point_cost
+func _on_unit_added(unit_id: int, team_id: int, position: Vector2) -> void:
+	create_unit(unit_id, team_id, position)
+	teams[team_id].funds -= gl.units[unit_id].cost
 
 func _on_unit_deleted(unit: Unit) -> void:
-	var team = teams[unit.team]
+	var team = teams[unit.team_id]
 	units.erase(unit)
 	team.units.erase(unit)
 	team.lost_units += 1
@@ -511,8 +510,9 @@ func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float
 			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
 		# meter calculation
-		teams[attacker.team].power_meter_amount += (target.cost * (result / 10)) / 2
-		teams[target.team].power_meter_amount += target.cost * (result / 10)
+		if add_random:
+			teams[attacker.team_id].power_meter_amount += (target.cost * (result / 10)) / 2
+			teams[target.team_id].power_meter_amount += target.cost * (result / 10)
 		return stepify(result, 0.01)
 	else:
 		return 0.0
@@ -537,8 +537,10 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 		var def_value = (100.0 - (terrain_stars * target.health) * (target.def_bonus) \
 			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
-		teams[counter_attacker.team].power_meter_amount += (target.cost * (result / 10)) / 2
-		teams[target.team].power_meter_amount += target.cost * (result / 10)
+		# meter calculation
+		if add_random:
+			teams[counter_attacker.team_id].power_meter_amount += (target.cost * (result / 10)) / 2
+			teams[target.team_id].power_meter_amount += target.cost * (result / 10)
 		return stepify(result, 0.01)
 	else:
 		return 0.0

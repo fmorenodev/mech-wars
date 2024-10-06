@@ -59,7 +59,7 @@ func _on_super_start(active_team: Team) -> void:
 						active_team.add_unit(chosen_unit)
 						chosen_unit.activate()
 			gl.COS.BOSS:
-				pass # TODO: no super for now (maybe no super at all, only power)
+				pass # no super for now (maybe no super at all, only power)
 			_: # own team effects
 				for unit in active_team.units:
 					apply_super(unit, active_team.co)

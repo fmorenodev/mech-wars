@@ -38,7 +38,7 @@ func _on_cursor_moved(pos: Vector2) -> void:
 	if unit:
 		EntityName.text = gl.units[unit.id].unit_name
 		EntitySprite.texture = unit.texture.get_frame('idle', 0)
-		if unit.team == gl.TEAM.RED:
+		if unit.team_id == gl.TEAM.RED:
 			EntitySprite.material = sp.swap_mat
 		else:
 			EntitySprite.material = null
@@ -54,7 +54,7 @@ func _on_cursor_moved(pos: Vector2) -> void:
 		
 	if building:
 		EntityName2.text = gl.buildings[building.type].name
-		EntitySprite2.texture = building_texture.get_frame(str(building.team), building.type)
+		EntitySprite2.texture = building_texture.get_frame(str(building.team_id), building.type)
 		if unit:
 			TileCapturePoints.text = str(20 - unit.capture_points)
 		else:

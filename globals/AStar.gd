@@ -13,22 +13,22 @@ func init_a_star() -> void:
 					add_and_connect_point(a_star, Vector2(x, y), team.team_id)
 			a_star_maps[team.team_id].append(a_star)
 
-func get_a_star_type(a_star: AStar2D, team: int) -> int:
-	for i in a_star_maps[team].size():
-		if a_star == a_star_maps[team][i]:
+func get_a_star_type(a_star: AStar2D, team_id: int) -> int:
+	for i in a_star_maps[team_id].size():
+		if a_star == a_star_maps[team_id][i]:
 			return i
 	return -1
 
-func update_point(a_star: AStar2D, id: int, pos: Vector2, team: int) -> void:
-	var move_type = get_a_star_type(a_star, team)
+func update_point(a_star: AStar2D, id: int, pos: Vector2, team_id: int) -> void:
+	var move_type = get_a_star_type(a_star, team_id)
 	if move_type == -1:
 		a_star.add_point(id, pos, 1)
 	else:
 		a_star.add_point(id, pos, gl.terrain[Main.TerrainTileMap.get_cellv(pos)].move_values[move_type])
 
-func add_and_connect_point(a_star: AStar2D, pos: Vector2, team: int) -> void:
+func add_and_connect_point(a_star: AStar2D, pos: Vector2, team_id: int) -> void:
 	var new_id = a_star.get_available_point_id()
-	update_point(a_star, new_id, pos, team)
+	update_point(a_star, new_id, pos, team_id)
 	var points_to_connect = []
 	for direction in gl.DIRECTIONS:
 		for point in a_star.get_points():
@@ -37,20 +37,20 @@ func add_and_connect_point(a_star: AStar2D, pos: Vector2, team: int) -> void:
 	for point in points_to_connect:
 		a_star.connect_points(new_id, point)
 
-func get_path_weight(a_star: int, from_id: int, to_id: int, team: int, to_enemy: bool = false) -> int:
-	var id_point_array: Array = a_star_maps[team][a_star].get_id_path(from_id, to_id)
+func get_path_weight(a_star: int, from_id: int, to_id: int, team_id: int, to_enemy: bool = false) -> int:
+	var id_point_array: Array = a_star_maps[team_id][a_star].get_id_path(from_id, to_id)
 	id_point_array.pop_front()
 	if to_enemy:
 		id_point_array.pop_back()
 	var result = 0
 	for id in id_point_array:
-		result += a_star_maps[team][a_star].get_point_weight_scale(id)
+		result += a_star_maps[team_id][a_star].get_point_weight_scale(id)
 	return result
 
-func flood_fill(a_star_num: int, start_pos: Vector2, max_distance: int, team: int) -> Array:
+func flood_fill(a_star_num: int, start_pos: Vector2, max_distance: int, team_id: int) -> Array:
 	var result := []
 	var stack := [start_pos]
-	var a_star = a_star_maps[team][a_star_num]
+	var a_star = a_star_maps[team_id][a_star_num]
 	var a_star_start_point = a_star.get_closest_point(start_pos)
 	while not stack.empty():
 		var cur_pos = stack.pop_back()
@@ -62,7 +62,7 @@ func flood_fill(a_star_num: int, start_pos: Vector2, max_distance: int, team: in
 
 		var a_star_cur_point = a_star.get_closest_point(cur_pos)
 
-		var distance = get_path_weight(a_star_num, a_star_start_point, a_star_cur_point, team)
+		var distance = get_path_weight(a_star_num, a_star_start_point, a_star_cur_point, team_id)
 		if distance > max_distance:
 			continue
 
@@ -76,7 +76,7 @@ func flood_fill(a_star_num: int, start_pos: Vector2, max_distance: int, team: in
 	return result
 
 func get_partial_path(unit: Unit, from_id: int, to_id: int) -> Array:
-	var a_star = a_star_maps[unit.team][unit.move_type]
+	var a_star = a_star_maps[unit.team_id][unit.move_type]
 	var path = a_star.get_id_path(from_id, to_id)
 	var remaining_movement = min(unit.movement, unit.energy)
 	var walkable_path = [a_star.get_point_position(path[0])]

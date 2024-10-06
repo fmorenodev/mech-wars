@@ -42,7 +42,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 		UnitName.text = unit_data.unit_name
 		UnitDesc.text = unit_data.desc
 		UnitSprite.texture = unit.texture.get_frame('idle', 0)
-		if unit.team == gl.TEAM.RED:
+		if unit.team_id == gl.TEAM.RED:
 			UnitSprite.material = sp.swap_mat
 		else:
 			UnitSprite.material = null
@@ -86,7 +86,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 	
 	if building:
 		TileName.text = gl.buildings[building.type].name
-		TileSprite.texture = building_texture.get_frame(str(building.team), building.type)
+		TileSprite.texture = building_texture.get_frame(str(building.team_id), building.type)
 		TileDesc.text = gl.buildings[building.type].desc
 		TileFunds.text = '%s: %s' % [tr('FUNDS'), building.funds]
 		var can_repair: String
