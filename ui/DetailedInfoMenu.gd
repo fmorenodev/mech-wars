@@ -10,6 +10,7 @@ onready var UnitName = $HBoxContainer/UnitInfo/UnitStats/VBoxContainer/Name
 onready var UnitDesc = $HBoxContainer/UnitInfo/UnitDesc
 onready var UnitSprite = $HBoxContainer/UnitInfo/UnitStats/VBoxContainer/UnitSprite
 onready var UnitMovement = $HBoxContainer/UnitInfo/UnitStats/VBoxContainer2/Movement
+onready var UnitPoints = $HBoxContainer/UnitInfo/UnitStats/VBoxContainer3/UnitPoints
 onready var UnitWeapon1 = $HBoxContainer/UnitInfo/WeaponsInfo/HBoxContainer/Weapon1
 onready var UnitWeapon2 = $HBoxContainer/UnitInfo/WeaponsInfo/Weapon2
 onready var UnitAmmo = $HBoxContainer/UnitInfo/WeaponsInfo/HBoxContainer/Ammo
@@ -37,21 +38,23 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 	var unit = Main.is_unit_in_position(pos)
 	var building = Main.is_building_in_position(pos)
 	if unit:
-		UnitName.text = gl.units[unit.id].unit_name
-		UnitDesc.text = gl.units[unit.id].desc
+		var unit_data = gl.units[unit.id]
+		UnitName.text = unit_data.unit_name
+		UnitDesc.text = unit_data.desc
 		UnitSprite.texture = unit.texture.get_frame('idle', 0)
 		if unit.team == gl.TEAM.RED:
 			UnitSprite.material = sp.swap_mat
 		else:
 			UnitSprite.material = null
-		UnitMovement.text = "%s: %s" % [tr('MOVE'), str(unit.movement)]
-		UnitWeapon1.text = gl.units[unit.id].weapon_1
-		UnitWeapon2.text = gl.units[unit.id].weapon_2
-		if gl.units[unit.id].weapon_1 != tr('NONE'):
-			UnitAmmo.text = "%s / %s %s" % [str(unit.ammo), str(gl.units[unit.id].ammo), tr('AMMO')]
+		UnitMovement.text = "%s: %d" % [tr('MOVE'), unit.movement]
+		UnitPoints.text = "%s: %d" % [tr('UNIT_POINTS'), unit_data.point_cost]
+		UnitWeapon1.text = unit_data.weapon_1
+		UnitWeapon2.text = unit_data.weapon_2
+		if unit_data.weapon_1 != tr('NONE'):
+			UnitAmmo.text = "%s / %s %s" % [str(unit.ammo), str(unit_data.ammo), tr('AMMO')]
 		else:
 			UnitAmmo.text = ''
-		UnitEnergy.text = "%s: %s / %s" % [tr('ENERGY'), str(unit.energy), str(gl.units[unit.id].energy)]
+		UnitEnergy.text = "%s: %s / %s" % [tr('ENERGY'), str(unit.energy), str(unit_data.energy)]
 		
 		for child in UnitWeapon1Info.get_children():
 			UnitWeapon1Info.remove_child(child)
@@ -59,7 +62,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 		for child in UnitWeapon2Info.get_children():
 			UnitWeapon2Info.remove_child(child)
 			child.queue_free()
-		if gl.units[unit.id].weapon_1 != tr('NONE'):
+		if unit_data.weapon_1 != tr('NONE'):
 			for can_attack in unit.w1_can_attack:
 				var trec_node = TextureRect.new()
 				trec_node.texture = sp.sprites[can_attack].get_frame('idle', 0)
@@ -68,7 +71,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 			var trec_node = TextureRect.new()
 			trec_node.texture = none_texture
 			UnitWeapon1Info.add_child(trec_node)
-		if gl.units[unit.id].weapon_2 != tr('NONE'):
+		if unit_data.weapon_2 != tr('NONE'):
 			for can_attack in unit.w2_can_attack:
 				var trec_node = TextureRect.new()
 				trec_node.texture = sp.sprites[can_attack].get_frame('idle', 0)

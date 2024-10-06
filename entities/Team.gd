@@ -10,7 +10,7 @@ var funds := 0 setget set_funds
 var funds_per_turn := 0
 var is_player: bool
 var lost_units := 0
-var co setget set_co
+
 var is_power_active: bool = false
 var is_power_enabled: bool = false
 var is_super_active: bool = false
@@ -18,8 +18,12 @@ var is_super_enabled: bool = false
 var power_meter_amount: float = 0 setget set_power_meter_amount # same for both super and power
 var powers_used := 0
 
-# new resource implementation
+var co setget set_co
 var co_resource: COData
+
+# for unit limit
+var unit_points := 0
+var max_unit_points := 40
 
 func _init(_team_id: int, _is_player: bool) -> void:
 	team_id = _team_id

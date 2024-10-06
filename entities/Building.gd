@@ -26,14 +26,19 @@ func set_available_units() -> void:
 	match type:
 		gl.BUILDINGS.FACTORY:
 			available_units = [ gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
-								gl.UNITS.RECON, gl.UNITS.LIGHT_TANK, gl.UNITS.MEDIUM_TANK,
-								gl.UNITS.ANTI_AIR, gl.UNITS.ARTILLERY, gl.UNITS.HEAVY_ARTILLERY ]
+								gl.UNITS.FLYING_INFANTRY, gl.UNITS.RECON, gl.UNITS.LIGHT_TANK,
+								gl.UNITS.MEDIUM_TANK, gl.UNITS.ARTILLERY,
+								gl.UNITS.HEAVY_ARTILLERY, gl.UNITS.ARC_TOWER,
+								gl.UNITS.ANTI_AIR, gl.UNITS.ROCKET ]
 		gl.BUILDINGS.AIRPORT:
-			available_units = [gl.UNITS.DRONE]
+			available_units = [gl.UNITS.DRONE, gl.UNITS.ANGEL, gl.UNITS.SKY_FORTRESS]
 		gl.BUILDINGS.PORT:
 			available_units = [gl.UNITS.BATTLESHIP]
 		_:
 			available_units = []
+
+func is_production_building() -> bool:
+	return (type == gl.BUILDINGS.FACTORY or type == gl.BUILDINGS.AIRPORT or type == gl.BUILDINGS.PORT)
 
 func capture(value: int) -> void:
 	set_team(value)
@@ -42,4 +47,3 @@ func capture(value: int) -> void:
 			pass
 		gl.BUILDINGS.POWER_PLANT:
 			pass
-	

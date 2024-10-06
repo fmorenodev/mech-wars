@@ -447,17 +447,17 @@ format = 1
 
 [node name="Unit8" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 648, 144 )
-id = 2
+id = 3
 team = 1
 
 [node name="Unit2" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
-position = Vector2( 168, 96 )
-id = 2
+position = Vector2( 216, 96 )
+id = 8
 team = 0
 
 [node name="Unit10" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 120, 96 )
-id = 3
+id = 4
 team = 0
 
 [node name="Unit3" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
@@ -467,32 +467,32 @@ team = 0
 
 [node name="Unit4" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 264, 96 )
-id = 2
+id = 3
 team = 1
 
 [node name="Unit6" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 768, 360 )
-id = 2
+id = 4
 team = 1
 
 [node name="Unit9" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 840, 480 )
-id = 6
+id = 7
 team = 1
 
 [node name="Unit7" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 96, 360 )
-id = 4
+id = 5
 team = 1
 
 [node name="Unit11" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 384, 408 )
-id = 4
+id = 5
 team = 1
 
 [node name="Unit12" parent="Map/SelectionTileMap" instance=ExtResource( 13 )]
 position = Vector2( 360, 456 )
-id = 4
+id = 5
 team = 1
 
 [node name="CursorTileMap" type="TileMap" parent="Map"]
@@ -654,6 +654,14 @@ margin_bottom = 20.0
 margin_top = 24.0
 margin_bottom = 44.0
 
+[node name="VBoxContainer3" type="VBoxContainer" parent="GUI/GUIContainer/DetailedInfoMenu/HBoxContainer/UnitInfo/UnitStats"]
+margin_left = 8.0
+margin_right = 8.0
+margin_bottom = 44.0
+
+[node name="UnitPoints" type="Label" parent="GUI/GUIContainer/DetailedInfoMenu/HBoxContainer/UnitInfo/UnitStats/VBoxContainer3"]
+margin_bottom = 20.0
+
 [node name="UnitDesc" type="Label" parent="GUI/GUIContainer/DetailedInfoMenu/HBoxContainer/UnitInfo"]
 margin_top = 48.0
 margin_right = 190.0
@@ -810,6 +818,12 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="Income" type="Label" parent="GUI/GUIContainer/StatusInfoMenu/StatusTable/Header"]
+margin_left = 380.0
+margin_right = 472.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="UnitPoints" type="Label" parent="GUI/GUIContainer/StatusInfoMenu/StatusTable/Header"]
 margin_left = 380.0
 margin_right = 472.0
 margin_bottom = 20.0

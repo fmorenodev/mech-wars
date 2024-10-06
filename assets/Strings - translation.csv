@@ -2,48 +2,50 @@ keys,en
 --UNITS--,--------------------
 LIGHT_INF,Light Infantry
 HEAVY_INF,Heavy Infantry
+FLYING_INF,Aerial Infantry
 RECON,Recon Mech
 TANK,Tank
-MEDIUM_TANK,Medium tank
+MEDIUM_TANK,Medium Tank
 ARTILLERY,Artillery
-HEAVY_ARTILLERY,Heavy artillery
-ANTI_AIR,Anti air mech
-DRONE,Drone
+HEAVY_ARTILLERY,Heavy Artillery
+ARC_TOWER,Arc Tower Mech
+ANTI_AIR,Anti-Air Mech
+ROCKET,Rocket Launcher Mech
+DRONE,Assault Drone
+ANGEL,Angel Mech
+SKY_FORTRESS,Sky Fortress
 BATTLESHIP,Battleship
-,
-,
-,
-,
-,
 ,
 --UNIT DESCRIPTIONS--,--------------------
 LIGHT_INF_DESC,Small mechs that can capture buildings and are the base of any army.
 HEAVY_INF_DESC,Small mechs armed with anti-mech cannons. Can capture buildings.
+FLYING_INF_DESC,Aerial light mech with the ability to capture buildings while having superior maneuverability.
 RECON_DESC,Agile robot that scouts the field and fends off infantry.
 TANK_DESC,Strong but mobile mech that serves as the main armored unit of land forces.
 MEDIUM_TANK_DESC,"Slower and stronger than a Tank, this unit requires an answer from the enemy army."
-ARTILLERY_DESC,Useful for defending positions and making the enemy think twice.
+ARTILLERY_DESC,Useful for defending positions and making the enemy think twice about attacking.
 HEAVY_ARTILLERY_DESC,"With longer range and better firepower than Artillery, this is the ultimate deterrence unit."
+ARC_TOWER_DESC,Hi-tech unit equipped with a weapon that can hit multiple enemies at the same time if they are close.
 ANTI_AIR_DESC,This mech excels at taking down aerial opponents.
+ROCKET_DESC,A long-range response to enemy air mechs.
 DRONE_DESC,"Powerful and versatile air unit, with excellent mobility. Spends energy each turn to stay airborne."
+ANGEL_DESC,"The undisputed king of the skies, excels at hunting down enemy air mechs."
+SKY_FORTRESS_DESC,Massive aerial mechs that rain down ordnance on land and sea.
 BATTLESHIP_DESC,"A mobile battle station, can hit positions from very far away and cause severe damage."
-,
-,
-,
-,
-,
 --WEAPONS--,--------------------
 LASER_GUN,Laser gun
-CANNON,Cannon
+LIGHT_CANNON,Light Cannon
 MEDIUM_CANNON,Medium cannon
 ARTILLERY_CANNON,Artillery cannon
 ENERGY_CANNON,Energy cannon
 FLAK_CANNON,Flak cannon
-ATG_MISSILE,ATG missile
+ATG_MISSILE,Air to Ground missile
+ATA_CANNON,Air to Air cannon
+GTA_MISSILE,Ground to Air missile
+AIR_BOMBS,Air-dropped bombs
+,
 DESTROYER_CANNON,Destroyer cannon
 NONE,None
-,
-,
 --BUILDINGS--,--------------------
 RUINS,Ruins
 FACTORY,Factory
@@ -51,8 +53,6 @@ AIRPORT,Airport
 PORT,Port
 RESEARCH,Research plant
 POWER_PLANT,Power plant
-,
-,
 ,
 --BUILDING DESCRIPTIONS--,--------------------
 RUINS_DESC,"Remnants of destroyed human cities, they can be pillaged for scrap to build robots."
@@ -181,6 +181,7 @@ STATUS_LOST_HEADER,Lost
 STATUS_BASES_HEADER,Bases
 STATUS_INCOME_HEADER,Income
 STATUS_FUNDS_HEADER,Funds
+STATUS_UNIT_POINTS_HEADER,Unit Points
 ,
 --DETAILED INFO MENU--,--------------------
 AMMO,Ammo
@@ -193,9 +194,9 @@ CAN_REPAIR,Can repair
 LAND,Land
 ,
 ,
-,
-,
-,
+--BUILDING INFO MENU--,---------------------
+PARTS,Parts
+UNIT_POINTS,U.P.
 ,
 ,
 INFINITE,Infinite

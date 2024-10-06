@@ -130,7 +130,8 @@ func _on_end_ai_turn(team: Team) -> void:
 			for unit_code in gl.units.keys():
 				if building.available_units.has(unit_code):
 					var unit = gl.units[unit_code]
-					if unit.cost > highest_cost and team.funds >= unit.cost:
+					if unit.cost > highest_cost and team.funds >= unit.cost \
+					and (team.unit_points + unit.point_cost) >= team.max_unit_points:
 						highest_cost = unit.cost
 						chosen_unit = unit_code
 					

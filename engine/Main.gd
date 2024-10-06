@@ -229,7 +229,8 @@ func select_unit_or_building(pos: Vector2) -> void:
 				for pos in th_cells:
 					SelectionTileMap.set_cellv(pos, 1)
 			active_unit = null
-	elif selected_entity is Building and selected_entity.team == active_team.team_id:
+	elif selected_entity is Building and selected_entity.team == active_team.team_id \
+	and selected_entity.is_production_building():
 		open_building_menu(selected_entity)
 	else:
 		open_game_menu()
@@ -279,7 +280,7 @@ func open_action_menu(menu_options: PoolIntArray, pos: Vector2) -> void:
 	ActionMenu.show()
 
 func open_building_menu(building: Building) -> void:
-	BuildingMenu.generate_menu(building.available_units, active_team.funds, active_team.team_id, building.position)
+	BuildingMenu.generate_menu(building.available_units, active_team.funds, active_team, building.position)
 	if BuildingMenu.get_item_count() > 0:
 		BuildingMenu.show()
 		GameMenu.hide()
@@ -311,13 +312,6 @@ func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
 	var retaliation_damage = calc_retaliation_damage(target_unit, unit, damage)
 	unit.health -= retaliation_damage
 	target_unit.health -= damage
-	
-	var defender_meter_amount: float = target_unit.cost * (damage / 10)
-	var attacker_meter_amount: float = defender_meter_amount/ 2
-	attacker_meter_amount += unit.cost * (retaliation_damage / 10)
-	defender_meter_amount += (unit.cost * (retaliation_damage / 10)) / 2
-	teams[unit.team].power_meter_amount += attacker_meter_amount
-	teams[target_unit.team].power_meter_amount += defender_meter_amount
 	
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), -1)
 	unit.end_action()
@@ -420,24 +414,46 @@ func _on_target_selected(pos: Vector2) -> void:
 	var target_unit: Unit = is_unit_in_position(pos)
 	var damage = calc_damage(active_unit, target_unit)
 	
+	special_attack_cases(target_unit)
 	targets = []
 	var retaliation_damage = calc_retaliation_damage(target_unit, active_unit, damage)
 	active_unit.health -= retaliation_damage
-	
-	var defender_meter_amount: float = target_unit.cost * (damage / 10)
-	var attacker_meter_amount: float = defender_meter_amount/ 2
-	attacker_meter_amount += active_unit.cost * (retaliation_damage / 10)
-	defender_meter_amount += (active_unit.cost * (retaliation_damage / 10)) / 2
-	teams[active_unit.team].power_meter_amount += attacker_meter_amount
-	teams[target_unit.team].power_meter_amount += defender_meter_amount
 	
 	target_unit.health -= damage
 	selecting_targets = false
 	end_unit_action()
 
+# unit attack abilities
+func special_attack_cases(target_unit: Unit) -> void:
+	match active_unit.id:
+		gl.UNITS.ARC_TOWER:
+			var target_pos := target_unit.position
+			var selected_targets = [target_unit]
+			for i in 3:
+				var possible_targets = []
+				for direction in gl.DIRECTIONS:
+					var coordinates: Vector2 = TerrainTileMap.world_to_map(target_pos) + direction
+					var possible_target = is_unit_in_position(coordinates)
+					if possible_target and possible_target.team != active_unit.team \
+					and !selected_targets.has(possible_target):
+						possible_targets.append(possible_target)
+				if possible_targets.size() > 0:
+					var new_target_unit: Unit = possible_targets[0]
+					target_pos = new_target_unit.position
+					var damage = calc_damage(active_unit, new_target_unit)
+					new_target_unit.health -= damage
+					active_unit.ammo += 1
+					if new_target_unit:
+						selected_targets.append(new_target_unit)
+				else:
+					return
+		_:
+			return
+
 func _on_unit_added(unit_id: int, team: int, position: Vector2) -> void:
 	create_unit(unit_id, team, position)
 	teams[team].funds -= gl.units[unit_id].cost
+	teams[team].unit_points += gl.units[unit_id].point_cost
 
 func _on_unit_deleted(unit: Unit) -> void:
 	var team = teams[unit.team]
@@ -494,6 +510,9 @@ func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float
 		var def_value = (100.0 - (terrain_stars * target.health) * (target.def_bonus) \
 			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
+		# meter calculation
+		teams[attacker.team].power_meter_amount += (target.cost * (result / 10)) / 2
+		teams[target.team].power_meter_amount += target.cost * (result / 10)
 		return stepify(result, 0.01)
 	else:
 		return 0.0
@@ -518,6 +537,8 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 		var def_value = (100.0 - (terrain_stars * target.health) * (target.def_bonus) \
 			* (target.def_mod)) / 100.0
 		var result = attack_value * def_value
+		teams[counter_attacker.team].power_meter_amount += (target.cost * (result / 10)) / 2
+		teams[target.team].power_meter_amount += target.cost * (result / 10)
 		return stepify(result, 0.01)
 	else:
 		return 0.0
@@ -542,6 +563,7 @@ func start_turn() -> void:
 	active_team.calculate_funds_per_turn()
 	active_team.funds += active_team.funds_per_turn
 	signals.emit_signal("turn_started", active_team)
+	var units_to_delete = []
 	for unit in active_team.units:
 		unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))
@@ -559,10 +581,10 @@ func start_turn() -> void:
 		elif (unit.move_type == gl.MOVE_TYPE.AIR or unit.move_type == gl.MOVE_TYPE.WATER):
 			unit.energy -= 2 # TODO: individual energy costs
 			if unit.energy <= 0:
-				signals.emit_signal("unit_deleted", unit)
+				units_to_delete.append(unit)
+	for unit in units_to_delete:
+		signals.emit_signal("unit_deleted", unit)
 	update_all_a_star()
-	#if !active_team.is_player:
-	#	signals.emit_signal("start_ai_turn", active_team)
 
 # for player units
 func end_unit_action() -> void:
