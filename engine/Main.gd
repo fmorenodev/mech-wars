@@ -72,11 +72,11 @@ func create_unit(unit_id: int, team_id: int, position: Vector2) -> void:
 	var new_unit = UnitScene.instance()
 	SelectionTileMap.add_child(new_unit)
 	new_unit.position = position
+	add_unit_data(new_unit, unit_id, team_id)
 	if (teams[team_id].is_power_active):
 		COPowers.apply_power(new_unit, teams[team_id].co)
 	if (teams[team_id].is_super_active):
 		COPowers.apply_super(new_unit, teams[team_id].co)
-	add_unit_data(new_unit, unit_id, team_id)
 
 func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 	unit.initialize(unit_id)
@@ -455,10 +455,11 @@ func _on_unit_added(unit_id: int, team_id: int, position: Vector2) -> void:
 	teams[team_id].funds -= gl.units[unit_id].cost
 
 func _on_unit_deleted(unit: Unit) -> void:
-	var team = teams[unit.team_id]
+	var team: Team = teams[unit.team_id]
 	units.erase(unit)
 	team.units.erase(unit)
 	team.lost_units += 1
+	team.unit_points -= unit.point_cost
 	unit.queue_free()
 	if team.units.size() <= 0:
 		signals.emit_signal("team_defeated", team)

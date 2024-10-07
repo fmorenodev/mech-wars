@@ -22,15 +22,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Main.selecting_targets:
 		if event is InputEventMouseMotion:
 			var adjusted_pos = gl.clamp(world_to_map(event.position * GameCamera.zoom))
-			if adjusted_pos in Main.targets:
-				move_cursor(adjusted_pos, 1)
+			var distances = {}
+			for pos in Main.targets:
+				distances[adjusted_pos.distance_to(pos)] = pos
+			move_cursor(distances[distances.keys().min()], 1)
 		elif event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") \
 		or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
 			if Main.targets.size() > 1:
 				move_cursor(Main.targets[target_index], 1)
 				target_index = (target_index + 1) % (Main.targets.size())
 		elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
-			if Main.is_unit_in_position(cursor_pos):
+			var possible_unit = Main.is_unit_in_position(cursor_pos)
+			var unit_pos = world_to_map(possible_unit.position)
+			if Main.targets.has(unit_pos):
 				signals.emit_signal("target_selected", cursor_pos)
 				target_index = 1
 				set_cellv(cursor_pos, 0)
