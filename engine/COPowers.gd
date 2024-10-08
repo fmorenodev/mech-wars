@@ -103,10 +103,12 @@ func apply_super(unit: Unit, co: int):
 			unit.movement += 2
 			if unit.id == gl.UNITS.RECON:
 				unit.atk_mod += 0.2
-				unit.w1_dmg_chart = gl.units[gl.UNITS.LIGHT_TANK].w1_dmg_chart
-				unit.w1_can_attack = gl.units[gl.UNITS.LIGHT_TANK].w1_can_attack
-				unit.w2_dmg_chart = gl.units[gl.UNITS.LIGHT_TANK].w2_dmg_chart
-				unit.w2_can_attack = gl.units[gl.UNITS.LIGHT_TANK].w2_can_attack
+				var light_tank_unit_data = gl.units[gl.UNITS.LIGHT_TANK]
+				unit.ammo = light_tank_unit_data.ammo
+				unit.w1_dmg_chart = light_tank_unit_data.w1_dmg_chart
+				unit.w1_can_attack = light_tank_unit_data.w1_can_attack
+				unit.w2_dmg_chart = light_tank_unit_data.w2_dmg_chart
+				unit.w2_can_attack = light_tank_unit_data.w2_can_attack
 		gl.COS.BANDIT:
 			if unit.id == gl.UNITS.LIGHT_INFANTRY or unit.id == gl.UNITS.HEAVY_INFANTRY:
 				unit.atk_mod += 0.5
@@ -146,10 +148,12 @@ func remove_super(unit: Unit, co: int):
 			unit.movement -= 2
 			if unit.id == gl.UNITS.RECON:
 				unit.atk_mod -= 0.2
-				unit.w1_dmg_chart = gl.units[gl.UNITS.RECON].w1_dmg_chart
-				unit.w1_can_attack = gl.units[gl.UNITS.RECON].w1_can_attack
-				unit.w2_dmg_chart = gl.units[gl.UNITS.RECON].w2_dmg_chart
-				unit.w2_can_attack = gl.units[gl.UNITS.RECON].w2_can_attack
+				var recon_unit_data = gl.units[gl.UNITS.RECON]
+				unit.ammo = recon_unit_data.ammo
+				unit.w1_dmg_chart = recon_unit_data.w1_dmg_chart
+				unit.w1_can_attack = recon_unit_data.w1_can_attack
+				unit.w2_dmg_chart = recon_unit_data.w2_dmg_chart
+				unit.w2_can_attack = recon_unit_data.w2_can_attack
 		gl.COS.BANDIT:
 			if unit.id == gl.UNITS.LIGHT_INFANTRY or unit.id == gl.UNITS.HEAVY_INFANTRY:
 				unit.atk_mod -= 0.5

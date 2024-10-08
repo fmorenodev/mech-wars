@@ -121,6 +121,23 @@ func _on_move_completed(unit: Unit) -> void:
 
 # creates the most expensive unit it can afford on each building
 func _on_end_ai_turn(team: Team) -> void:
+	# only create certain units if the enemy is making units that need counters
+	var enemy_team_units = Main.teams[0].units
+	var enemy_air_units := 0
+	var enemy_armored_units := 0
+	var create_anti_air := false
+	var create_anti_armored := false
+	for enemy_unit in enemy_team_units:
+		if enemy_unit.move_type == gl.MOVE_TYPE.AIR:
+			enemy_air_units += 1
+		elif enemy_unit.move_type == gl.MOVE_TYPE.HEAVY_VEHICLE or \
+		enemy_unit.move_type == gl.MOVE_TYPE.LIGHT_VEHICLE:
+			enemy_armored_units += 1
+	if enemy_air_units >= 2:
+		create_anti_air = true
+	if enemy_armored_units >= 3:
+		create_anti_armored = true
+			
 	for i in range(team.buildings.size() - 1, -1, -1): # start from the latest captured buildings
 		var building = team.buildings[i]
 		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
@@ -132,8 +149,13 @@ func _on_end_ai_turn(team: Team) -> void:
 					var unit = gl.units[unit_code]
 					if unit.cost > highest_cost and team.funds >= unit.cost \
 					and (team.unit_points + unit.point_cost) <= team.max_unit_points:
-						highest_cost = unit.cost
-						chosen_unit = unit_code
+						if ((unit_code == gl.UNITS.ANTI_AIR or unit_code == gl.UNITS.ROCKET or \
+						unit_code == gl.UNITS.ANGEL) and !create_anti_air) or \
+						(unit_code == gl.UNITS.HEAVY_INFANTRY and !create_anti_armored):
+							pass
+						else:
+							highest_cost = unit.cost
+							chosen_unit = unit_code
 					
 			if chosen_unit != null:
 				signals.emit_signal("unit_added", chosen_unit, team.team_id, building.position)

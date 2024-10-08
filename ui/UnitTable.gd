@@ -39,6 +39,7 @@ func set_row(unit: Unit) -> void:
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(unit.ammo) if (unit.ammo != -1) else tr("INFINITE")
 	get_node(instance_path % [row_instance.name, "/Label4"]).text = str(unit.energy)
 
+# TODO: fix this
 func _on_row_button_pressed(row_name: String) -> void:
 	get_parent().hide()
 	gl.move_mouse_global(table_units[int(row_name)].position)

@@ -5,7 +5,7 @@ var global_cursor_pos: Vector2
 onready var Main = $"../.."
 onready var GameCamera = $GameCamera
 
-var zoomed: bool = false
+var zoomed: bool = false # disabled for now
 var target_index: int = 1
 
 func move_cursor(new_pos: Vector2, cursor: int = 0) -> void:
@@ -57,13 +57,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		move_cursor(cursor_pos + Vector2.LEFT)
 	elif event.is_action_pressed("ui_right", true):
 		move_cursor(cursor_pos + Vector2.RIGHT)
-	elif event is InputEventMouseButton:
-		if event.is_pressed():
-			if event.button_index == BUTTON_WHEEL_UP and zoomed == true:
-				GameCamera.zoom += Vector2(0.5, 0.5)
-				zoomed = false
-			if event.button_index == BUTTON_WHEEL_DOWN and zoomed == false:
-				GameCamera.zoom -= Vector2(0.5, 0.5)
-				zoomed = true
+#	elif event is InputEventMouseButton:
+#		if event.is_pressed():
+#			if event.button_index == BUTTON_WHEEL_UP and zoomed == true:
+#				GameCamera.zoom += Vector2(0.5, 0.5)
+#				zoomed = false
+#			if event.button_index == BUTTON_WHEEL_DOWN and zoomed == false:
+#				GameCamera.zoom -= Vector2(0.5, 0.5)
+#				zoomed = true
 	elif event.is_action_pressed("ui_detailed_info", true):
 		signals.emit_signal("open_detailed_info_menu", cursor_pos)

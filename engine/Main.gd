@@ -383,11 +383,10 @@ func _on_cancel_action() -> void:
 			CursorTileMap.set_cellv(target, -1)
 	targets = []
 
-# TODO: sometimes an indirect unit can attack after movement, and attack a target outside range
 func _on_attack_action() -> void:
 	if !targets.empty():
 		selecting_targets = true
-		gl.move_mouse_global(CursorTileMap.map_to_world(targets[0]))
+		CursorTileMap.move_cursor(targets[0])
 		CursorTileMap.set_cellv(targets[0], 1)
 
 func _on_capture_action() -> void:
@@ -560,7 +559,7 @@ func can_attack(attacker: Unit, target: Unit) -> bool:
 		return false
 
 func can_use_w1(attacker: Unit, target: Unit) -> bool:
-	return gl.units[attacker.id].w1_can_attack.has(target.id) and attacker.ammo > 0
+	return attacker.w1_can_attack.has(target.id) and attacker.ammo > 0
 
 func start_turn() -> void:
 	active_team.calculate_funds_per_turn()
@@ -570,7 +569,8 @@ func start_turn() -> void:
 	for unit in active_team.units:
 		unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))
-		if is_building and gl.buildings[is_building.type].repairs.has(unit.move_type):
+		if is_building and gl.buildings[is_building.type].repairs.has(unit.move_type) \
+		and is_building.team_id == unit.team_id:
 			unit.ammo = gl.units[unit.id].ammo
 			unit.energy = gl.units[unit.id].energy
 			var damage = 10 - unit.health

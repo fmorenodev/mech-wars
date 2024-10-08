@@ -637,5 +637,6 @@ func delete_duplicates_unordered_matrix(array: Array) -> Array:
 			result += [array[i]]
 	return result
 
+# doesn't work correctly
 func move_mouse_global(pos: Vector2) -> void:
 	Input.warp_mouse_position(pos + Vector2(tile_size / 2, tile_size /2))
