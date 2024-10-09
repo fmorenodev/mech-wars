@@ -32,8 +32,7 @@ func set_row(unit: Unit) -> void:
 	
 	var instance_path = "ScrollContainer/TableContent/%s/%s"
 	get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).texture_normal = unit.texture.get_frame('idle', 0)
-	if unit.team_id == gl.TEAM.RED:
-		get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).material = sp.swap_mat
+	get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).material = sp.team_materials[unit.team_id]
 	get_node(instance_path % [row_instance.name, "/Label"]).text = gl.units[unit.id].unit_name
 	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(unit.rounded_health)
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(unit.ammo) if (unit.ammo != -1) else tr("INFINITE")

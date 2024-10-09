@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
-[ext_resource path="res://maps/FistPeninsulaMap.tscn" type="PackedScene" id=3]
+[ext_resource path="res://maps/FourCornersMap.tscn" type="PackedScene" id=3]
 [ext_resource path="res://engine/AI.gd" type="Script" id=4]
 [ext_resource path="res://engine/Main.gd" type="Script" id=15]
 [ext_resource path="res://ui/ActionMenu.gd" type="Script" id=16]
@@ -24,7 +24,7 @@
 [ext_resource path="res://assets/gui/power_stars/super_star_5.png" type="Texture" id=33]
 [ext_resource path="res://assets/gui/power_stars/power_star_empty_5.png" type="Texture" id=34]
 [ext_resource path="res://assets/gui/power_stars/super_star_empty_5.png" type="Texture" id=35]
-[ext_resource path="res://assets/gui/victory.png" type="Texture" id=38]
+[ext_resource path="res://assets/gui/popup_text/victory.png" type="Texture" id=38]
 [ext_resource path="res://ui/BigTextPopup.gd" type="Script" id=39]
 
 [sub_resource type="Gradient" id=11]

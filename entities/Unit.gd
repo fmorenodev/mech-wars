@@ -12,6 +12,7 @@ onready var AuxTexture: TextureRect = $PathFollow2D/AnimatedSprite/AuxTexture
 
 export var id: int
 export var team_id: int setget set_team
+var allegiance: int
 var unit_name: String
 var movement: int
 var health: float = 10.0 setget set_health
@@ -163,10 +164,7 @@ func end_action() -> void:
 	UnitSprite.material = sp.greyscale_mat
 
 func change_material_to_color() -> void:
-	if team_id == gl.TEAM.RED:
-		UnitSprite.material = sp.swap_mat
-	elif team_id == gl.TEAM.BLUE:
-		UnitSprite.material = null
+	UnitSprite.material = sp.team_materials[team_id]
 
 func end_turn() -> void:
 	can_move = false

@@ -25,13 +25,20 @@ var sprites = { gl.UNITS.LIGHT_INFANTRY: light_inf, gl.UNITS.HEAVY_INFANTRY: hea
 				gl.UNITS.SKY_FORTRESS: sky_fortress,
 				gl.UNITS.BATTLESHIP: battleship }
 
-var greyscale_mat: Material = preload("res://assets/units/greyscale_material.tres")
-var swap_mat: Material = preload("res://assets/units/swap_material.tres")
+var greyscale_mat: Material = preload("res://assets/shaders/materials/greyscale_material.tres")
+var red_swap_mat: Material = preload("res://assets/shaders/materials/red_swap_material.tres")
+var blue_swap_mat: Material = preload("res://assets/shaders/materials/blue_swap_material.tres")
+var green_swap_mat: Material = preload("res://assets/shaders/materials/green_swap_material.tres")
+var yellow_swap_mat: Material = preload("res://assets/shaders/materials/yellow_swap_material.tres")
+var team_materials = {gl.TEAM.RED: red_swap_mat, gl.TEAM.BLUE: blue_swap_mat, gl.TEAM.GREEN: green_swap_mat, gl.TEAM.YELLOW: yellow_swap_mat}
 
 var neutral_buildings = load("res://assets/map/building_tileset.png")
 var red_buildings = load("res://assets/map/building_tileset_red.png")
 var blue_buildings = load("res://assets/map/building_tileset_blue.png")
-var building_sprites = {-1: neutral_buildings, gl.TEAM.RED: red_buildings, gl.TEAM.BLUE: blue_buildings}
+var green_buildings = load("res://assets/map/building_tileset_green.png")
+var yellow_buildings = load("res://assets/map/building_tileset_yellow.png")
+var building_sprites = {-1: neutral_buildings, gl.TEAM.RED: red_buildings, gl.TEAM.BLUE: blue_buildings,
+						gl.TEAM.GREEN: green_buildings, gl.TEAM.YELLOW: yellow_buildings}
 
 func get_sprite(id: int) -> Resource:
 	return sprites[id]

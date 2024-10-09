@@ -4,6 +4,7 @@ class_name Building
 
 export var team_id: int setget set_team_id
 export var type: int
+var allegiance := -1
 var available_units : PoolIntArray
 var funds: int
 
@@ -22,7 +23,7 @@ func initialize(_type: int, _team_id: int, _available_units: PoolIntArray = []) 
 
 func set_team_id(value: int) -> void:
 	team_id = value
-	texture = sp.building_sprites[value]
+	texture = sp.get_building_sprite(value)
 
 func set_available_units(unlocked: bool, _team_id: int) -> void:
 	if team_id == _team_id:
@@ -49,6 +50,7 @@ func is_production_building() -> bool:
 
 func capture(capturing_team: Team, last_owner = null) -> void:
 	set_team_id(capturing_team.team_id)
+	allegiance = capturing_team.allegiance
 	match type:
 		gl.BUILDINGS.RESEARCH:
 			# unlock vehicle type mechs

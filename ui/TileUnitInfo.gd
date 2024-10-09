@@ -38,10 +38,7 @@ func _on_cursor_moved(pos: Vector2) -> void:
 	if unit:
 		EntityName.text = gl.units[unit.id].unit_name
 		EntitySprite.texture = unit.texture.get_frame('idle', 0)
-		if unit.team_id == gl.TEAM.RED:
-			EntitySprite.material = sp.swap_mat
-		else:
-			EntitySprite.material = null
+		EntitySprite.material = sp.team_materials[unit.team_id]
 		EntityHealth.text = str(unit.rounded_health)
 		if unit.ammo == -1:
 			EntityAmmo.text = tr("INFINITE")

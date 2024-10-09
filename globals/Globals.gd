@@ -21,7 +21,7 @@ var IND_DIRECTIONS_HEAVY_ARTILLERY = [Vector2(0, -5), Vector2(1, -4), Vector2(2,
 					Vector2(2, 1), Vector2(1, 2), Vector2(0, 3), Vector2(-1, 2),
 					Vector2(-2, 1), Vector2(-3, 0), Vector2(-2, -1), Vector2(-1, -2)]
 var tile_size: int = 24
-var map_size: Vector2 = Vector2(43, 22)
+var map_size: Vector2
 
 var units = { UNITS.LIGHT_INFANTRY:
 				{unit_name = tr('LIGHT_INF'),
@@ -588,7 +588,7 @@ enum UNITS {LIGHT_INFANTRY, HEAVY_INFANTRY, FLYING_INFANTRY,
 	BATTLESHIP}
 enum MOVE_TYPE {INFANTRY, LIGHT_VEHICLE, HEAVY_VEHICLE, AIR, WATER}
 enum ATTACK_TYPE {DIRECT, ARTILLERY, HEAVY_ARTILLERY}
-enum TEAM {RED, BLUE}
+enum TEAM {RED, BLUE, GREEN, YELLOW}
 enum TURN_TYPE {ATTACK, CAPTURE, REPAIR, MOVE}
 
 enum TERRAIN {PLAINS, FOREST, HILL, MOUNTAIN, WATER, ROAD, RIVER, WASTELAND, REEF, ENERGY_RELAY, SCRAPYARD, BEACH}

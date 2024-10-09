@@ -39,6 +39,7 @@ func _on_id_pressed(id: int) -> void:
 			signals.emit_signal("super_start", active_team)
 			disable_powers()
 		6:
+			active_team.defeated = true
 			signals.emit_signal("team_defeated", active_team)
 
 func _on_cancel_pressed() -> void:

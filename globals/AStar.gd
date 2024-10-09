@@ -1,6 +1,6 @@
 extends Node
 
-var a_star_maps: Array = [[], []]
+var a_star_maps: Array = []
 
 onready var Main = get_node('/root/Main')
 
@@ -8,6 +8,7 @@ func init_a_star() -> void:
 	for team in Main.teams:
 		for i in gl.MOVE_TYPE.size():
 			var a_star = AStar2D.new()
+			a_star_maps.append([])
 			for x in gl.map_size.x:
 				for y in gl.map_size.y:
 					add_and_connect_point(a_star, Vector2(x, y), team.team_id)

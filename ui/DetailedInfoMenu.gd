@@ -42,10 +42,7 @@ func _on_open_detailed_info_menu(pos: Vector2) -> void:
 		UnitName.text = unit_data.unit_name
 		UnitDesc.text = unit_data.desc
 		UnitSprite.texture = unit.texture.get_frame('idle', 0)
-		if unit.team_id == gl.TEAM.RED:
-			UnitSprite.material = sp.swap_mat
-		else:
-			UnitSprite.material = null
+		UnitSprite.material = sp.team_materials[unit.team_id]
 		UnitMovement.text = "%s: %d" % [tr('MOVE'), unit.movement]
 		UnitPoints.text = "%s: %d" % [tr('UNIT_POINTS'), unit_data.point_cost]
 		UnitWeapon1.text = unit_data.weapon_1

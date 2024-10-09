@@ -3,6 +3,7 @@ extends Resource
 class_name Team
 
 var team_id: int
+var allegiance: int
 var color: Color # TODO: use team color for UIs
 var units := []
 var buildings := []
@@ -10,6 +11,7 @@ var funds := 0 setget set_funds
 var funds_per_turn := 0
 var is_player: bool
 var lost_units := 0
+var defeated := false
 
 var is_power_active: bool = false
 var is_power_enabled: bool = false
@@ -27,14 +29,10 @@ var max_unit_points := 40
 
 var unlocked_factory_units := false setget set_unlocked_factory_units
 
-func _init(_team_id: int, _is_player: bool) -> void:
+func _init(_team_id: int, _is_player: bool, _allegiance: int) -> void:
 	team_id = _team_id
 	is_player = _is_player
-	match team_id:
-		0:
-			color = Color.firebrick
-		1:
-			color = Color.dodgerblue
+	allegiance = _allegiance
 
 func add_unit(unit: Unit) -> void:
 	unit.team_id = team_id

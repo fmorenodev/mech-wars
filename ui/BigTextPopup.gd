@@ -1,11 +1,11 @@
 extends PopupPanel
 
-var victory_texture = load("res://assets/gui/victory.png")
-var defeat_texture = load("res://assets/gui/defeat.png")
-var player_turn_texture = load("res://assets/gui/player_turn.png")
-var enemy_turn_texture = load("res://assets/gui/enemy_turn.png")
-var power_texture = load("res://assets/gui/power_used.png")
-var super_texture = load("res://assets/gui/super_used.png")
+var victory_texture = load("res://assets/gui/popup_text/victory.png")
+var defeat_texture = load("res://assets/gui/popup_text/defeat.png")
+var player_turn_texture = load("res://assets/gui/popup_text/player_turn.png")
+var enemy_turn_texture = load("res://assets/gui/popup_text/enemy_turn.png")
+var power_texture = load("res://assets/gui/popup_text/power_used.png")
+var super_texture = load("res://assets/gui/popup_text/super_used.png")
 
 onready var Main = $"../../.."
 onready var message = $Message
@@ -20,6 +20,10 @@ func _ready() -> void:
 
 func _on_turn_started(_team: Team) -> void:
 	team = _team
+	if team.defeated:
+		_on_tween_finished()
+		return
+	# TODO: change the text to "blue team", "red team" or something like that
 	if team.is_player:
 		message.texture = player_turn_texture
 	else:
@@ -29,15 +33,46 @@ func _on_turn_started(_team: Team) -> void:
 
 func _on_team_defeated(_team: Team) -> void:
 	team = _team
-	if team.is_player:
-		message.texture = defeat_texture
-	else:
-		message.texture = victory_texture
-	Main.disable_input(true)
-	modulate.a = 0
-	popup()
-	var tween = create_tween()
-	tween.tween_property(self, "modulate:a", 1.0, 2)
+	
+	var game_ended := false
+	var victory := false
+	var defeated_teams := 0
+	var ally_teams := 0
+	var defeated_ally_teams := 0
+	var defeated_players := 0
+	var player_teams := 0
+	for t in Main.teams:
+		if t.allegiance == team.allegiance and t != team:
+			ally_teams += 1
+			if t.defeated:
+				defeated_teams += 1
+				defeated_ally_teams += 1
+		elif t.defeated:
+			defeated_teams += 1
+		if t.is_player:
+			if t.defeated:
+				defeated_players += 1
+			player_teams += 1
+	if defeated_players >= player_teams and defeated_players > 0:
+		game_ended = true
+	elif defeated_teams == Main.teams.size() -1:
+		game_ended = true
+		victory = true
+	elif defeated_ally_teams == ally_teams and !Main.is_ffa:
+		game_ended = true
+		if !team.is_player:
+			victory = true
+	
+	if game_ended:
+		if victory:
+			message.texture = victory_texture
+		else:
+			message.texture = defeat_texture
+		Main.disable_input(true)
+		modulate.a = 0
+		popup()
+		var tween = create_tween()
+		tween.tween_property(self, "modulate:a", 1.0, 2)
 
 func _on_power_start(_team: Team) -> void:
 	team = _team

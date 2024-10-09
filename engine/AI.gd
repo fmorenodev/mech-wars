@@ -2,7 +2,6 @@
 extends Node
 
 var current_index = 0
-var game_ended := false
 
 onready var Main = get_parent()
 
@@ -48,13 +47,9 @@ func _ready() -> void:
 	var _err = signals.connect("start_ai_turn", self, "_on_start_turn")
 	_err = signals.connect("next_ai_unit_turn", self, "_on_next_unit_turn")
 	_err = signals.connect("end_ai_turn", self, "_on_end_ai_turn")
-	_err = signals.connect("team_defeated", self, "_on_team_defeated")
 	
 	_err = signals.connect("move_completed", self, "_on_move_completed")
 	_err = signals.connect("action_completed", self, "_on_action_completed")
-
-func _on_team_defeated(_team: Team) -> void:
-	game_ended = true
 
 func _on_start_turn(team: Team) -> void:
 	Main.disable_input(true)
@@ -121,8 +116,12 @@ func _on_move_completed(unit: Unit) -> void:
 
 # creates the most expensive unit it can afford on each building
 func _on_end_ai_turn(team: Team) -> void:
+	
 	# only create certain units if the enemy is making units that need counters
-	var enemy_team_units = Main.teams[0].units
+	var enemy_team_units = []
+	for t in Main.teams:
+		if team.allegiance != t.allegiance:
+			enemy_team_units.append_array(t.units)
 	var enemy_air_units := 0
 	var enemy_armored_units := 0
 	var create_anti_air := false
@@ -174,20 +173,22 @@ func calc_target_value(unit: Unit) -> Array:
 		var targets = Main.check_all_targets(unit)
 		for target_pos in targets:
 			var target = Main.is_unit_in_position(target_pos[1])
-			var value = Main.calc_dmg_value(unit, target)
-			if target.capture_points > 0:
-				value += 50
-			if value > attack_turn_value:
-				attack_turn_value = value
-				chosen_target = target
-				cell_to_move = target_pos[0]
+			var value = 0
+			if target.allegiance != unit.allegiance:
+				value = Main.calc_dmg_value(unit, target)
+				if target.capture_points > 0:
+					value += 50
+				if value > attack_turn_value:
+					attack_turn_value = value
+					chosen_target = target
+					cell_to_move = target_pos[0]
 	return [attack_turn_value, chosen_target, cell_to_move]
 
 func calc_cap_points(unit: Unit, target: Building) -> float:
 	var value
 	if target.team_id == -1:
 		value = 100
-	elif target.team_id != unit.team_id:
+	elif target.allegiance != unit.allegiance:
 		value = 150
 	if target.type != gl.BUILDINGS.RUINS or target.type != gl.BUILDINGS.RUINS_2:
 		value += 51
@@ -206,7 +207,7 @@ func calc_capture_value(unit: Unit) -> Array:
 			var value = 0
 			if target.team_id == -1:
 				value = 100
-			elif target.team_id != unit.team_id:
+			elif target.allegiance != unit.allegiance:
 				value = 150
 			if target.type != gl.BUILDINGS.RUINS or target.type != gl.BUILDINGS.RUINS_2:
 				value += 51
@@ -225,7 +226,7 @@ func calc_repair_value(unit: Unit) -> Array:
 	var repair_turn_value = 0
 	var chosen_repair_building = null
 	var building_in_same_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
-	if building_in_same_pos and building_in_same_pos.team_id == unit.team_id and unit.health <= 8:
+	if building_in_same_pos and building_in_same_pos.allegiance == unit.allegiance and unit.health <= 8:
 		# TODO: if unit is repairing, allow it to take another action
 		# find a way to prioritize actions taken on the same position without passing the turn
 		pass
@@ -250,7 +251,7 @@ func calc_movement(unit: Unit) -> Array:
 	var attack_turn_value = 0
 	var chosen_target = null
 	for target_unit in Main.units:
-		if unit.team_id != target_unit.team_id:
+		if unit.allegiance != target_unit.allegiance:
 			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_unit.position)), unit.team_id, true)
 			if weight < 99 and weight > 0:
 				var value = Main.calc_dmg_value(unit, target_unit)
@@ -261,7 +262,7 @@ func calc_movement(unit: Unit) -> Array:
 	var capture_turn_value = 0
 	var chosen_capture_building = null
 	for target_building in Main.buildings:
-		if unit.team_id != target_building.team_id:
+		if unit.allegiance != target_building.allegiance:
 			var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team_id, true)
 			if weight < 99 and weight > 0:
 				var value = calc_cap_points(unit, target_building) / 2
@@ -273,7 +274,7 @@ func calc_movement(unit: Unit) -> Array:
 	var chosen_repair_building = null
 	if unit.health <= 2:
 		for target_building in Main.buildings:
-			if unit.team_id == target_building.team_id:
+			if unit.allegiance == target_building.allegiance:
 				var weight = astar.get_path_weight(unit.move_type, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(target_building.position)), unit.team_id, true)
 				if weight < 99 and weight > 0:
 					var value = calc_repair_points(unit)
@@ -331,7 +332,7 @@ func calculate_turn(unit: Unit) -> void:
 			unit.chosen_action = [0, gl.TURN_TYPE.MOVE, unit.cell_to_move]
 
 func _on_action_completed() -> void:
-	if !game_ended: # prevents code from continuing execution when the player is dead
+	if !Main.active_team.defeated: # prevents code from continuing execution when the player is dead
 		Main.update_all_a_star()
 		goto_next()
 

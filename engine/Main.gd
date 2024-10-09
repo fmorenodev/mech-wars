@@ -24,6 +24,8 @@ var targets := []
 var selecting_targets := false
 var current_index: int
 
+var is_ffa := true
+
 ##################
 # INITIALIZATION #
 ##################
@@ -44,7 +46,7 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 	
 	var cells = TerrainTileMap.get_used_cells()
-	gl.map_size = cells.back()
+	gl.map_size = cells.back() + Vector2.ONE
 	var _err = signals.connect("accept_pressed", self, "_on_accept_pressed")
 	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
 	_err = signals.connect("cursor_moved", self, "_on_cursor_moved")
@@ -57,14 +59,22 @@ func _ready() -> void:
 	_err = signals.connect("unit_deleted", self, "_on_unit_deleted")
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
-	initialize([Team.new(gl.TEAM.RED, true), Team.new(gl.TEAM.BLUE, false)])
+	# allegiances here
+	initialize([Team.new(gl.TEAM.RED, false, 1), Team.new(gl.TEAM.BLUE, false, 1),
+		Team.new(gl.TEAM.GREEN, false, 2), Team.new(gl.TEAM.YELLOW, false, 2)])
 	for child in SelectionTileMap.get_children():
 		add_unit_data(child, child.id, child.team_id)
 		child.change_material_to_color()
 	for child in BuildingsTileMap.get_children():
 		add_building_data(child, child.type, child.team_id)
+	
+	# game variables
 	teams[0].co = gl.COS.MARK0
 	teams[1].co = gl.COS.BANDIT
+	teams[2].co = gl.COS.EVIL_MARK0
+	teams[3].co = gl.COS.HUMAN_CO
+	is_ffa = false
+	
 	astar.init_a_star()
 	start_turn()
 
@@ -82,6 +92,7 @@ func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
 	unit.set_team(team_id)
+	unit.allegiance = teams[team_id].allegiance
 	teams[team_id].add_unit(unit)
 	teams[team_id].unit_points += gl.units[unit_id].point_cost
 	unit.end_action()
@@ -108,7 +119,7 @@ func update_a_star(a_star: AStar2D, team_id: int) -> void:
 			var pos = Vector2(x, y)
 			var unit_in_position = is_unit_in_position(pos)
 			if unit_in_position:
-				if unit_in_position.team_id != team_id:
+				if unit_in_position.allegiance != teams[team_id].allegiance:
 					var point = a_star.get_closest_point(pos)
 					a_star.add_point(point, pos, 99)
 				else:
@@ -151,7 +162,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 	for direction in directions:
 		var coordinates: Vector2 = TerrainTileMap.world_to_map(pos) + direction
 		var target_unit = is_unit_in_position(coordinates)
-		if all_possible or (target_unit and target_unit.team_id != unit.team_id and can_attack(unit, target_unit)):
+		if all_possible or (target_unit and target_unit.allegiance != unit.allegiance and can_attack(unit, target_unit)):
 			result.append(coordinates)
 	return result
 
@@ -190,7 +201,7 @@ func threatened_cells(unit: Unit) -> Array:
 		for i in range(wk_cells.size() - 1, -1, -1):
 			var unit_in_pos = is_unit_in_position(wk_cells[i])
 			if unit_in_pos:
-				if unit.team_id != unit_in_pos.team_id:
+				if unit.allegiance != unit_in_pos.allegiance:
 					wk_cells.remove(i)
 		for cell in wk_cells:
 			var tgs = check_targets(unit, SelectionTileMap.map_to_world(cell), true)
@@ -211,7 +222,7 @@ func check_buildings(unit: Unit, owned: bool) -> Array:
 	for cell in wk_cells:
 		var building = is_building_in_position(cell)
 		if building:
-			if (!owned and building.team_id != unit.team_id) or (owned and building.team_id == unit.team_id):
+			if (!owned and building.allegiance != unit.allegiance) or (owned and building.allegiance == unit.allegiance):
 				buildings_result.append(cell)
 	return buildings_result
 
@@ -224,10 +235,9 @@ func select_unit_or_building(pos: Vector2) -> void:
 		if active_unit.can_move:
 			select_unit()
 		else:
-			if active_unit.team_id != active_team.team_id:
-				var th_cells = threatened_cells(selected_entity)
-				for pos in th_cells:
-					SelectionTileMap.set_cellv(pos, 1)
+			var th_cells = threatened_cells(selected_entity)
+			for pos in th_cells:
+				SelectionTileMap.set_cellv(pos, 1)
 			active_unit = null
 	elif selected_entity is Building and selected_entity.team_id == active_team.team_id \
 	and selected_entity.is_production_building():
@@ -266,7 +276,7 @@ func move_active_unit(target_pos: Vector2) -> void:
 	if !targets.empty():
 		menu_options.append(2) # attack
 	var building = is_building_in_position(target_pos)
-	if building and active_unit.can_capture and building.team_id != active_team.team_id:
+	if building and active_unit.can_capture and building.allegiance != active_team.allegiance:
 		menu_options.append(3) # capture
 	else:
 		active_unit.capture_points = 0
@@ -433,7 +443,7 @@ func special_attack_cases(target_unit: Unit) -> void:
 				for direction in gl.DIRECTIONS:
 					var coordinates: Vector2 = TerrainTileMap.world_to_map(target_pos) + direction
 					var possible_target = is_unit_in_position(coordinates)
-					if possible_target and possible_target.team_id != active_unit.team_id \
+					if possible_target and possible_target.allegiance != active_unit.allegiance \
 					and !selected_targets.has(possible_target):
 						possible_targets.append(possible_target)
 				if possible_targets.size() > 0:
@@ -461,6 +471,7 @@ func _on_unit_deleted(unit: Unit) -> void:
 	team.unit_points -= unit.point_cost
 	unit.queue_free()
 	if team.units.size() <= 0:
+		team.defeated = true
 		signals.emit_signal("team_defeated", team)
 
 func _on_turn_ended() -> void:
@@ -570,7 +581,7 @@ func start_turn() -> void:
 		unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))
 		if is_building and gl.buildings[is_building.type].repairs.has(unit.move_type) \
-		and is_building.team_id == unit.team_id:
+		and is_building.allegiance == unit.allegiance:
 			unit.ammo = gl.units[unit.id].ammo
 			unit.energy = gl.units[unit.id].energy
 			var damage = 10 - unit.health
@@ -609,4 +620,7 @@ func _on_StatusInfoMenu_visibility_changed() -> void:
 	signals.emit_signal("send_teams_to_table", teams)
 
 func _on_COMenu_visibility_changed() -> void:
-	signals.emit_signal("send_cos_to_menu", [teams[0].co_resource, teams[1].co_resource])
+	var co_array = []
+	for team in teams:
+		co_array.append(team.co_resource)
+	signals.emit_signal("send_cos_to_menu", co_array)

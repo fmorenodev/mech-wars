@@ -1,14 +1,14 @@
 [gd_scene load_steps=14 format=2]
 
+[ext_resource path="res://engine/CursorTileMap.gd" type="Script" id=1]
 [ext_resource path="res://engine/PathTileMap.gd" type="Script" id=2]
 [ext_resource path="res://assets/map/green_tileset.png" type="Texture" id=3]
 [ext_resource path="res://assets/map/arrows.png" type="Texture" id=4]
-[ext_resource path="res://entities/Building.tscn" type="PackedScene" id=5]
-[ext_resource path="res://engine/CursorTileMap.gd" type="Script" id=7]
+[ext_resource path="res://assets/map/selection_tile/selection_tile.tres" type="Texture" id=5]
+[ext_resource path="res://assets/map/selection_tile/selection_tile_red.tres" type="Texture" id=6]
+[ext_resource path="res://assets/map/reticle/reticle.tres" type="Texture" id=7]
 [ext_resource path="res://assets/map/cursor/cursor.tres" type="Texture" id=8]
-[ext_resource path="res://assets/map/reticle/reticle.tres" type="Texture" id=9]
-[ext_resource path="res://assets/map/selection_tile/selection_tile.tres" type="Texture" id=10]
-[ext_resource path="res://assets/map/selection_tile/selection_tile_red.tres" type="Texture" id=11]
+[ext_resource path="res://entities/Building.tscn" type="PackedScene" id=10]
 
 [sub_resource type="TileSet" id=8]
 0/name = "green_tileset.png 0"
@@ -207,7 +207,7 @@
 
 [sub_resource type="TileSet" id=3]
 0/name = "selection_tile.tres 0"
-0/texture = ExtResource( 10 )
+0/texture = ExtResource( 5 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
 0/region = Rect2( 0, 0, 24, 24 )
@@ -221,7 +221,7 @@
 0/shapes = [  ]
 0/z_index = 0
 1/name = "selection_tile_red.tres 1"
-1/texture = ExtResource( 11 )
+1/texture = ExtResource( 6 )
 1/tex_offset = Vector2( 0, 0 )
 1/modulate = Color( 1, 1, 1, 1 )
 1/region = Rect2( 0, 0, 24, 24 )
@@ -251,7 +251,7 @@
 0/shapes = [  ]
 0/z_index = 0
 1/name = "reticle.tres 1"
-1/texture = ExtResource( 9 )
+1/texture = ExtResource( 7 )
 1/tex_offset = Vector2( 0, 0 )
 1/modulate = Color( 1, 1, 1, 1 )
 1/region = Rect2( 0, 0, 32, 32 )
@@ -274,7 +274,7 @@ cell_size = Vector2( 24, 24 )
 cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
 format = 1
-tile_data = PoolIntArray( 0, 4, 0, 1, 4, 0, 2, 4, 0, 3, 4, 0, 4, 4, 0, 5, 4, 0, 6, 4, 0, 7, 4, 0, 8, 4, 0, 9, 0, 0, 10, 4, 0, 11, 4, 0, 12, 4, 0, 13, 0, 0, 14, 4, 0, 15, 4, 0, 16, 4, 0, 17, 4, 0, 65536, 4, 0, 65537, 4, 0, 65538, 4, 0, 65539, 4, 0, 65540, 4, 0, 65541, 0, 0, 65542, 4, 0, 65543, 4, 0, 65544, 0, 0, 65545, 0, 0, 65546, 0, 0, 65547, 4, 0, 65548, 0, 0, 65549, 0, 0, 65550, 0, 0, 65551, 4, 0, 65552, 4, 0, 65553, 4, 0, 131072, 4, 0, 131073, 4, 0, 131074, 4, 0, 131075, 4, 0, 131076, 4, 0, 131077, 0, 0, 131078, 0, 0, 131079, 0, 0, 131080, 0, 0, 131081, 0, 0, 131082, 0, 0, 131083, 0, 0, 131084, 0, 0, 131085, 0, 0, 131086, 4, 0, 131087, 4, 0, 131088, 4, 0, 131089, 4, 0, 196608, 4, 0, 196609, 4, 0, 196610, 4, 0, 196611, 4, 0, 196612, 0, 0, 196613, 0, 0, 196614, 1, 0, 196615, 1, 0, 196616, 1, 0, 196617, 0, 0, 196618, 0, 0, 196619, 0, 0, 196620, 0, 0, 196621, 0, 0, 196622, 0, 0, 196623, 4, 0, 196624, 4, 0, 196625, 4, 0, 262144, 4, 0, 262145, 4, 0, 262146, 4, 0, 262147, 1, 0, 262148, 0, 0, 262149, 0, 0, 262150, 1, 0, 262151, 1, 0, 262152, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 3, 0, 262156, 3, 0, 262157, 3, 0, 262158, 3, 0, 262159, 0, 0, 262160, 4, 0, 262161, 4, 0, 327680, 4, 0, 327681, 4, 0, 327682, 4, 0, 327683, 1, 0, 327684, 0, 0, 327685, 0, 0, 327686, 0, 0, 327687, 0, 0, 327688, 3, 0, 327689, 3, 0, 327690, 0, 0, 327691, 0, 0, 327692, 1, 0, 327693, 1, 0, 327694, 1, 0, 327695, 1, 0, 327696, 4, 0, 327697, 4, 0, 393216, 4, 0, 393217, 4, 0, 393218, 4, 0, 393219, 4, 0, 393220, 0, 0, 393221, 0, 0, 393222, 0, 0, 393223, 3, 0, 393224, 1, 0, 393225, 1, 0, 393226, 1, 0, 393227, 0, 0, 393228, 0, 0, 393229, 0, 0, 393230, 0, 0, 393231, 0, 0, 393232, 4, 0, 393233, 4, 0, 458752, 4, 0, 458753, 4, 0, 458754, 4, 0, 458755, 0, 0, 458756, 0, 0, 458757, 0, 0, 458758, 0, 0, 458759, 3, 0, 458760, 1, 0, 458761, 1, 0, 458762, 0, 0, 458763, 0, 0, 458764, 0, 0, 458765, 0, 0, 458766, 0, 0, 458767, 0, 0, 458768, 4, 0, 458769, 4, 0, 524288, 4, 0, 524289, 4, 0, 524290, 4, 0, 524291, 0, 0, 524292, 0, 0, 524293, 0, 0, 524294, 0, 0, 524295, 3, 0, 524296, 1, 0, 524297, 1, 0, 524298, 0, 0, 524299, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 524303, 0, 0, 524304, 4, 0, 524305, 4, 0, 589824, 4, 0, 589825, 4, 0, 589826, 4, 0, 589827, 4, 0, 589828, 0, 0, 589829, 0, 0, 589830, 0, 0, 589831, 0, 0, 589832, 0, 0, 589833, 0, 0, 589834, 0, 0, 589835, 0, 0, 589836, 0, 0, 589837, 0, 0, 589838, 0, 0, 589839, 4, 0, 589840, 4, 0, 589841, 4, 0, 655360, 4, 0, 655361, 4, 0, 655362, 4, 0, 655363, 4, 0, 655364, 0, 0, 655365, 4, 0, 655366, 0, 0, 655367, 3, 0, 655368, 1, 0, 655369, 1, 0, 655370, 0, 0, 655371, 0, 0, 655372, 0, 0, 655373, 0, 0, 655374, 0, 0, 655375, 4, 0, 655376, 4, 0, 655377, 4, 0, 720896, 4, 0, 720897, 4, 0, 720898, 4, 0, 720899, 4, 0, 720900, 4, 0, 720901, 4, 0, 720902, 4, 0, 720903, 3, 0, 720904, 1, 0, 720905, 1, 0, 720906, 1, 0, 720907, 0, 0, 720908, 0, 0, 720909, 2, 0, 720910, 2, 0, 720911, 2, 0, 720912, 4, 0, 720913, 4, 0, 786432, 4, 0, 786433, 4, 0, 786434, 4, 0, 786435, 4, 0, 786436, 4, 0, 786437, 4, 0, 786438, 4, 0, 786439, 4, 0, 786440, 1, 0, 786441, 4, 0, 786442, 4, 0, 786443, 1, 0, 786444, 3, 0, 786445, 2, 0, 786446, 3, 0, 786447, 3, 0, 786448, 4, 0, 786449, 4, 0, 851968, 4, 0, 851969, 4, 0, 851970, 4, 0, 851971, 4, 0, 851972, 4, 0, 851973, 4, 0, 851974, 4, 0, 851975, 4, 0, 851976, 4, 0, 851977, 4, 0, 851978, 4, 0, 851979, 4, 0, 851980, 3, 0, 851981, 3, 0, 851982, 3, 0, 851983, 3, 0, 851984, 2, 0, 851985, 4, 0 )
+tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 3, 0, 6, 2, 0, 7, 2, 0, 8, 2, 0, 9, 3, 0, 10, 0, 0, 11, 0, 0, 12, 0, 0, 13, 0, 0, 14, 0, 0, 65536, 0, 0, 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 65540, 1, 0, 65541, 3, 0, 65542, 0, 0, 65543, 0, 0, 65544, 0, 0, 65545, 3, 0, 65546, 1, 0, 65547, 0, 0, 65548, 0, 0, 65549, 0, 0, 65550, 0, 0, 131072, 0, 0, 131073, 0, 0, 131074, 0, 0, 131075, 1, 0, 131076, 0, 0, 131077, 0, 0, 131078, 1, 0, 131079, 1, 0, 131080, 1, 0, 131081, 0, 0, 131082, 0, 0, 131083, 1, 0, 131084, 0, 0, 131085, 0, 0, 131086, 0, 0, 196608, 3, 0, 196609, 3, 0, 196610, 1, 0, 196611, 0, 0, 196612, 0, 0, 196613, 1, 0, 196614, 0, 0, 196615, 1, 0, 196616, 0, 0, 196617, 1, 0, 196618, 0, 0, 196619, 0, 0, 196620, 1, 0, 196621, 3, 0, 196622, 3, 0, 262144, 2, 0, 262145, 0, 0, 262146, 1, 0, 262147, 0, 0, 262148, 1, 0, 262149, 0, 0, 262150, 1, 0, 262151, 0, 0, 262152, 1, 0, 262153, 0, 0, 262154, 1, 0, 262155, 0, 0, 262156, 1, 0, 262157, 0, 0, 262158, 2, 0, 327680, 2, 0, 327681, 0, 0, 327682, 1, 0, 327683, 0, 0, 327684, 1, 0, 327685, 1, 0, 327686, 0, 0, 327687, 0, 0, 327688, 0, 0, 327689, 1, 0, 327690, 1, 0, 327691, 0, 0, 327692, 1, 0, 327693, 0, 0, 327694, 2, 0, 393216, 2, 0, 393217, 0, 0, 393218, 1, 0, 393219, 0, 0, 393220, 1, 0, 393221, 0, 0, 393222, 1, 0, 393223, 0, 0, 393224, 1, 0, 393225, 0, 0, 393226, 1, 0, 393227, 0, 0, 393228, 1, 0, 393229, 0, 0, 393230, 2, 0, 458752, 3, 0, 458753, 3, 0, 458754, 1, 0, 458755, 0, 0, 458756, 0, 0, 458757, 1, 0, 458758, 0, 0, 458759, 1, 0, 458760, 0, 0, 458761, 1, 0, 458762, 0, 0, 458763, 0, 0, 458764, 1, 0, 458765, 3, 0, 458766, 3, 0, 524288, 0, 0, 524289, 0, 0, 524290, 0, 0, 524291, 1, 0, 524292, 0, 0, 524293, 0, 0, 524294, 1, 0, 524295, 1, 0, 524296, 1, 0, 524297, 0, 0, 524298, 0, 0, 524299, 1, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 589824, 0, 0, 589825, 0, 0, 589826, 0, 0, 589827, 0, 0, 589828, 1, 0, 589829, 3, 0, 589830, 0, 0, 589831, 0, 0, 589832, 0, 0, 589833, 3, 0, 589834, 1, 0, 589835, 0, 0, 589836, 0, 0, 589837, 0, 0, 589838, 0, 0, 655360, 0, 0, 655361, 0, 0, 655362, 0, 0, 655363, 0, 0, 655364, 0, 0, 655365, 3, 0, 655366, 2, 0, 655367, 2, 0, 655368, 2, 0, 655369, 3, 0, 655370, 0, 0, 655371, 0, 0, 655372, 0, 0, 655373, 0, 0, 655374, 0, 0 )
 
 [node name="BuildingsTileMap" type="TileMap" parent="."]
 cell_size = Vector2( 24, 24 )
@@ -282,133 +282,167 @@ cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
 format = 1
 
-[node name="Building3" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 96, 96 )
-type = 1
-
-[node name="Building4" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 96, 72 )
-type = 2
-
-[node name="Building5" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 120, 48 )
-type = 2
-
-[node name="Building6" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 120, 96 )
-type = 2
-
-[node name="Building7" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 120, 72 )
+[node name="Building" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 0, 0 )
+team_id = 2
 type = 5
 
-[node name="Building12" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 192, 48 )
-team_id = -1
+[node name="Building4" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 0, 240 )
+type = 5
 
-[node name="Building13" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 216, 72 )
-team_id = -1
-type = 1
-
-[node name="Building14" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 240, 48 )
-team_id = -1
-
-[node name="Building15" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 312, 24 )
-team_id = -1
-
-[node name="Building16" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 96, 144 )
-team_id = -1
-type = 1
-
-[node name="Building29" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 120, 168 )
-team_id = -1
-type = 1
-
-[node name="Building30" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 72, 192 )
-team_id = -1
-
-[node name="Building31" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 120, 216 )
-team_id = -1
-type = 1
-
-[node name="Building32" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 96, 240 )
-team_id = -1
-type = 1
-
-[node name="Building33" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 144, 240 )
-team_id = -1
-
-[node name="Building17" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 288, 48 )
-team_id = -1
-
-[node name="Building18" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 264, 168 )
-team_id = 1
-
-[node name="Building19" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 240, 192 )
-team_id = 1
-type = 1
-
-[node name="Building20" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 288, 168 )
-team_id = 1
-
-[node name="Building24" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 312, 168 )
-team_id = 1
-type = 1
-
-[node name="Building34" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 336, 168 )
-team_id = 1
-type = 1
-
-[node name="Building35" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 360, 168 )
-team_id = 1
-
-[node name="Building25" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 336, 216 )
-team_id = 1
-type = 2
-
-[node name="Building26" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 312, 216 )
-team_id = 1
-type = 2
-
-[node name="Building28" parent="BuildingsTileMap" instance=ExtResource( 5 )]
+[node name="Building5" parent="BuildingsTileMap" instance=ExtResource( 10 )]
 position = Vector2( 336, 240 )
 team_id = 1
 type = 5
 
-[node name="Building27" parent="BuildingsTileMap" instance=ExtResource( 5 )]
+[node name="Building6" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 336, 0 )
+team_id = 3
+type = 5
+
+[node name="Building2" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 24, 0 )
+team_id = 2
+type = 2
+
+[node name="Building13" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 72, 24 )
+team_id = -1
+type = 1
+
+[node name="Building14" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 48, 48 )
+team_id = -1
+type = 1
+
+[node name="Building15" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 48, 192 )
+team_id = -1
+type = 1
+
+[node name="Building16" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 72, 216 )
+team_id = -1
+type = 1
+
+[node name="Building17" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 264, 216 )
+team_id = -1
+type = 1
+
+[node name="Building18" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 288, 192 )
+team_id = -1
+type = 1
+
+[node name="Building19" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 288, 48 )
+team_id = -1
+type = 1
+
+[node name="Building20" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 264, 24 )
+team_id = -1
+type = 1
+
+[node name="Building21" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 168, 96 )
+team_id = -1
+type = 1
+
+[node name="Building26" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 144, 24 )
+team_id = -1
+type = 1
+
+[node name="Building27" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 192, 24 )
+team_id = -1
+type = 1
+
+[node name="Building28" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 312, 96 )
+team_id = -1
+type = 1
+
+[node name="Building29" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 312, 144 )
+team_id = -1
+type = 1
+
+[node name="Building30" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 192, 216 )
+team_id = -1
+type = 1
+
+[node name="Building31" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 144, 216 )
+team_id = -1
+type = 1
+
+[node name="Building32" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 24, 144 )
+team_id = -1
+type = 1
+
+[node name="Building33" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 24, 96 )
+team_id = -1
+type = 1
+
+[node name="Building22" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 168, 120 )
+team_id = -1
+type = 3
+
+[node name="Building23" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 192, 120 )
+team_id = -1
+type = 1
+
+[node name="Building24" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 168, 144 )
+team_id = -1
+type = 1
+
+[node name="Building25" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 144, 120 )
+team_id = -1
+type = 1
+
+[node name="Building9" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 312, 0 )
+team_id = 3
+type = 2
+
+[node name="Building10" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 336, 24 )
+team_id = 3
+type = 2
+
+[node name="Building11" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 336, 216 )
+team_id = 1
+type = 2
+
+[node name="Building12" parent="BuildingsTileMap" instance=ExtResource( 10 )]
 position = Vector2( 312, 240 )
 team_id = 1
 type = 2
 
-[node name="Building21" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 264, 216 )
-team_id = 1
+[node name="Building7" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 24, 240 )
+type = 2
 
-[node name="Building22" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 264, 264 )
-team_id = 1
+[node name="Building8" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 0, 216 )
+type = 2
 
-[node name="Building23" parent="BuildingsTileMap" instance=ExtResource( 5 )]
-position = Vector2( 240, 240 )
-team_id = 1
+[node name="Building3" parent="BuildingsTileMap" instance=ExtResource( 10 )]
+position = Vector2( 0, 24 )
+team_id = 2
+type = 2
 
 [node name="PathTileMap" type="TileMap" parent="."]
 tile_set = SubResource( 9 )
@@ -433,7 +467,7 @@ cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
 centered_textures = true
 format = 1
-script = ExtResource( 7 )
+script = ExtResource( 1 )
 
 [node name="GameCamera" type="Camera2D" parent="CursorTileMap"]
 anchor_mode = 0
