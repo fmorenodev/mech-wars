@@ -60,7 +60,7 @@ func _ready() -> void:
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
 	# allegiances here
-	initialize([Team.new(gl.TEAM.RED, false, 1), Team.new(gl.TEAM.BLUE, false, 1),
+	initialize([Team.new(gl.TEAM.RED, true, 1), Team.new(gl.TEAM.BLUE, false, 1),
 		Team.new(gl.TEAM.GREEN, false, 2), Team.new(gl.TEAM.YELLOW, false, 2)])
 	for child in SelectionTileMap.get_children():
 		add_unit_data(child, child.id, child.team_id)
@@ -98,7 +98,7 @@ func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 	unit.end_action()
 
 func add_building_data(building: Building, type: int, team_id: int, available_units: PoolIntArray = []):
-	building.initialize(type, team_id, available_units)
+	building.initialize(type, team_id, teams[team_id].unlocked_factory_units, available_units)
 	buildings.append(building)
 	if team_id >= 0:
 		building.capture(teams[team_id])
@@ -407,10 +407,10 @@ func capture_action(unit: Unit) -> void:
 	end_unit_action()
 
 func common_capture_logic(unit: Unit) -> void:
-	unit.capture()
+	var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
+	unit.capture(building)
 	if unit.capture_points >= 20:
 		unit.capture_points = 0
-		var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
 		teams[building.team_id].buildings.erase(building)
 		if building.team_id != -1:
 			building.capture(active_team, teams[building.team_id])
@@ -552,6 +552,8 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 		if add_random:
 			teams[counter_attacker.team_id].power_meter_amount += (target.cost * (result / 10)) / 2
 			teams[target.team_id].power_meter_amount += target.cost * (result / 10)
+		if result < 0.0:
+			result = 0.0
 		return stepify(result, 0.01)
 	else:
 		return 0.0

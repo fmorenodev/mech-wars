@@ -99,7 +99,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 					UNITS.ARC_TOWER: 25, UNITS.ANTI_AIR: 6, UNITS.ROCKET: 35,
 					UNITS.DRONE: 20},
 				atk_type = ATTACK_TYPE.DIRECT,
-				cost = 5000,
+				cost = 5500,
 				point_cost = 2,
 				can_capture = true},
 			UNITS.RECON: 
@@ -182,7 +182,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 					UNITS.ARC_TOWER: 45, UNITS.ANTI_AIR: 7, UNITS.ROCKET: 55,
 					UNITS.DRONE: 12},
 				atk_type = ATTACK_TYPE.DIRECT,
-				cost = 15000,
+				cost = 15500,
 				point_cost = 5,
 				can_capture = false},
 			UNITS.ARTILLERY:

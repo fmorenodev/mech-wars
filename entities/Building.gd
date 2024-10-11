@@ -11,7 +11,7 @@ var funds: int
 func _ready():
 	var _err = signals.connect("change_unlocked_factory_units", self, "set_available_units")
 
-func initialize(_type: int, _team_id: int, _available_units: PoolIntArray = []) -> void:
+func initialize(_type: int, _team_id: int, unlocked: bool, _available_units: PoolIntArray = []) -> void:
 	set_team_id(_team_id)
 	type = _type
 	frame = type
@@ -19,7 +19,7 @@ func initialize(_type: int, _team_id: int, _available_units: PoolIntArray = []) 
 	if _available_units.size() > 0:
 		available_units = _available_units
 	else:
-		set_available_units(false, team_id)
+		set_available_units(unlocked, team_id)
 
 func set_team_id(value: int) -> void:
 	team_id = value

@@ -36,6 +36,7 @@ var def_mod: float = 1.0
 
 # other variables
 var capture_points: int = 0
+var capturing_building
 var atk_bonus = 1
 var def_bonus = 1
 var current_energy_cost: int = 0
@@ -177,9 +178,15 @@ func activate() -> void:
 	can_move = true
 	change_material_to_color()
 
-func capture() -> void:
+func capture(building) -> void:
+	if !capturing_building:
+		capturing_building = building
+	elif capturing_building != building:
+		capturing_building = building
+		capture_points = 0
 	capture_points += int(ceil(health))
 	if capture_points >= 20:
+		capturing_building = null
 		AuxLabel.text = ''
 	else:
 		AuxLabel.text = 'c'
