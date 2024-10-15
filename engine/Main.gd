@@ -50,10 +50,13 @@ func _ready() -> void:
 	var _err = signals.connect("accept_pressed", self, "_on_accept_pressed")
 	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
 	_err = signals.connect("cursor_moved", self, "_on_cursor_moved")
+	
 	_err = signals.connect("move_action", self, "_on_move_action")
 	_err = signals.connect("cancel_action", self, "_on_cancel_action")
 	_err = signals.connect("attack_action", self, "_on_attack_action")
 	_err = signals.connect("capture_action", self, "_on_capture_action")
+	_err = signals.connect("join_action", self, "_on_join_action")
+	
 	_err = signals.connect("target_selected", self, "_on_target_selected")
 	_err = signals.connect("unit_added", self, "_on_unit_added")
 	_err = signals.connect("unit_deleted", self, "_on_unit_deleted")
@@ -247,7 +250,14 @@ func select_unit_or_building(pos: Vector2) -> void:
 
 func move_active_unit(target_pos: Vector2) -> void:
 	var unit_blocking = is_unit_in_position(target_pos)
-	if (unit_blocking and unit_blocking != active_unit) or not target_pos in walkable_cells: # empty
+	var can_join := false
+	if unit_blocking and (unit_blocking != active_unit):
+		if unit_blocking.id == active_unit.id:
+			targets = [unit_blocking]
+			can_join = true
+		else:
+			return
+	if not target_pos in walkable_cells: # empty
 		return
 	
 	if PathTileMap.map_to_world(target_pos) == active_unit.position:
@@ -267,6 +277,9 @@ func move_active_unit(target_pos: Vector2) -> void:
 		disable_input(false)
 		active_unit.position = path_world_coords.back()
 	
+	if can_join:
+		open_action_menu([4], target_pos) # join
+		return
 	# check for attack targets
 	if active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
 		targets = check_targets(active_unit, active_unit.position)
@@ -400,10 +413,16 @@ func _on_attack_action() -> void:
 		CursorTileMap.set_cellv(targets[0], 1)
 
 func _on_capture_action() -> void:
-	capture_action(active_unit)
+	common_capture_logic(active_unit)
+	end_unit_action()
 
-func capture_action(unit: Unit) -> void:
-	common_capture_logic(unit)
+func _on_join_action() -> void:
+	var new_health = active_unit.health + targets[0].health
+	if new_health > active_unit.max_health:
+		active_team.funds += (new_health - active_unit.max_health) * active_unit.cost / active_unit.max_health
+	active_unit.health = new_health
+	targets[0].health = 0
+	targets.clear()
 	end_unit_action()
 
 func common_capture_logic(unit: Unit) -> void:

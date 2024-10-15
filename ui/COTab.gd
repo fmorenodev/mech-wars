@@ -14,7 +14,6 @@ onready var super_desc = $Powers/Super/Desc
 func set_co(value: COData) -> void:
 	co_name.text = tr(value.name)
 	co_desc.text = tr(value.desc)
-	icon.texture = value.texture
 	d2d.text = tr(value.d2d)
 	power_name.text = tr(value.power_name)
 	power_desc.text = tr(value.power_desc)

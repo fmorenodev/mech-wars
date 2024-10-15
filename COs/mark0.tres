@@ -1,7 +1,6 @@
 [gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://resources/COData.gd" type="Script" id=1]
-[ext_resource path="res://assets/gui/red_x.png" type="Texture" id=2]
 [ext_resource path="res://assets/gui/power_stars/power_star_2.png" type="Texture" id=3]
 [ext_resource path="res://assets/gui/power_stars/power_star_empty_2.png" type="Texture" id=4]
 [ext_resource path="res://assets/gui/power_stars/super_star_2.png" type="Texture" id=5]
@@ -9,7 +8,6 @@
 
 [resource]
 script = ExtResource( 1 )
-texture = ExtResource( 2 )
 name = "MARK0_NAME"
 desc = "MARK0_DESC"
 d2d = "MARK0_D2D"

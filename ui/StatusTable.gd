@@ -31,7 +31,7 @@ func set_row(team: Team) -> void:
 	
 	var instance_path = "ScrollContainer/TableContent/%s/%s"
 	# TODO: add team icons
-	# get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).texture_normal
+	get_node(instance_path % [row_instance.name, "/HBoxContainer/TextureButton"]).texture_normal = sp.team_icons[team.team_id]
 	get_node(instance_path % [row_instance.name, "/Label"]).text = str(team.units.size())
 	get_node(instance_path % [row_instance.name, "/Label2"]).text = str(team.lost_units)
 	get_node(instance_path % [row_instance.name, "/Label3"]).text = str(team.buildings.size())

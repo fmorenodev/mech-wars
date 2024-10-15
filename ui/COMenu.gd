@@ -14,5 +14,6 @@ func set_data(co_array: Array) -> void:
 		var new_co_tab = co_tab.instance()
 		add_child(new_co_tab)
 		new_co_tab.co = co_res
+		new_co_tab.icon.texture = sp.team_icons[i]
 		set_tab_title(i, co_res.name)
 		i += 1

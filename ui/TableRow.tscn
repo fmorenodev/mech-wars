@@ -9,14 +9,15 @@ size_flags_horizontal = 3
 script = ExtResource( 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_right = 133.0
+margin_right = 10.0
 margin_bottom = 31.0
+rect_min_size = Vector2( 10, 0 )
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="TextureButton" type="TextureButton" parent="HBoxContainer"]
-margin_left = 66.0
-margin_right = 66.0
+margin_left = 5.0
+margin_right = 5.0
 margin_bottom = 31.0
 
 [node name="Label" type="Label" parent="."]

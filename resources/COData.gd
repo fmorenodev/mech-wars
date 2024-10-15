@@ -1,7 +1,6 @@
 extends Resource
 class_name COData
 
-export var texture: Texture
 export var name: String
 export var desc: String
 export var d2d: String

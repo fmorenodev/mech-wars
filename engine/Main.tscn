@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
-[ext_resource path="res://maps/FourCornersMap.tscn" type="PackedScene" id=3]
+[ext_resource path="res://maps/DoublePassMap.tscn" type="PackedScene" id=3]
 [ext_resource path="res://engine/AI.gd" type="Script" id=4]
 [ext_resource path="res://engine/Main.gd" type="Script" id=15]
 [ext_resource path="res://ui/ActionMenu.gd" type="Script" id=16]
@@ -11,12 +11,12 @@
 [ext_resource path="res://ui/FixedInfo.gd" type="Script" id=20]
 [ext_resource path="res://ui/EntityInfo.tscn" type="PackedScene" id=21]
 [ext_resource path="res://ui/UnitTable.gd" type="Script" id=22]
-[ext_resource path="res://assets/gui/ammo_icon.png" type="Texture" id=23]
-[ext_resource path="res://assets/gui/energy_icon.png" type="Texture" id=24]
+[ext_resource path="res://assets/gui/unit_info_icons/ammo_icon.png" type="Texture" id=23]
+[ext_resource path="res://assets/gui/unit_info_icons/energy_icon.png" type="Texture" id=24]
 [ext_resource path="res://assets/gui/def_star.png" type="Texture" id=25]
 [ext_resource path="res://ui/StatusTable.gd" type="Script" id=26]
 [ext_resource path="res://ui/DetailedInfoMenu.gd" type="Script" id=27]
-[ext_resource path="res://assets/gui/health_icon.png" type="Texture" id=28]
+[ext_resource path="res://assets/gui/unit_info_icons/health_icon.png" type="Texture" id=28]
 [ext_resource path="res://assets/gui/capture_points_icon.png" type="Texture" id=29]
 [ext_resource path="res://ui/COMenu.gd" type="Script" id=30]
 [ext_resource path="res://engine/COPowers.gd" type="Script" id=31]
@@ -382,20 +382,24 @@ script = ExtResource( 20 )
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 206.0
-margin_bottom = 52.0
+margin_bottom = 51.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
 margin_right = 199.0
 margin_bottom = 7.0
 
+[node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
+margin_bottom = 7.0
+
 [node name="Funds" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
-margin_right = 32.0
+margin_left = 4.0
+margin_right = 36.0
 margin_bottom = 7.0
 text = "3000"
 
 [node name="FundsPerTurn" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
-margin_left = 36.0
-margin_right = 36.0
+margin_left = 40.0
+margin_right = 40.0
 margin_bottom = 7.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
@@ -418,15 +422,10 @@ step = 1000.0
 texture_under = ExtResource( 35 )
 texture_progress = ExtResource( 33 )
 
-[node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+[node name="Status" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
 margin_top = 34.0
 margin_right = 199.0
-margin_bottom = 34.0
-
-[node name="Status" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
-margin_top = 38.0
-margin_right = 199.0
-margin_bottom = 45.0
+margin_bottom = 41.0
 text = "POWER ACTIVE!"
 
 [node name="TileUnitInfo" type="VBoxContainer" parent="GUI/GUIContainer"]

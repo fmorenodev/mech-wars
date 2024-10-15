@@ -34,6 +34,7 @@ onready var Main = get_parent()
 # - attack unit
 # - capture
 # - retreat to heal
+# - join : TODO
 
 # TODO, corner cases:
 # - move out of grey buildings (non-infantry)
