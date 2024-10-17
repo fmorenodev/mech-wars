@@ -382,11 +382,22 @@ script = ExtResource( 20 )
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 206.0
-margin_bottom = 51.0
+margin_bottom = 59.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
 margin_right = 199.0
 margin_bottom = 7.0
+
+[node name="Day" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer3"]
+margin_right = 199.0
+margin_bottom = 7.0
+size_flags_horizontal = 3
+align = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
+margin_top = 11.0
+margin_right = 199.0
+margin_bottom = 18.0
 
 [node name="COIcon" type="TextureRect" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer"]
 margin_bottom = 7.0
@@ -403,9 +414,9 @@ margin_right = 40.0
 margin_bottom = 7.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
-margin_top = 11.0
+margin_top = 22.0
 margin_right = 199.0
-margin_bottom = 30.0
+margin_bottom = 41.0
 
 [node name="PowerStars" type="TextureProgress" parent="GUI/GUIContainer/FixedInfo/VBoxContainer/HBoxContainer2"]
 margin_right = 90.0
@@ -423,9 +434,9 @@ texture_under = ExtResource( 35 )
 texture_progress = ExtResource( 33 )
 
 [node name="Status" type="Label" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
-margin_top = 34.0
+margin_top = 45.0
 margin_right = 199.0
-margin_bottom = 41.0
+margin_bottom = 52.0
 text = "POWER ACTIVE!"
 
 [node name="TileUnitInfo" type="VBoxContainer" parent="GUI/GUIContainer"]

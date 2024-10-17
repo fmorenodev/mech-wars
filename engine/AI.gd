@@ -115,6 +115,7 @@ func _on_move_completed(unit: Unit) -> void:
 	else:
 		signals.emit_signal("action_completed")
 
+# handles unit creation
 # creates the most expensive unit it can afford on each building
 func _on_end_ai_turn(team: Team) -> void:
 	
@@ -137,25 +138,39 @@ func _on_end_ai_turn(team: Team) -> void:
 		create_anti_air = true
 	if enemy_armored_units >= 3:
 		create_anti_armored = true
-			
+	
+	# first units are always infantry
+	var infantry_units := 0
+	var prio_infantry := false
+	for unit in Main.active_team.units:
+		if unit.id == gl.UNITS.LIGHT_INFANTRY or unit.id == gl.UNITS.HEAVY_INFANTRY \
+		or unit.id == gl.UNITS.FLYING_INFANTRY:
+			infantry_units += 1
+	if infantry_units < 4 and Main.active_team.units < 4:
+		prio_infantry = true
+		
 	for i in range(team.buildings.size() - 1, -1, -1): # start from the latest captured buildings
 		var building = team.buildings[i]
 		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
 		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
 			var highest_cost = 0
 			var chosen_unit = null
-			for unit_code in gl.units.keys():
-				if building.available_units.has(unit_code):
-					var unit = gl.units[unit_code]
-					if unit.cost > highest_cost and team.funds >= unit.cost \
-					and (team.unit_points + unit.point_cost) <= team.max_unit_points:
-						if ((unit_code == gl.UNITS.ANTI_AIR or unit_code == gl.UNITS.ROCKET or \
-						unit_code == gl.UNITS.ANGEL) and !create_anti_air) or \
-						(unit_code == gl.UNITS.HEAVY_INFANTRY and !create_anti_armored):
-							pass
-						else:
-							highest_cost = unit.cost
-							chosen_unit = unit_code
+			if prio_infantry:
+				chosen_unit = gl.UNITS.LIGHT_INFANTRY
+			else:
+				for unit_code in gl.units.keys():
+					if building.available_units.has(unit_code):
+						var unit = gl.units[unit_code]
+						if unit.cost > highest_cost and team.funds >= unit.cost \
+						and (team.unit_points + unit.point_cost) <= team.max_unit_points:
+							if ((unit_code == gl.UNITS.ANTI_AIR or unit_code == gl.UNITS.ROCKET or \
+							unit_code == gl.UNITS.ANGEL) and !create_anti_air) or \
+							(unit_code == gl.UNITS.HEAVY_INFANTRY and !create_anti_armored) or \
+							(unit_code == gl.UNITS.RECON and create_anti_armored):
+								pass
+							else:
+								highest_cost = unit.cost
+								chosen_unit = unit_code
 					
 			if chosen_unit != null:
 				signals.emit_signal("unit_added", chosen_unit, team.team_id, building.position)

@@ -1,8 +1,10 @@
 extends PanelContainer
 
+onready var Main = $"../../.."
+onready var day_label = $VBoxContainer/HBoxContainer3/Day
+onready var co_icon = $VBoxContainer/HBoxContainer/COIcon
 onready var funds = $VBoxContainer/HBoxContainer/Funds
 onready var funds_per_turn = $VBoxContainer/HBoxContainer/FundsPerTurn
-onready var co_icon = $VBoxContainer/HBoxContainer/COIcon
 onready var power_stars = $VBoxContainer/HBoxContainer2/PowerStars
 onready var super_stars = $VBoxContainer/HBoxContainer2/SuperStars
 onready var status_label = $VBoxContainer/Status
@@ -22,6 +24,7 @@ func _on_turn_started(team: Team) -> void:
 	active_team = team
 	co = active_team.co_resource
 	co_icon.texture = sp.team_icons[team.team_id]
+	day_label.text = "%s: %d" % [tr("DAY"), Main.day]
 	
 	power_stars.show()
 	power_stars.texture_under = co.power_star_empty

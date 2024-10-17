@@ -17,32 +17,28 @@ loop = false
 material = ExtResource( 4 )
 frames = ExtResource( 2 )
 animation = "idle"
-frame = 4
 playing = true
 centered = false
 
 [node name="AuxLabel" type="Label" parent="PathFollow2D/AnimatedSprite"]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 2.19142
-margin_top = -14.8102
-margin_right = 10.1914
-margin_bottom = 5.18981
+margin_left = 1.0
+margin_top = -20.0
+margin_right = 9.0
 custom_fonts/font = ExtResource( 3 )
+valign = 2
 
 [node name="HealthLabel" type="Label" parent="PathFollow2D/AnimatedSprite"]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -6.85946
-margin_top = -14.6608
-margin_right = 1.14054
-margin_bottom = 5.33918
+margin_left = -8.0
+margin_top = -19.0
+margin_bottom = 0.999981
 custom_fonts/font = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+valign = 2
 
 [node name="AuxTexture" type="TextureRect" parent="PathFollow2D/AnimatedSprite"]
 margin_left = 16.0

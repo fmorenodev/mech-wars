@@ -23,6 +23,7 @@ var action_menu_open := false
 var targets := []
 var selecting_targets := false
 var current_index: int
+var day: int
 
 var is_ffa := true
 
@@ -40,6 +41,7 @@ func initialize(new_teams: Array) -> void:
 	teams = new_teams
 	active_team = teams[0]
 	current_index = 0
+	day = 0
 
 func _ready() -> void:
 	# TODO: change this for window mode, but right now it makes the tile system kinda break
@@ -63,20 +65,19 @@ func _ready() -> void:
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
 	# allegiances here
-	initialize([Team.new(gl.TEAM.RED, true, 1), Team.new(gl.TEAM.BLUE, false, 1),
-		Team.new(gl.TEAM.GREEN, false, 2), Team.new(gl.TEAM.YELLOW, false, 2)])
+	initialize([Team.new(gl.TEAM.RED, false, 0), Team.new(gl.TEAM.BLUE, false, 1),
+		Team.new(gl.TEAM.GREEN, false, 2)])
 	for child in SelectionTileMap.get_children():
 		add_unit_data(child, child.id, child.team_id)
 		child.change_material_to_color()
 	for child in BuildingsTileMap.get_children():
 		add_building_data(child, child.type, child.team_id)
 	
-	# game variables
+	# game setup
 	teams[0].co = gl.COS.MARK0
 	teams[1].co = gl.COS.BANDIT
 	teams[2].co = gl.COS.EVIL_MARK0
-	teams[3].co = gl.COS.HUMAN_CO
-	is_ffa = false
+	is_ffa = true
 	
 	astar.init_a_star()
 	start_turn()
@@ -594,6 +595,8 @@ func can_use_w1(attacker: Unit, target: Unit) -> bool:
 	return attacker.w1_can_attack.has(target.id) and attacker.ammo > 0
 
 func start_turn() -> void:
+	if active_team.team_id == 0:
+		day += 1
 	active_team.calculate_funds_per_turn()
 	active_team.funds += active_team.funds_per_turn
 	signals.emit_signal("turn_started", active_team)
