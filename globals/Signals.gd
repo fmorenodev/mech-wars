@@ -47,3 +47,4 @@ signal super_start(team)
 signal update_meter(team)
 
 signal change_unlocked_factory_units(unlocked, team_id)
+signal choose_power_up(team, power_ups)

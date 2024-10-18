@@ -103,6 +103,8 @@ func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 
 func add_building_data(building: Building, type: int, team_id: int, available_units: PoolIntArray = []):
 	building.initialize(type, team_id, teams[team_id].unlocked_factory_units, available_units)
+	if building.type == gl.BUILDINGS.RESEARCH_2:
+		building.power_ups = []
 	buildings.append(building)
 	if team_id >= 0:
 		building.capture(teams[team_id])

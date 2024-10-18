@@ -5,10 +5,11 @@ class_name Building
 export var team_id: int setget set_team_id
 export var type: int
 var allegiance := -1
-var available_units : PoolIntArray
+var available_units: PoolIntArray
 var funds: int
+var power_ups: Array
 
-func _ready():
+func _ready() -> void:
 	var _err = signals.connect("change_unlocked_factory_units", self, "set_available_units")
 
 func initialize(_type: int, _team_id: int, unlocked: bool, _available_units: PoolIntArray = []) -> void:
@@ -52,8 +53,7 @@ func capture(capturing_team: Team, last_owner = null) -> void:
 	set_team_id(capturing_team.team_id)
 	allegiance = capturing_team.allegiance
 	match type:
-		gl.BUILDINGS.RESEARCH:
-			# unlock vehicle type mechs
+		gl.BUILDINGS.RESEARCH: # unlock vehicle type mechs
 			if last_owner:
 				last_owner.unlocked_factory_units = false
 			capturing_team.unlocked_factory_units = true
@@ -61,3 +61,8 @@ func capture(capturing_team: Team, last_owner = null) -> void:
 			if last_owner:
 				last_owner.max_unit_points -= 10
 			capturing_team.max_unit_points += 10
+		gl.BUILDINGS.RESEARCH_2: # powerups
+			signals.emit_signal("choose_power_up", capturing_team, power_ups)
+			
+		gl.BUILDINGS.RESEARCH_3: # new unit version
+			pass

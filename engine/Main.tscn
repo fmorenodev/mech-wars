@@ -1,9 +1,10 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
 [ext_resource path="res://maps/DoublePassMap.tscn" type="PackedScene" id=3]
 [ext_resource path="res://engine/AI.gd" type="Script" id=4]
+[ext_resource path="res://engine/ChoicePopup.gd" type="Script" id=5]
 [ext_resource path="res://engine/Main.gd" type="Script" id=15]
 [ext_resource path="res://ui/ActionMenu.gd" type="Script" id=16]
 [ext_resource path="res://ui/BuildingMenu.gd" type="Script" id=17]
@@ -620,6 +621,17 @@ margin_right = 960.0
 margin_bottom = 64.0
 texture = ExtResource( 38 )
 stretch_mode = 4
+
+[node name="ChoicePopup" type="PopupMenu" parent="GUI/GUIContainer"]
+margin_right = 8.0
+margin_bottom = 8.0
+script = ExtResource( 5 )
+
+[node name="Description" type="Label" parent="GUI/GUIContainer/ChoicePopup"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 4.0
+margin_bottom = 11.0
 
 [node name="AI" type="Node" parent="."]
 script = ExtResource( 4 )
