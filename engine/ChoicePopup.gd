@@ -1,22 +1,33 @@
 extends PopupMenu
 
 var team: Team
-var power_ups: Array
+var power_mods: Array
 
 func _ready() -> void:
-	var _err = signals.connect("choose_power_up", self, "_on_choose_power_up")
+	var _err = signals.connect("choose_power_mod", self, "_on_choose_power_mod")
 	_err = connect("id_pressed", self, "_on_id_pressed")
 	_err = signals.connect("cancel_pressed", self, "_on_cancel_pressed")
 
-func _on_choose_power_up(_team: Team, _power_ups: Array) -> void:
+func _on_choose_power_mod(_team: Team, _power_mods: Array) -> void:
 	team = _team
-	power_ups = _power_ups
-	for power_up in power_ups.keys():
+	power_mods = _power_mods
+	
+	clear()
+	var i := 0
+	for power_mod in power_mods:
 		var label_text
-		add_item(label_text, power_up.id)
+		if power_mod.amount >= 0:
+			var aux_text = "+%d" % (power_mod.amount * 100)
+			label_text = power_mod.text % aux_text
+		else:
+			var aux_text = "%d" % (power_mod.amount * 100)
+			label_text = power_mod.text % aux_text
+		add_item(label_text, i)
+		i += 1
+	popup()
 
 func _on_id_pressed(id: int) -> void:
-	pass
+	power_mods[id].apply_mod(team)
 
 func _on_cancel_pressed() -> void:
 	hide()

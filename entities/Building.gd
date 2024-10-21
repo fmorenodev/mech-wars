@@ -7,7 +7,7 @@ export var type: int
 var allegiance := -1
 var available_units: PoolIntArray
 var funds: int
-var power_ups: Array
+var power_mods: Array
 
 func _ready() -> void:
 	var _err = signals.connect("change_unlocked_factory_units", self, "set_available_units")
@@ -15,7 +15,11 @@ func _ready() -> void:
 func initialize(_type: int, _team_id: int, unlocked: bool, _available_units: PoolIntArray = []) -> void:
 	set_team_id(_team_id)
 	type = _type
-	frame = type
+	# TODO: remove, temp until i make sprites for the other buildings
+	if type == gl.BUILDINGS.RESEARCH_2 or type == gl.BUILDINGS.RESEARCH_3:
+		frame = gl.BUILDINGS.RESEARCH
+	else:
+		frame = type
 	funds = gl.buildings[type].funds
 	if _available_units.size() > 0:
 		available_units = _available_units
@@ -62,7 +66,6 @@ func capture(capturing_team: Team, last_owner = null) -> void:
 				last_owner.max_unit_points -= 10
 			capturing_team.max_unit_points += 10
 		gl.BUILDINGS.RESEARCH_2: # powerups
-			signals.emit_signal("choose_power_up", capturing_team, power_ups)
-			
+			signals.emit_signal("choose_power_mod", capturing_team, power_mods)
 		gl.BUILDINGS.RESEARCH_3: # new unit version
 			pass

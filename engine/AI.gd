@@ -146,7 +146,7 @@ func _on_end_ai_turn(team: Team) -> void:
 		if unit.id == gl.UNITS.LIGHT_INFANTRY or unit.id == gl.UNITS.HEAVY_INFANTRY \
 		or unit.id == gl.UNITS.FLYING_INFANTRY:
 			infantry_units += 1
-	if infantry_units < 4 and Main.active_team.units < 4:
+	if infantry_units < 4 and Main.active_team.units.size() < 4:
 		prio_infantry = true
 		
 	for i in range(team.buildings.size() - 1, -1, -1): # start from the latest captured buildings

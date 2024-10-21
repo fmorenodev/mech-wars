@@ -25,9 +25,9 @@ _global_script_classes=[ {
 "path": "res://engine/PathTileMap.gd"
 }, {
 "base": "Resource",
-"class": "PowerUp",
+"class": "PowerMod",
 "language": "GDScript",
-"path": "res://resources/PowerUp.gd"
+"path": "res://resources/PowerMod.gd"
 }, {
 "base": "Resource",
 "class": "Team",
@@ -43,7 +43,7 @@ _global_script_class_icons={
 "Building": "",
 "COData": "",
 "PathTileMap": "",
-"PowerUp": "",
+"PowerMod": "",
 "Team": "",
 "Unit": ""
 }
