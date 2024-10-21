@@ -487,12 +487,12 @@ func common_attack_logic(attacker_unit: Unit, target_unit: Unit) -> void:
 	
 	attacker_unit.health = attacker_unit.health - retaliation_damage + damage * attacker_unit.lifesteal
 	target_unit.health = target_unit.health - damage + retaliation_damage * target_unit.lifesteal
-	teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * damage
-	teams[target_unit.team_id].funds += target_unit.fund_salvaging * retaliation_damage
+	teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * damage * (target_unit.cost / 1000.0)
+	teams[target_unit.team_id].funds += target_unit.fund_salvaging * retaliation_damage * (attacker_unit.cost / 1000.0)
 	
 	if extra_damage > 0.0:
 		attacker_unit.health += extra_damage * attacker_unit.lifesteal
-		teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * extra_damage
+		# teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * extra_damage * (target_unit.cost / 1000.0)
 
 # unit attack abilities
 func special_attack_cases(attacker_unit: Unit, target_unit: Unit) -> float:

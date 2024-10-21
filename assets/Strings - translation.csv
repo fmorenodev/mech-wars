@@ -53,6 +53,8 @@ AIRPORT,Airport
 PORT,Port
 RESEARCH,Research plant
 POWER_PLANT,Power plant
+RESEARCH_2,
+RESEARCH_3,
 ,
 --BUILDING DESCRIPTIONS--,--------------------
 RUINS_DESC,"Remnants of destroyed human cities, they can be pillaged for scrap to build robots."
@@ -61,7 +63,8 @@ AIRPORT_DESC,Factory for air units.
 PORT_DESC,Ancient harbor fitted to construct and repair naval mechs.
 RESEARCH_DESC,Building complex dedicated to research and development of weapons and tactics.
 POWER_PLANT_DESC,"Power station that provides additional power to your army, enhancing it."
-,
+RESEARCH_2_DESC,
+RESEARCH_3_DESC,
 ,
 --TERRAIN--,--------------------
 PLAINS,Plains
@@ -76,7 +79,6 @@ REEF,Reef
 ENERGY_RELAY,Energy relay
 SCRAPYARD,Scrapyard
 BEACH,Beach
-,
 ,
 ,
 --TERRAIN DESCRIPTIONS--,--------------------
@@ -142,13 +144,13 @@ BOSS_POWER_NAME,Humanity's Bane
 BOSS_POWER_DESC,Lowers the max HP of enemy units by 1 for the rest of the game.
 BOSS_SUPER_NAME,Will of the Machine Lord
 BOSS_SUPER_DESC,TODO
-,
-,
-,
-,
-,
-,
-,
+SCAVENGER_NAME,Scavenger
+SCAVENGER_DESC,"Mech made of parts of other mechs, salvaged from the endless battlefields of the forever war."
+SCAVENGER_D2D,Units heal 10% of the damage they deal.
+SCAVENGER_POWER_NAME,
+SCAVENGER_POWER_DESC,Units heal 25% of the damage they deal.
+SCAVENGER_SUPER_NAME,
+SCAVENGER_SUPER_DESC,"Units heal 50% of the damage they deal, and 25% of the damage is converted to funds."
 ,
 -----MENUS-----,--------------------
 --IN GAME MENU--,--------------------
@@ -165,7 +167,7 @@ MOVE_ACTION,Move
 CANCEL_ACTION,Cancel
 ATTACK_ACTION,Attack
 CAPTURE_ACTION,Capture
-,
+JOIN_ACTION,Join Units
 ,
 --UNIT MENU--,--------------------
 UNIT_ICON_HEADER,Unit
@@ -199,4 +201,14 @@ PARTS,Parts
 UNIT_POINTS,U.P.
 ,
 ,
+,
+,
+--RESEARCH BONUSES--,---------------------
+ATK_MOD_POP_UP,%s%% attack for all units.
+DEF_MOD_POP_UP,%s%% defense for all units.
+CAP_MOD_POP_UP,%s%% capture rate for infantry.
+MOVE_MOD_POP_UP,%s%% movement for all units.
+FUNDS_MOD_POP_UP,%s funds.
+,
 INFINITE,Infinite
+DAY,DAY

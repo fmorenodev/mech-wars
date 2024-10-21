@@ -10,18 +10,15 @@ func _init(_id: int, _amount: float):
 	amount = _amount
 	match id:
 		gl.POWER_MOD.ATK_MOD:
-			#text = "ATK_MOD_POP_UP"
-			text = "%s%% attack for all units"
+			text = "ATK_MOD_POP_UP"
 		gl.POWER_MOD.DEF_MOD:
 			text = "DEF_MOD_POP_UP"
 		gl.POWER_MOD.MOVE_MOD:
 			text = "MOVE_MOD_POP_UP"
 		gl.POWER_MOD.CAP_MOD:
-			#text = "CAP_MOD_POP_UP"
-			text = "%s%% capture rate for infantry"
+			text = "CAP_MOD_POP_UP"
 		gl.POWER_MOD.FUNDS:
-			#text = "FUNDS_MOD_POP_UP"
-			text = "%s funds"
+			text = "FUNDS_MOD_POP_UP"
 
 func apply_mod(team: Team) -> void:
 	match id:

@@ -393,7 +393,6 @@ margin_bottom = 7.0
 margin_right = 199.0
 margin_bottom = 7.0
 size_flags_horizontal = 3
-align = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI/GUIContainer/FixedInfo/VBoxContainer"]
 margin_top = 11.0
