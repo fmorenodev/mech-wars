@@ -15,8 +15,8 @@ export var team_id: int setget set_team
 var allegiance: int
 var unit_name: String
 var movement: int
-var health: float = 10.0 setget set_health
-var max_health: float = 10.0
+var health := 10.0 setget set_health
+var max_health := 10.0
 var energy: int
 var ammo: int
 var move_type: int
@@ -28,19 +28,24 @@ var w2_can_attack: Array
 var cost: int
 var point_cost: int
 var can_capture: bool
+var lifesteal := 0.0 # % of damage healed
+var fund_salvaging := 0.0 # % of damage gained as funds
 
 # CO variables
 var co: int setget set_co
-var atk_mod: float = 1.0
-var def_mod: float = 1.0
+var atk_mod := 1.0
+var def_mod := 1.0
+var cap_mod := 1.0
 
 # other variables
-var capture_points: int = 0
+var capture_points := 0
 var capturing_building
-var atk_bonus = 1
-var def_bonus = 1
-var current_energy_cost: int = 0
-var rounded_health: int = 10
+var current_energy_cost := 0
+var rounded_health := 10
+
+# resets at start of turn
+var atk_bonus := 1.0
+var def_bonus := 1.0
 
 # movement animation variables
 signal walk_finished
@@ -184,7 +189,7 @@ func capture(building) -> void:
 	elif capturing_building != building:
 		capturing_building = building
 		capture_points = 0
-	capture_points += int(ceil(health))
+	capture_points += int(floor(ceil(health) * cap_mod))
 	if capture_points >= 20:
 		capturing_building = null
 		AuxLabel.text = ''

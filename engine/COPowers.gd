@@ -2,7 +2,7 @@ extends Node
 
 onready var Main = $".."
 
-const power_up = preload("res://assets/gui/power_up.png")
+const power_active = preload("res://assets/gui/power_active.png")
 
 func _ready() -> void:
 	var _err = signals.connect("power_start", self, "_on_power_start")
@@ -26,7 +26,7 @@ func _on_power_start(active_team: Team) -> void:
 						for unit in team.units:
 							unit.max_health -= 1
 							unit.health -= 1
-			_: # own team effects
+			_: # own team effects, rest of COs
 				for unit in active_team.units:
 					apply_power(unit, active_team.co)
 
@@ -60,7 +60,7 @@ func _on_super_start(active_team: Team) -> void:
 						chosen_unit.activate()
 			gl.COS.BOSS:
 				pass # no super for now (maybe no super at all, only power)
-			_: # own team effects
+			_: # own team effects, rest of COs
 				for unit in active_team.units:
 					apply_super(unit, active_team.co)
 
@@ -76,7 +76,7 @@ func _on_turn_started(team: Team) -> void:
 			remove_super(unit, team.co)
 
 func apply_power(unit: Unit, co: int):
-	unit.set_aux_texture(power_up)
+	unit.set_aux_texture(power_active)
 	match co:
 		gl.COS.MARK0:
 			unit.movement += 1
@@ -91,13 +91,15 @@ func apply_power(unit: Unit, co: int):
 				unit.def_mod += 0.1
 		gl.COS.HUMAN_CO:
 			unit.health += 2
+		gl.COS.SCAVENGER:
+			unit.lifesteal += 0.25
 		gl.COS.EVIL_MARK0:
 			unit.atk_mod += 0.3
 			unit.def_mod -= 0.3
 			unit.movement += 2
 		
 func apply_super(unit: Unit, co: int):
-	unit.set_aux_texture(power_up)
+	unit.set_aux_texture(power_active)
 	match co:
 		gl.COS.MARK0:
 			unit.movement += 2
@@ -121,6 +123,9 @@ func apply_super(unit: Unit, co: int):
 			unit.health += 2
 			unit.atk_mod += 0.2
 			unit.def_mod += 0.2
+		gl.COS.SCAVENGER:
+			unit.lifesteal += 0.5
+			unit.fund_salvaging += 0.25
 
 func remove_power(unit: Unit, co: int):
 	unit.set_aux_texture(null)
@@ -136,6 +141,8 @@ func remove_power(unit: Unit, co: int):
 			else:
 				unit.atk_mod -= 0.1
 				unit.def_mod -= 0.1
+		gl.COS.SCAVENGER:
+			unit.lifesteal -= 0.25
 		gl.COS.EVIL_MARK0:
 			unit.atk_mod -= 0.3
 			unit.def_mod += 0.3
@@ -165,3 +172,6 @@ func remove_super(unit: Unit, co: int):
 		gl.COS.HUMAN_CO:
 			unit.atk_mod -= 0.2
 			unit.def_mod -= 0.2
+		gl.COS.SCAVENGER:
+			unit.lifesteal -= 0.5
+			unit.fund_salvaging -= 0.25

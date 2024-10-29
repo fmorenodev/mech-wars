@@ -1,14 +1,12 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://assets/map/selection_tile/selection_tile.tres" type="Texture" id=1]
-[ext_resource path="res://assets/map/building_tileset.png" type="Texture" id=2]
 [ext_resource path="res://assets/map/arrows.png" type="Texture" id=3]
 [ext_resource path="res://assets/map/green_tileset.png" type="Texture" id=4]
 [ext_resource path="res://assets/map/reticle/reticle.tres" type="Texture" id=5]
 [ext_resource path="res://assets/map/cursor/cursor.tres" type="Texture" id=6]
 [ext_resource path="res://assets/map/selection_tile/selection_tile_red.tres" type="Texture" id=7]
 [ext_resource path="res://entities/Building.tscn" type="PackedScene" id=8]
-[ext_resource path="res://entities/Building.gd" type="Script" id=9]
 [ext_resource path="res://engine/PathTileMap.gd" type="Script" id=10]
 [ext_resource path="res://engine/CursorTileMap.gd" type="Script" id=11]
 
@@ -198,6 +196,7 @@
 0/autotile/navpoly_map = [  ]
 0/autotile/priority_map = [  ]
 0/autotile/z_index_map = [  ]
+0/autotile/fallback_mode = 0
 0/occluder_offset = Vector2( 0, 0 )
 0/navigation_offset = Vector2( 0, 0 )
 0/shape_offset = Vector2( 0, 0 )
@@ -284,559 +283,244 @@ cell_quadrant_size = 6
 cell_custom_transform = Transform2D( 24, 0, 0, 24, 0, 0 )
 format = 1
 
-[node name="Building3" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building3" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 0, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 1
 
-[node name="Building4" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building4" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 24, 96 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 2
 
-[node name="Building5" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building5" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 72, 48 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 2
 
-[node name="Building6" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building6" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 48, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 2
 
-[node name="Building8" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building8" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 72, 96 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 3
 
-[node name="Building9" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building9" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 408, 96 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 3
 
-[node name="Building7" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building7" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 24, 48 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 type = 5
 
-[node name="Building12" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building12" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 96, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 
-[node name="Building36" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building36" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 96, 144 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
-type = 1
+team_id = -1
+type = 7
 
-[node name="Building37" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building37" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 72, 144 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
+team_id = -1
+type = 7
 
-[node name="Building13" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building13" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 216, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building14" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building14" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 264, 24 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building15" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building15" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 216, 24 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building16" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building16" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 168, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building29" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building29" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 120, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building48" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building48" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 360, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building56" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building56" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 120, 192 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building57" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building57" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 144, 192 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building30" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building30" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 0, 288 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building49" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building49" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 480, 288 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building50" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building50" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 456, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 3
 
-[node name="Building51" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building51" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 24, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 3
 
-[node name="Building52" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building52" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 0, 240 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 2
 
-[node name="Building53" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building53" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 480, 240 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 2
 
-[node name="Building31" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building31" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 120, 336 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building32" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building32" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 96, 312 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 type = 1
 
-[node name="Building45" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building45" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 384, 312 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building46" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building46" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 360, 336 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building33" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building33" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 144, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building47" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building47" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 336, 264 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building54" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building54" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 336, 192 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building55" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building55" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 360, 192 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building17" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building17" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 264, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building18" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building18" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 312, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = -1
 
-[node name="Building19" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building19" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 120, 432 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 1
 
-[node name="Building38" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building38" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 192, 384 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 2
 
-[node name="Building43" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building43" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 240, 384 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 3
 
-[node name="Building44" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building44" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 240, 432 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 5
 
-[node name="Building40" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building40" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 264, 408 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 2
 
-[node name="Building42" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building42" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 288, 384 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 2
 
-[node name="Building41" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building41" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 216, 408 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 2
 
-[node name="Building39" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building39" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 240, 336 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 type = 1
 
-[node name="Building20" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building20" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 384, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 
-[node name="Building24" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building24" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 408, 144 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 1
 
-[node name="Building34" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building34" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 384, 144 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 1
 
-[node name="Building35" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building35" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 480, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 
-[node name="Building25" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building25" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 432, 72 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 2
 
-[node name="Building26" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building26" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 456, 96 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 2
 
-[node name="Building28" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building28" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 456, 48 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 5
 
-[node name="Building27" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building27" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 408, 48 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 1
 type = 2
 
-[node name="Building21" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building21" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 96, 432 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 
-[node name="Building22" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building22" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 360, 432 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 
-[node name="Building23" type="Sprite" parent="BuildingsTileMap" instance=ExtResource( 8 )]
+[node name="Building23" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 384, 432 )
-texture = ExtResource( 2 )
-centered = false
-hframes = 4
-vframes = 2
-frame = 2
-script = ExtResource( 9 )
 team_id = 2
 
 [node name="PathTileMap" type="TileMap" parent="."]

@@ -65,16 +65,17 @@ func _ready() -> void:
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
 	# allegiances here
-	initialize([Team.new(gl.TEAM.RED, false, 0), Team.new(gl.TEAM.BLUE, false, 1),
+	initialize([Team.new(gl.TEAM.RED, true, 0), Team.new(gl.TEAM.BLUE, false, 1),
 		Team.new(gl.TEAM.GREEN, false, 2)])
-	for child in SelectionTileMap.get_children():
-		add_unit_data(child, child.id, child.team_id)
-		child.change_material_to_color()
-	for child in BuildingsTileMap.get_children():
-		add_building_data(child, child.type, child.team_id)
+	
+	for unit in SelectionTileMap.get_children():
+		add_unit_data(unit, unit.id, unit.team_id)
+		unit.change_material_to_color()
+	for building in BuildingsTileMap.get_children():
+		add_building_data(building, building.type, building.team_id)
 	
 	# game setup
-	teams[0].co = gl.COS.MARK0
+	teams[0].co = gl.COS.SCAVENGER
 	teams[1].co = gl.COS.BANDIT
 	teams[2].co = gl.COS.EVIL_MARK0
 	is_ffa = true
@@ -103,6 +104,11 @@ func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 
 func add_building_data(building: Building, type: int, team_id: int, available_units: PoolIntArray = []):
 	building.initialize(type, team_id, teams[team_id].unlocked_factory_units, available_units)
+	if building.type == gl.BUILDINGS.RESEARCH_2:
+		var atk_power_mod = PowerMod.new(gl.POWER_MOD.ATK_MOD, 0.05)
+		var cap_power_mod = PowerMod.new(gl.POWER_MOD.CAP_MOD, 0.5)
+		var funds_mod = PowerMod.new(gl.POWER_MOD.FUNDS, 2000.0)
+		building.power_mods = [atk_power_mod, cap_power_mod, funds_mod]
 	buildings.append(building)
 	if team_id >= 0:
 		building.capture(teams[team_id])
@@ -329,16 +335,14 @@ func move_unit_ai(unit: Unit, path: Array) -> void:
 	unit.energy -= path.size() - 1
 	signals.emit_signal("move_completed", unit)
 
-func attack_unit_ai(unit: Unit, target_unit: Unit) -> void:
+func attack_unit_ai(attacker_unit: Unit, target_unit: Unit) -> void:
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), 1)
 	yield(get_tree().create_timer(1.0), "timeout")
-	var damage = calc_damage(unit, target_unit)
-	var retaliation_damage = calc_retaliation_damage(target_unit, unit, damage)
-	unit.health -= retaliation_damage
-	target_unit.health -= damage
+	
+	common_attack_logic(attacker_unit, target_unit)
 	
 	CursorTileMap.set_cellv(CursorTileMap.world_to_map(target_unit.position), -1)
-	unit.end_action()
+	attacker_unit.end_action()
 	signals.emit_signal("action_completed")
 
 func capture_action_ai(unit: Unit) -> void:
@@ -426,58 +430,15 @@ func _on_join_action() -> void:
 	targets.clear()
 	end_unit_action()
 
-func common_capture_logic(unit: Unit) -> void:
-	var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
-	unit.capture(building)
-	if unit.capture_points >= 20:
-		unit.capture_points = 0
-		teams[building.team_id].buildings.erase(building)
-		if building.team_id != -1:
-			building.capture(active_team, teams[building.team_id])
-		else:
-			building.capture(active_team)
-		active_team.add_building(building)
-
 # TODO: can select an empty target when attacking (unsure if solved)
 func _on_target_selected(pos: Vector2) -> void:
 	var target_unit: Unit = is_unit_in_position(pos)
-	var damage = calc_damage(active_unit, target_unit)
 	
-	special_attack_cases(target_unit)
+	common_attack_logic(active_unit, target_unit)
+	
 	targets = []
-	var retaliation_damage = calc_retaliation_damage(target_unit, active_unit, damage)
-	active_unit.health -= retaliation_damage
-	
-	target_unit.health -= damage
 	selecting_targets = false
 	end_unit_action()
-
-# unit attack abilities
-func special_attack_cases(target_unit: Unit) -> void:
-	match active_unit.id:
-		gl.UNITS.ARC_TOWER:
-			var target_pos := target_unit.position
-			var selected_targets = [target_unit]
-			for i in 3:
-				var possible_targets = []
-				for direction in gl.DIRECTIONS:
-					var coordinates: Vector2 = TerrainTileMap.world_to_map(target_pos) + direction
-					var possible_target = is_unit_in_position(coordinates)
-					if possible_target and possible_target.allegiance != active_unit.allegiance \
-					and !selected_targets.has(possible_target):
-						possible_targets.append(possible_target)
-				if possible_targets.size() > 0:
-					var new_target_unit: Unit = possible_targets[0]
-					target_pos = new_target_unit.position
-					var damage = calc_damage(active_unit, new_target_unit)
-					new_target_unit.health -= damage
-					active_unit.ammo += 1
-					if new_target_unit:
-						selected_targets.append(new_target_unit)
-				else:
-					return
-		_:
-			return
 
 func _on_unit_added(unit_id: int, team_id: int, position: Vector2) -> void:
 	create_unit(unit_id, team_id, position)
@@ -506,6 +467,62 @@ func _on_turn_ended() -> void:
 #################
 # AUX FUNCTIONS #
 #################
+
+func common_capture_logic(unit: Unit) -> void:
+	var building = is_building_in_position(SelectionTileMap.world_to_map(unit.position))
+	unit.capture(building)
+	if unit.capture_points >= 20:
+		unit.capture_points = 0
+		teams[building.team_id].buildings.erase(building)
+		if building.team_id != -1:
+			building.capture(active_team, teams[building.team_id])
+		else:
+			building.capture(active_team)
+		active_team.add_building(building)
+
+func common_attack_logic(attacker_unit: Unit, target_unit: Unit) -> void:
+	var damage = calc_damage(attacker_unit, target_unit)
+	var extra_damage = special_attack_cases(attacker_unit, target_unit)
+	var retaliation_damage = calc_retaliation_damage(target_unit, attacker_unit, damage)
+	
+	attacker_unit.health = attacker_unit.health - retaliation_damage + damage * attacker_unit.lifesteal
+	target_unit.health = target_unit.health - damage + retaliation_damage * target_unit.lifesteal
+	teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * damage * (target_unit.cost / 1000.0)
+	teams[target_unit.team_id].funds += target_unit.fund_salvaging * retaliation_damage * (attacker_unit.cost / 1000.0)
+	
+	if extra_damage > 0.0:
+		attacker_unit.health += extra_damage * attacker_unit.lifesteal
+		# teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * extra_damage * (target_unit.cost / 1000.0)
+
+# unit attack abilities
+func special_attack_cases(attacker_unit: Unit, target_unit: Unit) -> float:
+	var extra_damage := 0.0
+	match attacker_unit.id:
+		gl.UNITS.ARC_TOWER:
+			var target_pos := target_unit.position
+			var selected_targets = [target_unit]
+			for i in 3:
+				var possible_targets = []
+				for direction in gl.DIRECTIONS:
+					var coordinates: Vector2 = TerrainTileMap.world_to_map(target_pos) + direction
+					var possible_target = is_unit_in_position(coordinates)
+					if possible_target and possible_target.allegiance != attacker_unit.allegiance \
+					and !selected_targets.has(possible_target):
+						possible_targets.append(possible_target)
+				if possible_targets.size() > 0:
+					var new_target_unit: Unit = possible_targets[0]
+					target_pos = new_target_unit.position
+					var damage = calc_damage(attacker_unit, new_target_unit)
+					extra_damage += damage
+					new_target_unit.health -= damage
+					attacker_unit.ammo += 1
+					if new_target_unit:
+						selected_targets.append(new_target_unit)
+				else:
+					return extra_damage
+			return extra_damage
+		_:
+			return extra_damage
 
 func get_terrain(pos: Vector2) -> int:
 	var map_pos = TerrainTileMap.world_to_map(pos)

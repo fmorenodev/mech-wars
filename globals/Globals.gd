@@ -520,6 +520,16 @@ var buildings = {BUILDINGS.RUINS: {
 					desc = tr('POWER_PLANT_DESC'),
 					funds = 500,
 					repairs = []},
+				BUILDINGS.RESEARCH_2: {
+					name = tr('RESEARCH_2'),
+					desc = tr('RESEARCH_2_DESC'),
+					funds = 500,
+					repairs = []},
+				BUILDINGS.RESEARCH_3: {
+					name = tr('RESEARCH_3'),
+					desc = tr('RESEARCH_3_DESC'),
+					funds = 500,
+					repairs = []},
 				}
 
 var move_types = {  MOVE_TYPE.INFANTRY: {
@@ -537,11 +547,11 @@ var move_types = {  MOVE_TYPE.INFANTRY: {
 # unit stats are atk, def, and additional movement
 var co_data: Dictionary = {
 				COS.MARK0: {
-					co_res = "res://COs/mark0.tres",
+					co_res = "res://resources/COs/mark0.tres",
 					unit_stats = {UNITS.RECON: Vector3(1.2, 1.0, 0)},
 				},
 				COS.BANDIT: {
-					co_res = "res://COs/bandit.tres",
+					co_res = "res://resources/COs/bandit.tres",
 					unit_stats = {UNITS.LIGHT_INFANTRY: Vector3(1.1, 1.1, 0),
 					UNITS.HEAVY_INFANTRY: Vector3(1.1, 1.1, 0), 
 					UNITS.FLYING_INFANTRY: Vector3(1.1, 1.1, 0), UNITS.RECON: Vector3(1, 0.9, 0),
@@ -553,7 +563,7 @@ var co_data: Dictionary = {
 					UNITS.BATTLESHIP: Vector3(1, 0.9, 0)},
 				},
 				COS.HUMAN_CO: {
-					co_res = "res://COs/human.tres",
+					co_res = "res://resources/COs/human.tres",
 					unit_stats = {UNITS.LIGHT_INFANTRY: Vector3(0.9, 1, 0),
 					UNITS.HEAVY_INFANTRY: Vector3(0.9, 1, 0),
 					UNITS.FLYING_INFANTRY: Vector3(0.9, 1, 0), UNITS.RECON: Vector3(1.2, 1.1, 0),
@@ -564,8 +574,12 @@ var co_data: Dictionary = {
 					UNITS.ANGEL: Vector3(0.9, 1, 0), UNITS.SKY_FORTRESS: Vector3(0.9, 1, 0),
 					UNITS.BATTLESHIP: Vector3(0.9, 1, 0)},
 				},
+				COS.SCAVENGER: {
+					co_res = "res://resources/COs/scavenger.tres",
+					unit_stats = {},
+				},
 				COS.EVIL_MARK0: {
-					co_res = "res://COs/evil_mark0.tres",
+					co_res = "res://resources/COs/evil_mark0.tres",
 					unit_stats = {UNITS.LIGHT_INFANTRY: Vector3(1.3, 1, 0),
 					UNITS.HEAVY_INFANTRY: Vector3(1.3, 1, 0),
 					UNITS.FLYING_INFANTRY: Vector3(1.3, 1, 0), UNITS.RECON: Vector3(1.3, 1, 0),
@@ -577,7 +591,7 @@ var co_data: Dictionary = {
 					UNITS.BATTLESHIP: Vector3(1.3, 1, 0)},
 				},
 				COS.BOSS: {
-					co_res = "res://COs/boss.tres",
+					co_res = "res://resources/COs/boss.tres",
 					unit_stats = {},
 				},
 }
@@ -590,10 +604,11 @@ enum MOVE_TYPE {INFANTRY, LIGHT_VEHICLE, HEAVY_VEHICLE, AIR, WATER}
 enum ATTACK_TYPE {DIRECT, ARTILLERY, HEAVY_ARTILLERY}
 enum TEAM {RED, BLUE, GREEN, YELLOW}
 enum TURN_TYPE {ATTACK, CAPTURE, REPAIR, MOVE}
+enum POWER_MOD {ATK_MOD, DEF_MOD, MOVE_MOD, CAP_MOD, FUNDS}
 
 enum TERRAIN {PLAINS, FOREST, HILL, MOUNTAIN, WATER, ROAD, RIVER, WASTELAND, REEF, ENERGY_RELAY, SCRAPYARD, BEACH}
-enum BUILDINGS {RUINS, RUINS_2, FACTORY, AIRPORT, PORT, RESEARCH, POWER_PLANT}
-enum COS {MARK0, BANDIT, HUMAN_CO, EVIL_MARK0, BOSS}
+enum BUILDINGS {RUINS, RUINS_2, FACTORY, AIRPORT, PORT, RESEARCH, POWER_PLANT, RESEARCH_2, RESEARCH_3}
+enum COS {MARK0, BANDIT, HUMAN_CO, SCAVENGER, EVIL_MARK0, BOSS}
 
 func is_indirect(unit: Unit) -> bool:
 	if unit.atk_type == ATTACK_TYPE.ARTILLERY or unit.atk_type == ATTACK_TYPE.HEAVY_ARTILLERY:
