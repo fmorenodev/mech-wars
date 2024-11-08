@@ -94,9 +94,12 @@ func get_partial_path(unit: Unit, from_id: int, to_id: int) -> Array:
 	return walkable_path
 
 func ends_path_in_unit(point_path: Array) -> Array:
+	var points_to_remove = []
 	for i in range(point_path.size() - 1, -1, -1):
 		if Main.is_unit_in_position(point_path[i]):
-			point_path.remove(i)
+			points_to_remove.append(point_path[i])
 		else:
-			return point_path
+			break
+	for point in points_to_remove:
+		point_path.erase(point)
 	return point_path

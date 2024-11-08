@@ -55,8 +55,6 @@ func set_funds(value: int) -> void:
 func set_co(value: int) -> void:
 	co = value
 	co_resource = load(gl.co_data[co].co_res)
-	for unit in units:
-		unit.set_co(co)
 
 func set_power_meter_amount(value: float) -> void:
 	power_meter_amount = value

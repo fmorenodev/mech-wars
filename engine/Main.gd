@@ -65,8 +65,10 @@ func _ready() -> void:
 	_err = signals.connect("turn_ended", self, "_on_turn_ended")
 
 	# allegiances here
-	initialize([Team.new(gl.TEAM.RED, true, 0), Team.new(gl.TEAM.BLUE, false, 1),
-		Team.new(gl.TEAM.GREEN, false, 2)])
+	initialize([Team.new(gl.TEAM.RED, true, 0), Team.new(gl.TEAM.BLUE, false, 1)])
+	
+	teams[0].co = gl.COS.HUMAN_CO
+	teams[1].co = gl.COS.BOSS
 	
 	for unit in SelectionTileMap.get_children():
 		add_unit_data(unit, unit.id, unit.team_id)
@@ -75,9 +77,6 @@ func _ready() -> void:
 		add_building_data(building, building.type, building.team_id)
 	
 	# game setup
-	teams[0].co = gl.COS.SCAVENGER
-	teams[1].co = gl.COS.BANDIT
-	teams[2].co = gl.COS.EVIL_MARK0
 	is_ffa = true
 	
 	astar.init_a_star()
@@ -97,6 +96,7 @@ func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
 	unit.set_team(team_id)
+	unit.set_co(teams[team_id].co)
 	unit.allegiance = teams[team_id].allegiance
 	teams[team_id].add_unit(unit)
 	teams[team_id].unit_points += gl.units[unit_id].point_cost

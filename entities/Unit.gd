@@ -87,9 +87,9 @@ func set_health(value: float) -> void:
 		health = max_health
 	var label_value = round_health(health)
 	rounded_health = label_value
-	if label_value < 10 or (co == gl.COS.BOSS and label_value < 12):
+	if (co == gl.COS.BOSS and label_value < 12) or (co != gl.COS.BOSS and label_value < 10):
 		HealthLabel.text = str(label_value)
-	elif label_value == 10 or (co == gl.COS.BOSS and label_value == 12):
+	elif (co == gl.COS.BOSS and label_value == 12) or (co != gl.COS.BOSS and label_value == 10):
 		HealthLabel.text = ''
 
 func round_health(value: float) -> float:
