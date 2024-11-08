@@ -155,7 +155,7 @@ func _on_end_ai_turn(team: Team) -> void:
 		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
 			var highest_cost = 0
 			var chosen_unit = null
-			if prio_infantry:
+			if prio_infantry and building.available_units.has(gl.UNITS.LIGHT_INFANTRY):
 				chosen_unit = gl.UNITS.LIGHT_INFANTRY
 			else:
 				for unit_code in gl.units.keys():

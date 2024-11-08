@@ -42,6 +42,7 @@ var capture_points := 0
 var capturing_building
 var current_energy_cost := 0
 var rounded_health := 10
+var joined_this_turn := false # if unit used join action
 
 # resets at start of turn
 var atk_bonus := 1.0

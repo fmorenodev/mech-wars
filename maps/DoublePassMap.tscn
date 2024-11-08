@@ -317,13 +317,11 @@ position = Vector2( 96, 72 )
 
 [node name="Building36" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 96, 144 )
-team_id = -1
-type = 7
+type = 1
 
 [node name="Building37" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 72, 144 )
-team_id = -1
-type = 7
+type = 1
 
 [node name="Building13" parent="BuildingsTileMap" instance=ExtResource( 8 )]
 position = Vector2( 216, 72 )

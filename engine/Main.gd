@@ -422,11 +422,25 @@ func _on_capture_action() -> void:
 	end_unit_action()
 
 func _on_join_action() -> void:
-	var new_health = active_unit.health + targets[0].health
+	var joining_unit: Unit = targets[0]
+	active_unit.joined_this_turn = true
+	
+	var new_ammo = clamp(active_unit.ammo + joining_unit.ammo, -1, gl.units[active_unit.id].ammo)
+	var new_energy = clamp(active_unit.energy - active_unit.current_energy_cost + joining_unit.energy,
+		0, gl.units[active_unit.id].energy)
+	var new_health = active_unit.health + joining_unit.health
 	if new_health > active_unit.max_health:
 		active_team.funds += (new_health - active_unit.max_health) * active_unit.cost / active_unit.max_health
+	
+	if joining_unit.capture_points > 0:
+		active_unit.capture_points = joining_unit.capture_points
+		active_unit.capturing_building = joining_unit.capturing_building
+		active_unit.AuxLabel.text = 'c'
+	
+	active_unit.ammo = new_ammo
+	active_unit.energy = new_energy
 	active_unit.health = new_health
-	targets[0].health = 0
+	joining_unit.health = 0
 	targets.clear()
 	end_unit_action()
 
@@ -487,8 +501,10 @@ func common_attack_logic(attacker_unit: Unit, target_unit: Unit) -> void:
 	
 	attacker_unit.health = attacker_unit.health - retaliation_damage + damage * attacker_unit.lifesteal
 	target_unit.health = target_unit.health - damage + retaliation_damage * target_unit.lifesteal
-	teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * damage * (target_unit.cost / 1000.0)
-	teams[target_unit.team_id].funds += target_unit.fund_salvaging * retaliation_damage * (attacker_unit.cost / 1000.0)
+	if attacker_unit.fund_salvaging > 0:
+		teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * damage * (target_unit.cost / 10.0)
+	if target_unit.fund_salvaging > 0:
+		teams[target_unit.team_id].funds += target_unit.fund_salvaging * retaliation_damage * (attacker_unit.cost / 10.0)
 	
 	if extra_damage > 0.0:
 		attacker_unit.health += extra_damage * attacker_unit.lifesteal
@@ -634,7 +650,7 @@ func start_turn() -> void:
 		elif get_terrain(unit.position) == gl.TERRAIN.ENERGY_RELAY and unit.move_type != gl.MOVE_TYPE.AIR:
 			unit.atk_bonus = 1.2
 		elif (unit.move_type == gl.MOVE_TYPE.AIR or unit.move_type == gl.MOVE_TYPE.WATER):
-			unit.energy -= 2 # TODO: individual energy costs
+			unit.energy -= gl.units[unit.id].energy_per_turn
 			if unit.energy <= 0:
 				units_to_delete.append(unit)
 	for unit in units_to_delete:
@@ -643,7 +659,9 @@ func start_turn() -> void:
 
 # for player units
 func end_unit_action() -> void:
-	active_unit.energy -= active_unit.current_energy_cost
+	if !active_unit.joined_this_turn: # subtracted in _on_join_action
+		active_unit.energy -= active_unit.current_energy_cost
+	active_unit.joined_this_turn = false
 	active_unit.current_energy_cost = 0
 	active_unit.last_pos = null
 	active_unit.end_action()
