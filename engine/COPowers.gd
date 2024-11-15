@@ -1,5 +1,7 @@
 extends Node
 
+# TODO: make powers increasingly cost more like in the original games
+
 onready var Main = $".."
 
 const power_active = preload("res://assets/gui/power_active.png")
@@ -24,6 +26,7 @@ func _on_power_start(active_team: Team) -> void:
 				for team in Main.teams:
 					if team != active_team:
 						for unit in team.units:
+							team.unit_max_health -= 1
 							unit.max_health -= 1
 							unit.health -= 1
 			_: # own team effects, rest of COs

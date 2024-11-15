@@ -33,7 +33,7 @@ extends Node
 # - join: TODO
 
 # TODO, corner cases:
-# - move out of grey buildings (non-infantry)
+# - move out of grey buildings (non-infantry) - have to test values
 
 # TODO:
 # - don't have all units go towards the same objective when moving
@@ -43,7 +43,8 @@ extends Node
 onready var Main = get_parent()
 
 var current_index := 0
-var target_positions: Array
+var unavailable_positions := [] # positions taken by other already activated units
+var already_targeted_positions := []
 
 # TURN FLOW #
 # _on_start_turn -> calculate_turn
@@ -62,6 +63,8 @@ func _on_start_turn(team: Team) -> void:
 	Main.disable_input(true)
 
 	# calculate turn order
+	unavailable_positions.clear()
+	already_targeted_positions.clear()
 	for unit in team.units:
 		calculate_turn(unit)
 	
@@ -78,9 +81,13 @@ func _on_start_turn(team: Team) -> void:
 	else:
 		signals.emit_signal("end_ai_turn", Main.active_team)
 
-# TODO: refactor maybe
 func _on_next_unit_turn() -> void:
 	var unit = get_current()
+	for ai_unit in Main.active_team.units:
+		if !ai_unit.can_move:
+			unavailable_positions.append(ai_unit.position) # TODO: test if this works
+			if ai_unit.chosen_action[1] == gl.TURN_TYPE.ATTACK or ai_unit.chosen_action[1] == gl.TURN_TYPE.MOVE:
+				already_targeted_positions.append(ai_unit.chosen_action[2])
 	calculate_turn(unit) # recalculate to avoid conflicts
 	var start_point = astar.a_star_maps[unit.team_id][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.position))
 	var end_point = astar.a_star_maps[unit.team_id][unit.move_type].get_closest_point(Main.PathTileMap.world_to_map(unit.chosen_action[2]))
@@ -130,15 +137,19 @@ func _on_end_ai_turn(team: Team) -> void:
 	for t in Main.teams:
 		if team.allegiance != t.allegiance:
 			enemy_team_units.append_array(t.units)
-	var enemy_air_units := 0
+	var enemy_air_units := 0.0
 	var enemy_armored_units := 0
 	var create_anti_air := false
 	var create_anti_armored := false
 	for enemy_unit in enemy_team_units:
 		if enemy_unit.move_type == gl.MOVE_TYPE.AIR:
-			enemy_air_units += 1
-		elif enemy_unit.move_type == gl.MOVE_TYPE.HEAVY_VEHICLE or \
-		enemy_unit.move_type == gl.MOVE_TYPE.LIGHT_VEHICLE:
+			if enemy_unit.id == gl.UNITS.FLYING_INFANTRY:
+				enemy_air_units += 0.5
+			else:
+				enemy_air_units += 1
+		elif (enemy_unit.move_type == gl.MOVE_TYPE.HEAVY_VEHICLE and \
+		enemy_unit.id != gl.UNITS.MEDIUM_TANK ) or \
+		enemy_unit.move_type == gl.MOVE_TYPE.LIGHT_VEHICLE :
 			enemy_armored_units += 1
 	if enemy_air_units >= 2:
 		create_anti_air = true
@@ -155,7 +166,7 @@ func _on_end_ai_turn(team: Team) -> void:
 	if infantry_units < 4 and Main.active_team.units.size() < 4:
 		prio_infantry = true
 		
-	for i in range(team.buildings.size() - 1, -1, -1): # start from the latest captured buildings
+	for i in range(team.buildings.size() - 1, -1, -1): # start from the last captured buildings
 		var building = team.buildings[i]
 		if (building.type == gl.BUILDINGS.FACTORY or building.type == gl.BUILDINGS.PORT or building.type == gl.BUILDINGS.AIRPORT) \
 		and !Main.is_unit_in_position(Main.PathTileMap.world_to_map(building.position)):
@@ -198,8 +209,20 @@ func calc_target_value(unit: Unit) -> Array:
 			var value = 0
 			if target.allegiance != unit.allegiance:
 				value = Main.calc_dmg_value(unit, target)
+				if already_targeted_positions.has(target.position):
+					value -= 25
+				# enemy is capturing
 				if target.capture_points > 0:
 					value += 50
+				# unit is in allied building
+				var building_in_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
+				if building_in_pos:
+					if gl.is_next_to_unit(unit, target) and\
+					building_in_pos.allegiance == Main.active_team.allegiance:
+						value += 25
+					# unit is in neutral building
+					elif building_in_pos.team_id == -1:
+						value -= 25
 				if value > attack_turn_value:
 					attack_turn_value = value
 					chosen_target = target
@@ -216,13 +239,15 @@ func calc_cap_points(unit: Unit, target: Building) -> float:
 		value += 51
 	return value
 
-# TODO: if unit is capturing in more than p.e. five turns, retreat
 func calc_capture_value(unit: Unit) -> Array:
 	var capture_turn_value = 0
 	var chosen_building = null
 	if unit.can_capture:
+		if (20 - unit.capture_points) / unit.calc_next_cap_points() >= 5.0:
+				return [0, null] # retreat, capture too difficult TEST
 		if unit.capture_points > 0:
-			return [202, Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))]
+				# second highest value is 201 for capturing enemy team buildings that aren't ruins
+				return [202, Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))]
 		var building_targets = Main.check_buildings(unit, false)
 		for target_pos in building_targets:
 			var target = Main.is_building_in_position(target_pos)
@@ -249,10 +274,8 @@ func calc_repair_value(unit: Unit) -> Array:
 	var chosen_repair_building = null
 	var building_in_same_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
 	if building_in_same_pos and building_in_same_pos.allegiance == unit.allegiance and unit.health <= 8:
-		# TODO: if unit is repairing, allow it to take another action
-		# find a way to prioritize actions taken on the same position without passing the turn
-		pass
-	if unit.health <= 2 or unit.ammo == 0 or unit.energy < 11:
+		repair_turn_value = 0 # TEST if units stay in place correctly
+	elif unit.health <= 2 or unit.ammo == 0 or unit.energy < 11:
 		var repair_targets = Main.check_buildings(unit, true)
 		for target_pos in repair_targets:
 			var target = Main.is_building_in_position(target_pos)

@@ -71,7 +71,7 @@ func _ready() -> void:
 	teams[1].co = gl.COS.BOSS
 	
 	for unit in SelectionTileMap.get_children():
-		add_unit_data(unit, unit.id, unit.team_id)
+		add_unit_data(unit, unit.id, teams[unit.team_id])
 		unit.change_material_to_color()
 	for building in BuildingsTileMap.get_children():
 		add_building_data(building, building.type, building.team_id)
@@ -82,24 +82,25 @@ func _ready() -> void:
 	astar.init_a_star()
 	start_turn()
 
-func create_unit(unit_id: int, team_id: int, position: Vector2) -> void:
+func create_unit(unit_id: int, team: Team, position: Vector2) -> void:
 	var new_unit = UnitScene.instance()
 	SelectionTileMap.add_child(new_unit)
 	new_unit.position = position
-	add_unit_data(new_unit, unit_id, team_id)
-	if (teams[team_id].is_power_active):
-		COPowers.apply_power(new_unit, teams[team_id].co)
-	if (teams[team_id].is_super_active):
-		COPowers.apply_super(new_unit, teams[team_id].co)
+	add_unit_data(new_unit, unit_id, team)
+	if (team.is_power_active):
+		COPowers.apply_power(new_unit, team.co)
+	if (team.is_super_active):
+		COPowers.apply_super(new_unit, team.co)
 
-func add_unit_data(unit: Unit, unit_id: int, team_id: int) -> void:
+func add_unit_data(unit: Unit, unit_id: int, team: Team) -> void:
 	unit.initialize(unit_id)
 	units.append(unit)
-	unit.set_team(team_id)
-	unit.set_co(teams[team_id].co)
-	unit.allegiance = teams[team_id].allegiance
-	teams[team_id].add_unit(unit)
-	teams[team_id].unit_points += gl.units[unit_id].point_cost
+	unit.set_team(team.team_id)
+	unit.set_co(team.co)
+	unit.max_health = team.unit_max_health
+	unit.allegiance = team.allegiance
+	team.add_unit(unit)
+	team.unit_points += gl.units[unit_id].point_cost
 	unit.end_action()
 
 func add_building_data(building: Building, type: int, team_id: int, available_units: PoolIntArray = []):
@@ -455,7 +456,7 @@ func _on_target_selected(pos: Vector2) -> void:
 	end_unit_action()
 
 func _on_unit_added(unit_id: int, team_id: int, position: Vector2) -> void:
-	create_unit(unit_id, team_id, position)
+	create_unit(unit_id, teams[team_id], position)
 	teams[team_id].funds -= gl.units[unit_id].cost
 
 func _on_unit_deleted(unit: Unit) -> void:
@@ -637,18 +638,12 @@ func start_turn() -> void:
 	for unit in active_team.units:
 		unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))
-		if is_building and gl.buildings[is_building.type].repairs.has(unit.move_type) \
-		and is_building.allegiance == unit.allegiance:
-			unit.ammo = gl.units[unit.id].ammo
-			unit.energy = gl.units[unit.id].energy
-			var damage = 10 - unit.health
-			if damage > 0:
-				var repair_cost = unit.cost * min(0.2, damage / 10)
-				if repair_cost <= active_team.funds:
-					unit.health += min(damage, 2)
-					active_team.funds -= repair_cost
+		if is_building and is_building.can_repair(unit):
+			is_building.repair(unit, active_team)
 		elif get_terrain(unit.position) == gl.TERRAIN.ENERGY_RELAY and unit.move_type != gl.MOVE_TYPE.AIR:
 			unit.atk_bonus = 1.2
+		elif get_terrain(unit.position) == gl.TERRAIN.SCRAPYARD and unit.move_type != gl.MOVE_TYPE.AIR:
+			unit.health -= 0.2
 		elif (unit.move_type == gl.MOVE_TYPE.AIR or unit.move_type == gl.MOVE_TYPE.WATER):
 			unit.energy -= gl.units[unit.id].energy_per_turn
 			if unit.energy <= 0:
