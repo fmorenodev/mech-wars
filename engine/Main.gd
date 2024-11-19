@@ -68,7 +68,7 @@ func _ready() -> void:
 	initialize([Team.new(gl.TEAM.RED, true, 0), Team.new(gl.TEAM.BLUE, false, 1)])
 	
 	teams[0].co = gl.COS.HUMAN_CO
-	teams[1].co = gl.COS.BOSS
+	teams[1].co = gl.COS.MARK0
 	
 	for unit in SelectionTileMap.get_children():
 		add_unit_data(unit, unit.id, teams[unit.team_id])
@@ -177,6 +177,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 			result.append(coordinates)
 	return result
 
+# returns [cell that the unit can move to, cell with a target]
 func check_all_targets(unit: Unit) -> Array:
 	if gl.is_indirect(unit):
 		var th_cells = check_targets(unit, unit.position)

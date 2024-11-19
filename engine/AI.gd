@@ -32,9 +32,6 @@ extends Node
 # - retreat to heal
 # - join: TODO
 
-# TODO, corner cases:
-# - move out of grey buildings (non-infantry) - have to test values
-
 # TODO:
 # - don't have all units go towards the same objective when moving
 # - finetune turn values
@@ -206,23 +203,24 @@ func calc_target_value(unit: Unit) -> Array:
 		var targets = Main.check_all_targets(unit)
 		for target_pos in targets:
 			var target = Main.is_unit_in_position(target_pos[1])
+			var next_pos = target_pos[0]
 			var value = 0
-			if target.allegiance != unit.allegiance:
+			if unavailable_positions.has(Main.SelectionTileMap.map_to_world(next_pos)):
+				pass
+			elif target.allegiance != unit.allegiance:
 				value = Main.calc_dmg_value(unit, target)
 				if already_targeted_positions.has(target.position):
-					value -= 25
-				# enemy is capturing
-				if target.capture_points > 0:
+					value -= 5
+				# enemy is capturing in 4 turns or less
+				if (20 - unit.capture_points) / unit.calc_next_cap_points() <= 4.0:
 					value += 50
-				# unit is in allied building
+				# unit is in allied building TEST values
 				var building_in_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
 				if building_in_pos:
 					if gl.is_next_to_unit(unit, target) and\
-					building_in_pos.allegiance == Main.active_team.allegiance:
+					building_in_pos.can_repair(unit):
 						value += 25
-					# unit is in neutral building
-					elif building_in_pos.team_id == -1:
-						value -= 25
+						target_pos[0] = Main.SelectionTileMap.world_to_map(unit.position)
 				if value > attack_turn_value:
 					attack_turn_value = value
 					chosen_target = target
@@ -244,7 +242,7 @@ func calc_capture_value(unit: Unit) -> Array:
 	var chosen_building = null
 	if unit.can_capture:
 		if (20 - unit.capture_points) / unit.calc_next_cap_points() >= 5.0:
-				return [0, null] # retreat, capture too difficult TEST
+				return [0, null] # retreat, capture too difficult
 		if unit.capture_points > 0:
 				# second highest value is 201 for capturing enemy team buildings that aren't ruins
 				return [202, Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))]
@@ -273,8 +271,8 @@ func calc_repair_value(unit: Unit) -> Array:
 	var repair_turn_value = 0
 	var chosen_repair_building = null
 	var building_in_same_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
-	if building_in_same_pos and building_in_same_pos.allegiance == unit.allegiance and unit.health <= 8:
-		repair_turn_value = 0 # TEST if units stay in place correctly
+	if building_in_same_pos and building_in_same_pos.can_repair(unit) and unit.health <= 8:
+		repair_turn_value = 0 # unit takes another action while repairing
 	elif unit.health <= 2 or unit.ammo == 0 or unit.energy < 11:
 		var repair_targets = Main.check_buildings(unit, true)
 		for target_pos in repair_targets:
@@ -330,8 +328,8 @@ func calc_movement(unit: Unit) -> Array:
 	# CALCULATE BEST MOVEMENT
 	if attack_turn_value > repair_turn_value and attack_turn_value > capture_turn_value and chosen_target != null:
 		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_target.position)))
-		if gl.is_indirect(unit): # TODO: better movement calculation for indirect units
-			path.pop_back()
+#		if gl.is_indirect(unit): # TODO: better movement calculation for indirect units
+#			path.pop_back()
 		return path
 	elif capture_turn_value > attack_turn_value and capture_turn_value > repair_turn_value and chosen_capture_building != null:
 		var path = astar.get_partial_path(unit, starting_point, unit_a_star.get_closest_point(Main.PathTileMap.world_to_map(chosen_capture_building.position)))

@@ -662,7 +662,7 @@ func delete_duplicates_unordered_matrix(array: Array) -> Array:
 
 func is_next_to_unit(unit: Unit, target_unit: Unit) -> bool:
 	for dir in DIRECTIONS:
-		if unit.position + dir == target_unit.position:
+		if unit.position + (dir * tile_size) == target_unit.position:
 			return true
 	return false
 
