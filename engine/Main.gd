@@ -142,7 +142,7 @@ func get_walkable_cells(unit: Unit) -> Array:
 	return astar.flood_fill(unit.move_type, TerrainTileMap.world_to_map(unit.position), int(min(unit.movement, unit.energy)), unit.team_id)
 
 ##########################
-# TILE ACTIONS FUNCTIONS # 
+# TILE ACTION FUNCTIONS # 
 ##########################
 
 func select_unit() -> void:
@@ -160,6 +160,10 @@ func clear_active_unit() -> void:
 	active_unit = null
 	walkable_cells.clear()
 
+# returns all targets that can be attacked without moving
+# unit: attacking unit
+# pos: position (can be different to the unit's position
+# all_possible: includes allies and units that can't be attacked
 func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Array:
 	var result := []
 	var directions := []
@@ -178,6 +182,7 @@ func check_targets(unit: Unit, pos: Vector2, all_possible: bool = false) -> Arra
 	return result
 
 # returns [cell that the unit can move to, cell with a target]
+# with all targets in movement + attack range
 func check_all_targets(unit: Unit) -> Array:
 	if gl.is_indirect(unit):
 		var th_cells = check_targets(unit, unit.position)
@@ -198,6 +203,8 @@ func check_all_targets(unit: Unit) -> Array:
 		th_cells = gl.delete_duplicates_unordered_matrix(th_cells)
 		return th_cells
 
+# returns all cells that can be reached to attack
+# used when selecting an enemy unit to see the threat range
 func threatened_cells(unit: Unit) -> Array:
 	var th_cells := []
 	if gl.is_indirect(unit):
@@ -225,6 +232,8 @@ func threatened_cells(unit: Unit) -> Array:
 				th_cells.remove(i)
 	return th_cells
 
+# returns all buildings in movement range
+# owned: true to check for allied buildings (for repair), false to check for capturable buildings
 func check_buildings(unit: Unit, owned: bool) -> Array:
 	var buildings_result := []
 	var wk_cells = get_walkable_cells(unit)
@@ -257,6 +266,7 @@ func select_unit_or_building(pos: Vector2) -> void:
 	else:
 		open_game_menu()
 
+# called after selecting a unit and then selecting a target cell
 func move_active_unit(target_pos: Vector2) -> void:
 	var unit_blocking = is_unit_in_position(target_pos)
 	var can_join := false
@@ -510,6 +520,7 @@ func common_attack_logic(attacker_unit: Unit, target_unit: Unit) -> void:
 	
 	if extra_damage > 0.0:
 		attacker_unit.health += extra_damage * attacker_unit.lifesteal
+		# right now fund salvaging is not applied to extra damage, like the arc tower deals
 		# teams[attacker_unit.team_id].funds += attacker_unit.fund_salvaging * extra_damage * (target_unit.cost / 1000.0)
 
 # unit attack abilities
@@ -554,8 +565,9 @@ func get_terrain_stars(pos: Vector2) -> int:
 	else:
 		return gl.terrain[tile_id].stars
 
-# since add_random is only false when calculating dmg value, if add_random is true
-# and w1 is used, ammo is substracted in this function
+# returns damage dealt to a target by an attacker
+# add_random: false when making calculations for previews or ai turns
+# 			  true for actual attacks, ammo is substracted
 func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float:
 	if can_attack(attacker, target):
 		var wpn_used
@@ -583,6 +595,9 @@ func calc_damage(attacker: Unit, target: Unit, add_random: bool = true) -> float
 	else:
 		return 0.0
 
+# returns damage dealt to an attacker (target) in a counterattack
+# add_random: false when making calculations for previews or ai turns
+# 			  true for actual attacks, ammo is substracted
 func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered: int, add_random: bool = true) -> float:
 	if counter_attacker and counter_attacker.atk_type == gl.ATTACK_TYPE.DIRECT \
 		and target.atk_type == gl.ATTACK_TYPE.DIRECT and can_attack(counter_attacker, target):
@@ -613,6 +628,7 @@ func calc_retaliation_damage(counter_attacker: Unit, target: Unit, dmg_suffered:
 	else:
 		return 0.0
 
+# returns the estimated "value" of an engagement, for AI turn calculation
 func calc_dmg_value(attacker: Unit, target: Unit) -> int:
 	var dmg = calc_damage(attacker, target, false)
 	var retaliation_dmg = calc_retaliation_damage(target, attacker, dmg, false)
@@ -629,6 +645,11 @@ func can_attack(attacker: Unit, target: Unit) -> bool:
 func can_use_w1(attacker: Unit, target: Unit) -> bool:
 	return attacker.w1_can_attack.has(target.id) and attacker.ammo > 0
 
+# adds funds
+# activates units
+# calls for repairs
+# applies terrain effects
+# substracts fuel for air and water units
 func start_turn() -> void:
 	if active_team.team_id == 0:
 		day += 1
@@ -653,7 +674,7 @@ func start_turn() -> void:
 		signals.emit_signal("unit_deleted", unit)
 	update_all_a_star()
 
-# for player units
+# handles the end of the action of a player-controlled unit
 func end_unit_action() -> void:
 	if !active_unit.joined_this_turn: # subtracted in _on_join_action
 		active_unit.energy -= active_unit.current_energy_cost
