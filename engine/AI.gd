@@ -195,7 +195,6 @@ func _on_end_ai_turn(team: Team) -> void:
 	Main.disable_input(false)
 	signals.emit_signal("turn_ended")
 
-# TEST check why infantry attacks unit they deal barely no damage to and die in retaliation
 func calc_target_value(unit: Unit) -> Array:
 	var attack_turn_value = 0
 	var chosen_target = null
@@ -218,8 +217,7 @@ func calc_target_value(unit: Unit) -> Array:
 						value += 25
 						target_pos[0] = Main.SelectionTileMap.world_to_map(unit.position)
 				# enemy is capturing in 4 turns or less
-				if unit.capture_points > 0 and \
-				(20 - unit.capture_points) / unit.calc_next_cap_points() <= 4.0:
+				if (20 - target.capture_points) / target.calc_next_cap_points() <= 4.0:
 					value += 50
 				if already_targeted_positions.has(target.position):
 					value -= 5
