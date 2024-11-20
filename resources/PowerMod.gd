@@ -5,7 +5,10 @@ export var id: int
 export var text: String
 export var amount: float
 
+var source_building: Building
+
 func _init(_id: int, _amount: float):
+	var _err = signals.connect("remove_power_mod", self, "_on_remove_mod")
 	id = _id
 	amount = _amount
 	match id:
@@ -55,3 +58,7 @@ func remove_mod(team: Team) -> void:
 					unit.cap_mod -= amount
 		gl.POWER_MOD.FUNDS:
 			team.funds -= int(amount)
+
+func _on_remove_mod(team: Team, building: Building) -> void:
+	if building == source_building:
+		remove_mod(team)

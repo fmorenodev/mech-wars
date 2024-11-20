@@ -46,5 +46,7 @@ signal power_start(team)
 signal super_start(team)
 signal update_meter(team)
 
+# BUILDINGS #
 signal change_unlocked_factory_units(unlocked, team_id)
-signal choose_power_mod(team, power_mods)
+signal choose_power_mod(team, power_mods, building)
+signal remove_power_mod(team, building)

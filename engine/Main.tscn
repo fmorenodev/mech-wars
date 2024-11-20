@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/gui/gui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/GameMenu.gd" type="Script" id=2]
-[ext_resource path="res://maps/BayMap.tscn" type="PackedScene" id=3]
+[ext_resource path="res://maps/BeanIslandMap.tscn" type="PackedScene" id=3]
 [ext_resource path="res://engine/AI.gd" type="Script" id=4]
 [ext_resource path="res://engine/ChoicePopup.gd" type="Script" id=5]
 [ext_resource path="res://engine/Main.gd" type="Script" id=15]
@@ -624,6 +624,7 @@ stretch_mode = 4
 [node name="ChoicePopup" type="PopupMenu" parent="GUI/GUIContainer"]
 margin_right = 8.0
 margin_bottom = 8.0
+popup_exclusive = true
 script = ExtResource( 5 )
 
 [node name="Description" type="Label" parent="GUI/GUIContainer/ChoicePopup"]

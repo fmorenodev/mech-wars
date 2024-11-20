@@ -66,6 +66,24 @@ func capture(capturing_team: Team, last_owner = null) -> void:
 				last_owner.max_unit_points -= 10
 			capturing_team.max_unit_points += 10
 		gl.BUILDINGS.RESEARCH_2: # powerups
-			signals.emit_signal("choose_power_mod", capturing_team, power_mods)
+			if last_owner:
+				signals.emit_signal("remove_power_mod", last_owner, self)
+			signals.emit_signal("choose_power_mod", capturing_team, power_mods, self)
 		gl.BUILDINGS.RESEARCH_3: # new unit version
 			pass
+
+func repair(unit: Unit, team: Team) -> void:
+	if can_repair(unit):
+		unit.ammo = gl.units[unit.id].ammo
+		unit.energy = gl.units[unit.id].energy
+		var damage = unit.max_health - unit.health
+		if damage > 0:
+			var repair_cost = unit.cost * min(0.2, damage / 10)
+			if repair_cost <= team.funds:
+				unit.health += min(damage, 2)
+				team.funds -= repair_cost
+
+func can_repair(unit: Unit) -> bool:
+	if gl.buildings[type].repairs.has(unit.move_type) and allegiance == unit.allegiance:
+		return true
+	return false

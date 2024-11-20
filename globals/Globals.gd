@@ -411,7 +411,6 @@ var units = { UNITS.LIGHT_INFANTRY:
 				can_capture = false},
 			}
 
-# TODO: implement scrapyard damage mechanic
 var terrain = { 
 				TERRAIN.ROAD: {
 					name = tr('ROAD'),
@@ -615,6 +614,10 @@ enum TERRAIN {PLAINS, FOREST, HILL, MOUNTAIN, WATER, ROAD, RIVER, WASTELAND, REE
 enum BUILDINGS {RUINS, RUINS_2, FACTORY, AIRPORT, PORT, RESEARCH, POWER_PLANT, RESEARCH_2, RESEARCH_3}
 enum COS {MARK0, BANDIT, HUMAN_CO, SCAVENGER, EVIL_MARK0, BOSS}
 
+########################
+# GLOBAL AUX FUNCTIONS #
+########################
+
 func is_indirect(unit: Unit) -> bool:
 	if unit.atk_type == ATTACK_TYPE.ARTILLERY or unit.atk_type == ATTACK_TYPE.HEAVY_ARTILLERY:
 		return true
@@ -656,6 +659,12 @@ func delete_duplicates_unordered_matrix(array: Array) -> Array:
 		if not duplicated:
 			result += [array[i]]
 	return result
+
+func is_next_to_unit(unit: Unit, target_unit: Unit) -> bool:
+	for dir in DIRECTIONS:
+		if unit.position + (dir * tile_size) == target_unit.position:
+			return true
+	return false
 
 # doesn't work correctly
 func move_mouse_global(pos: Vector2) -> void:

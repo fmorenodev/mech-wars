@@ -16,7 +16,7 @@ var allegiance: int
 var unit_name: String
 var movement: int
 var health := 10.0 setget set_health
-var max_health := 10.0
+var max_health := 10.0 setget set_max_health
 var energy: int
 var ammo: int
 var move_type: int
@@ -73,10 +73,6 @@ var move_path: Array
 
 var chosen_action: Array
 
-# TODO: bonus to incentivise certain ai actions, not implemented
-var stay_in_place_bonus: float
-var choose_diff_pos_bonus: float
-
 func set_health(value: float) -> void:
 	health = value
 	if health <= 0:
@@ -91,6 +87,10 @@ func set_health(value: float) -> void:
 		HealthLabel.text = str(label_value)
 	elif (co == gl.COS.BOSS and label_value == 12) or (co != gl.COS.BOSS and label_value == 10):
 		HealthLabel.text = ''
+
+func set_max_health(value: float) -> void:
+	max_health = value
+	set_health(max_health)
 
 func round_health(value: float) -> float:
 	return abs(ceil(value))
@@ -121,9 +121,6 @@ func set_co(value: int) -> void:
 	else:
 		atk_mod = 1.0
 		def_mod = 1.0
-	if co == gl.COS.BOSS:
-		max_health = 12
-		set_health(12)
 
 func initialize(unit: int) -> void:
 	id = unit
@@ -190,9 +187,12 @@ func capture(building) -> void:
 	elif capturing_building != building:
 		capturing_building = building
 		capture_points = 0
-	capture_points += int(floor(ceil(health) * cap_mod))
+	capture_points += calc_next_cap_points()
 	if capture_points >= 20:
 		capturing_building = null
 		AuxLabel.text = ''
 	else:
 		AuxLabel.text = 'c'
+
+func calc_next_cap_points() -> int:
+	return int(floor(ceil(health) * cap_mod))

@@ -28,6 +28,7 @@ var unit_points := 0
 var max_unit_points := 40
 
 var unlocked_factory_units := false setget set_unlocked_factory_units
+var unit_max_health := 10.0
 
 func _init(_team_id: int, _is_player: bool, _allegiance: int) -> void:
 	team_id = _team_id
@@ -55,6 +56,8 @@ func set_funds(value: int) -> void:
 func set_co(value: int) -> void:
 	co = value
 	co_resource = load(gl.co_data[co].co_res)
+	if co == gl.COS.BOSS:
+		unit_max_health = 12.0
 
 func set_power_meter_amount(value: float) -> void:
 	power_meter_amount = value
