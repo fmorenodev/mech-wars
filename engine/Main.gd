@@ -193,7 +193,8 @@ func check_all_targets(unit: Unit) -> Array:
 	else:
 		var wk_cells = get_walkable_cells(unit)
 		for i in range(wk_cells.size() - 1, -1, -1):
-			if is_unit_in_position(wk_cells[i]):
+			if wk_cells[i] != SelectionTileMap.world_to_map(unit.position) and\
+			is_unit_in_position(wk_cells[i]):
 				wk_cells.remove(i)
 		var th_cells: Array = []
 		for cell in wk_cells:

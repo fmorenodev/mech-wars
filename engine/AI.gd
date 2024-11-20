@@ -82,7 +82,7 @@ func _on_next_unit_turn() -> void:
 	var unit = get_current()
 	for ai_unit in Main.active_team.units:
 		if !ai_unit.can_move:
-			unavailable_positions.append(ai_unit.position) # TODO: test if this works
+			unavailable_positions.append(ai_unit.position)
 			if ai_unit.chosen_action[1] == gl.TURN_TYPE.ATTACK or ai_unit.chosen_action[1] == gl.TURN_TYPE.MOVE:
 				already_targeted_positions.append(ai_unit.chosen_action[2])
 	calculate_turn(unit) # recalculate to avoid conflicts
@@ -195,6 +195,7 @@ func _on_end_ai_turn(team: Team) -> void:
 	Main.disable_input(false)
 	signals.emit_signal("turn_ended")
 
+# TEST check why infantry attacks unit they deal barely no damage to and die in retaliation
 func calc_target_value(unit: Unit) -> Array:
 	var attack_turn_value = 0
 	var chosen_target = null
@@ -209,18 +210,19 @@ func calc_target_value(unit: Unit) -> Array:
 				pass
 			elif target.allegiance != unit.allegiance:
 				value = Main.calc_dmg_value(unit, target)
-				if already_targeted_positions.has(target.position):
-					value -= 5
-				# enemy is capturing in 4 turns or less
-				if (20 - unit.capture_points) / unit.calc_next_cap_points() <= 4.0:
-					value += 50
 				# unit is in allied building TEST values
 				var building_in_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
 				if building_in_pos:
 					if gl.is_next_to_unit(unit, target) and\
-					building_in_pos.can_repair(unit):
+					building_in_pos.can_repair(unit) and value > 0:
 						value += 25
 						target_pos[0] = Main.SelectionTileMap.world_to_map(unit.position)
+				# enemy is capturing in 4 turns or less
+				if unit.capture_points > 0 and \
+				(20 - unit.capture_points) / unit.calc_next_cap_points() <= 4.0:
+					value += 50
+				if already_targeted_positions.has(target.position):
+					value -= 5
 				if value > attack_turn_value:
 					attack_turn_value = value
 					chosen_target = target
@@ -310,7 +312,7 @@ func calc_movement(unit: Unit) -> Array:
 			if weight < 99 and weight > 0:
 				var value = calc_cap_points(unit, target_building) / 2
 				if value / weight > capture_turn_value:
-					attack_turn_value = value
+					capture_turn_value = value
 					chosen_capture_building = target_building
 	# MOVE TO HEAL (IN FUTURE TURN)
 	var repair_turn_value = 0
@@ -322,7 +324,7 @@ func calc_movement(unit: Unit) -> Array:
 				if weight < 99 and weight > 0:
 					var value = calc_repair_points(unit)
 					if value / weight > capture_turn_value:
-						attack_turn_value = value
+						repair_turn_value = value
 						chosen_repair_building = target_building
 
 	# CALCULATE BEST MOVEMENT
