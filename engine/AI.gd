@@ -33,7 +33,6 @@ extends Node
 # - join: TODO
 
 # TODO:
-# - don't have all units go towards the same objective when moving
 # - finetune turn values
 # - don't use power immediately
 
@@ -217,7 +216,8 @@ func calc_target_value(unit: Unit) -> Array:
 						value += 25
 						target_pos[0] = Main.SelectionTileMap.world_to_map(unit.position)
 				# enemy is capturing in 4 turns or less
-				if (20 - target.capture_points) / target.calc_next_cap_points() <= 4.0:
+				if target.capture_points > 0 and\
+				(20 - target.capture_points) / target.calc_next_cap_points() <= 4.0:
 					value += 50
 				if already_targeted_positions.has(target.position):
 					value -= 5
@@ -272,17 +272,16 @@ func calc_repair_value(unit: Unit) -> Array:
 	var chosen_repair_building = null
 	var building_in_same_pos = Main.is_building_in_position(Main.SelectionTileMap.world_to_map(unit.position))
 	if building_in_same_pos and building_in_same_pos.can_repair(unit) and unit.health <= 8:
-		repair_turn_value = 0 # unit takes another action while repairing
+		repair_turn_value = 25 # unit takes another action while repairing
+		chosen_repair_building = building_in_same_pos
 	elif unit.health <= 2 or unit.ammo == 0 or unit.energy < 11:
 		var repair_targets = Main.check_buildings(unit, true)
 		for target_pos in repair_targets:
 			var target = Main.is_building_in_position(target_pos)
-			if target.type == gl.BUILDINGS.RUINS or target.type == gl.BUILDINGS.RUINS_2:
-				if calc_repair_points(unit) > 0:
-					# repair_turn_value = unit.cost / 1000.0 * 2
-					repair_turn_value = 100
-					chosen_repair_building = target
-					break
+			if target.can_repair(unit) and calc_repair_points(unit) > 0:
+				repair_turn_value = 100
+				chosen_repair_building = target
+				break
 	return [repair_turn_value, chosen_repair_building]
 
 # TODO: better movement limitation with energy
