@@ -176,7 +176,7 @@ func _on_end_ai_turn(team: Team) -> void:
 						var unit = gl.units[unit_code]
 						if unit.cost > highest_cost and team.funds >= unit.cost \
 						and (team.unit_points + unit.point_cost) <= team.max_unit_points:
-							if ((unit_code == gl.UNITS.ANTI_AIR or unit_code == gl.UNITS.ROCKET or \
+							if ((unit_code == gl.UNITS.ANTI_AIR or unit_code == gl.UNITS.MISSILE_LAUNCHER or \
 							unit_code == gl.UNITS.ANGEL) and !create_anti_air) or \
 							(unit_code == gl.UNITS.HEAVY_INFANTRY and !create_anti_armored) or \
 							(unit_code == gl.UNITS.RECON and create_anti_armored):

@@ -10,7 +10,7 @@ const anti_air = preload("res://assets/units/anti_air/anti_air.tres")
 const artillery = preload("res://assets/units/artillery_v2/artillery_v2.tres")
 const heavy_artillery = preload("res://assets/units/heavy_artillery/heavy_artillery.tres")
 const arc_tower = preload("res://assets/units/arc_tower/arc_tower.tres")
-const rocket = preload("res://assets/units/rocket/rocket.tres")
+const missile_launcher = preload("res://assets/units/missile_launcher/missile_launcher.tres")
 const drone = preload("res://assets/units/drone/drone.tres")
 const flying_infantry = preload("res://assets/units/flying_infantry/flying_infantry.tres")
 const sky_fortress = preload("res://assets/units/sky_fortress/sky_fortress.tres")
@@ -21,7 +21,7 @@ const sprites := { gl.UNITS.LIGHT_INFANTRY: light_inf, gl.UNITS.HEAVY_INFANTRY: 
 				gl.UNITS.LIGHT_TANK: light_tank, gl.UNITS.MEDIUM_TANK: medium_tank,
 				gl.UNITS.ANTI_AIR: anti_air, gl.UNITS.ARTILLERY: artillery,
 				gl.UNITS.HEAVY_ARTILLERY: heavy_artillery, gl.UNITS.ARC_TOWER: arc_tower,
-				gl.UNITS.ROCKET: rocket, gl.UNITS.DRONE: drone, gl.UNITS.ANGEL: angel,
+				gl.UNITS.MISSILE_LAUNCHER: missile_launcher, gl.UNITS.DRONE: drone, gl.UNITS.ANGEL: angel,
 				gl.UNITS.SKY_FORTRESS: sky_fortress,
 				gl.UNITS.BATTLESHIP: battleship }
 
