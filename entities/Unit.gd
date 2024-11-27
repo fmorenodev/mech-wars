@@ -30,6 +30,8 @@ var point_cost: int
 var can_capture: bool
 var lifesteal := 0.0 # % of damage healed
 var fund_salvaging := 0.0 # % of damage gained as funds
+var units_carried := []
+var units_can_be_carried := []
 
 # CO variables
 var co: int setget set_co
@@ -138,6 +140,7 @@ func initialize(unit: int) -> void:
 	cost = unit_data.cost
 	point_cost = unit_data.point_cost
 	can_capture = unit_data.can_capture
+	units_can_be_carried = unit_data.unit_can_be_carried
 
 func _ready() -> void:
 	set_process(false)
@@ -196,3 +199,8 @@ func capture(building) -> void:
 
 func calc_next_cap_points() -> int:
 	return int(floor(ceil(health) * cap_mod))
+
+# TODO: add unit carrying
+func carry_unit(unit: Unit) -> void:
+	if units_can_be_carried.has(unit.id):
+		units_carried.append(unit)

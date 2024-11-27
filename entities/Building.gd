@@ -35,18 +35,20 @@ func set_available_units(unlocked: bool, _team_id: int) -> void:
 		match type:
 			gl.BUILDINGS.FACTORY:
 				if unlocked:
-					available_units = [ gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
-									gl.UNITS.FLYING_INFANTRY, gl.UNITS.RECON, gl.UNITS.LIGHT_TANK,
+					available_units = [gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
+									gl.UNITS.FLYING_INFANTRY, gl.UNITS.SUPPORT_MECH,
+									gl.UNITS.RECON, gl.UNITS.LIGHT_TANK,
 									gl.UNITS.MEDIUM_TANK, gl.UNITS.ARTILLERY,
 									gl.UNITS.HEAVY_ARTILLERY, gl.UNITS.ARC_TOWER,
-									gl.UNITS.ANTI_AIR, gl.UNITS.MISSILE_LAUNCHER ]
+									gl.UNITS.ANTI_AIR, gl.UNITS.MISSILE_LAUNCHER]
 				else:
-					available_units = [ gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
-									gl.UNITS.FLYING_INFANTRY, gl.UNITS.RECON]
+					available_units = [gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
+									gl.UNITS.FLYING_INFANTRY, gl.UNITS.SUPPORT_UNIT, gl.UNITS.RECON]
 			gl.BUILDINGS.AIRPORT:
-				available_units = [gl.UNITS.DRONE, gl.UNITS.ANGEL, gl.UNITS.SKY_FORTRESS]
+				available_units = [gl.UNITS.TRANS_DRONE, gl.UNITS.DRONE, gl.UNITS.ANGEL, gl.UNITS.SKY_FORTRESS]
 			gl.BUILDINGS.PORT:
-				available_units = [gl.UNITS.BATTLESHIP]
+				available_units = [gl.UNITS.GUNBOAT, gl.UNITS.LANDER, gl.UNITS.CRUISER,
+								   gl.UNITS.SUBMARINE, gl.UNITS.BATTLESHIP, gl.UNITS.CARRIER]
 			_:
 				available_units = []
 
