@@ -126,7 +126,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 5000,
 				point_cost = 2,
 				can_capture = false,
-				unit_carry_number = 1,
+				carry_capacity = 1,
 				units_can_be_carried = [UNITS.LIGHT_INFANTRY, UNITS.HEAVY_INFANTRY,
 					UNITS.FLYING_INFANTRY]},
 			UNITS.RECON: 
@@ -363,7 +363,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 5000,
 				point_cost = 1,
 				can_capture = false,
-				unit_carry_number = 2,
+				carry_capacity = 2,
 				units_can_be_carried = [UNITS.LIGHT_INFANTRY, UNITS.HEAVY_INFANTRY,
 					UNITS.FLYING_INFANTRY]},
 			UNITS.DRONE:
@@ -498,7 +498,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 6000,
 				point_cost = 2,
 				can_capture = false,
-				unit_carry_number = 1,
+				carry_capacity = 1,
 				units_can_be_carried = [UNITS.LIGHT_INFANTRY, UNITS.HEAVY_INFANTRY,
 					UNITS.FLYING_INFANTRY]},
 			UNITS.LANDER:
@@ -519,7 +519,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 10000,
 				point_cost = 2,
 				can_capture = false,
-				unit_carry_number = 2,
+				carry_capacity = 2,
 				units_can_be_carried = [UNITS.LIGHT_INFANTRY, UNITS.HEAVY_INFANTRY,
 					UNITS.RECON, UNITS.LIGHT_TANK, UNITS.MEDIUM_TANK,
 					UNITS.ARTILLERY, UNITS.HEAVY_ARTILLERY,
@@ -546,7 +546,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 16000,
 				point_cost = 2,
 				can_capture = false,
-				unit_carry_number = 2,
+				carry_capacity = 2,
 				units_can_be_carried = [UNITS.TRANS_DRONE, UNITS.DRONE]},
 			UNITS.SUBMARINE:
 				{unit_name = tr('SUBMARINE'),
@@ -618,7 +618,7 @@ var units = { UNITS.LIGHT_INFANTRY:
 				cost = 28000,
 				point_cost = 5,
 				can_capture = false,
-				unit_carry_number = 2,
+				carry_capacity = 2,
 				units_can_be_carried = [UNITS.FLYING_INFANTRY, UNITS.TRANS_DRONE,
 					UNITS.DRONE, UNITS.ANGEL, UNITS.SKY_FORTRESS]},
 			}

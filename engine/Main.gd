@@ -271,10 +271,14 @@ func select_unit_or_building(pos: Vector2) -> void:
 func move_active_unit(target_pos: Vector2) -> void:
 	var unit_blocking = is_unit_in_position(target_pos)
 	var can_join := false
+	var can_enter := false
 	if unit_blocking and (unit_blocking != active_unit):
 		if unit_blocking.id == active_unit.id:
 			targets = [unit_blocking]
 			can_join = true
+		elif unit_blocking.can_carry_unit(active_unit):
+			targets = [unit_blocking]
+			can_enter = true
 		else:
 			return
 	if not target_pos in walkable_cells: # empty
@@ -298,7 +302,10 @@ func move_active_unit(target_pos: Vector2) -> void:
 		active_unit.position = path_world_coords.back()
 	
 	if can_join:
-		open_action_menu([4], target_pos) # join
+		open_action_menu([5], target_pos) # join
+		return
+	elif can_enter:
+		open_action_menu([4], target_pos) # enter
 		return
 	# check for attack targets
 	if active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
@@ -433,6 +440,11 @@ func _on_attack_action() -> void:
 func _on_capture_action() -> void:
 	common_capture_logic(active_unit)
 	end_unit_action()
+
+func _on_enter_action() -> void:
+	var carried_unit: Unit = targets[0]
+	carried_unit.is_being_carried = true
+	active_unit.carry_unit(carried_unit)
 
 func _on_join_action() -> void:
 	var joining_unit: Unit = targets[0]

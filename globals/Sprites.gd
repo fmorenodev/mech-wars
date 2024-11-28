@@ -1,7 +1,11 @@
 extends Node
 
+# TODO: add new sprites for the new units
+
 const light_inf = preload("res://assets/units/light_infantry/light_infantry.tres")
 const heavy_inf = preload("res://assets/units/heavy_infantry/heavy_infantry.tres")
+const flying_infantry = preload("res://assets/units/flying_infantry/flying_infantry.tres")
+const support_mech = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
 const recon = preload("res://assets/units/recon/recon.tres")
 const light_tank = preload("res://assets/units/light_tank/light_tank.tres")
 const medium_tank = preload("res://assets/units/medium_tank/medium_tank.tres")
@@ -11,19 +15,28 @@ const artillery = preload("res://assets/units/artillery_v2/artillery_v2.tres")
 const heavy_artillery = preload("res://assets/units/heavy_artillery/heavy_artillery.tres")
 const arc_tower = preload("res://assets/units/arc_tower/arc_tower.tres")
 const missile_launcher = preload("res://assets/units/missile_launcher/missile_launcher.tres")
+const trans_drone = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
 const drone = preload("res://assets/units/drone/drone.tres")
-const flying_infantry = preload("res://assets/units/flying_infantry/flying_infantry.tres")
+const seaplane = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
 const sky_fortress = preload("res://assets/units/sky_fortress/sky_fortress.tres")
 const angel = preload("res://assets/units/angel/angel.tres")
+const gunboat = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
+const lander = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
+const cruiser = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
+const submarine = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
 const battleship = preload("res://assets/units/battleship/battleship.tres")
+const carrier = preload("res://assets/units/artillery/artillery.tres") # TODO: CHANGE
+
 const sprites := { gl.UNITS.LIGHT_INFANTRY: light_inf, gl.UNITS.HEAVY_INFANTRY: heavy_inf,
-				gl.UNITS.FLYING_INFANTRY: flying_infantry, gl.UNITS.RECON: recon,
-				gl.UNITS.LIGHT_TANK: light_tank, gl.UNITS.MEDIUM_TANK: medium_tank,
+				gl.UNITS.FLYING_INFANTRY: flying_infantry, gl.UNITS.SUPPORT_MECH: support_mech,
+				gl.UNITS.RECON: recon, gl.UNITS.LIGHT_TANK: light_tank, gl.UNITS.MEDIUM_TANK: medium_tank,
 				gl.UNITS.ANTI_AIR: anti_air, gl.UNITS.ARTILLERY: artillery,
 				gl.UNITS.HEAVY_ARTILLERY: heavy_artillery, gl.UNITS.ARC_TOWER: arc_tower,
-				gl.UNITS.MISSILE_LAUNCHER: missile_launcher, gl.UNITS.DRONE: drone, gl.UNITS.ANGEL: angel,
-				gl.UNITS.SKY_FORTRESS: sky_fortress,
-				gl.UNITS.BATTLESHIP: battleship }
+				gl.UNITS.MISSILE_LAUNCHER: missile_launcher, gl.UNITS.TRANS_DRONE: trans_drone,
+				gl.UNITS.DRONE: drone, gl.UNITS.SEAPLANE: seaplane, gl.UNITS.ANGEL: angel,
+				gl.UNITS.SKY_FORTRESS: sky_fortress, gl.UNITS.GUNBOAT: gunboat,
+				gl.UNITS.LANDER: lander, gl.UNITS.CRUISER: cruiser, gl.UNITS.SUBMARINE: submarine,
+				gl.UNITS.BATTLESHIP: battleship, gl.UNITS.CARRIER: carrier}
 
 const greyscale_mat: Material = preload("res://assets/shaders/materials/greyscale_material.tres")
 const red_swap_mat: Material = preload("res://assets/shaders/materials/red_swap_material.tres")

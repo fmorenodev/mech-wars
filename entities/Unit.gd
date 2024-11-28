@@ -31,6 +31,7 @@ var can_capture: bool
 var lifesteal := 0.0 # % of damage healed
 var fund_salvaging := 0.0 # % of damage gained as funds
 var units_carried := []
+var carry_capacity := 0
 var units_can_be_carried := []
 
 # CO variables
@@ -45,6 +46,7 @@ var capturing_building
 var current_energy_cost := 0
 var rounded_health := 10
 var joined_this_turn := false # if unit used join action
+var is_being_carried := false setget set_is_being_carried
 
 # resets at start of turn
 var atk_bonus := 1.0
@@ -124,6 +126,10 @@ func set_co(value: int) -> void:
 		atk_mod = 1.0
 		def_mod = 1.0
 
+func set_is_being_carried(value: bool) -> void:
+	is_being_carried = value
+	z_index = -1 if is_being_carried else 0
+
 func initialize(unit: int) -> void:
 	id = unit
 	var unit_data = gl.units[unit]
@@ -140,6 +146,7 @@ func initialize(unit: int) -> void:
 	cost = unit_data.cost
 	point_cost = unit_data.point_cost
 	can_capture = unit_data.can_capture
+	carry_capacity = unit_data.carry_capacity
 	units_can_be_carried = unit_data.unit_can_be_carried
 
 func _ready() -> void:
@@ -202,5 +209,10 @@ func calc_next_cap_points() -> int:
 
 # TODO: add unit carrying
 func carry_unit(unit: Unit) -> void:
-	if units_can_be_carried.has(unit.id):
+	if can_carry_unit(unit):
 		units_carried.append(unit)
+
+func can_carry_unit(unit: Unit) -> bool:
+	if units_can_be_carried.has(unit.id) and units_carried.size() < carry_capacity:
+		return true
+	return false
