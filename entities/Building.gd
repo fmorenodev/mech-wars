@@ -43,7 +43,7 @@ func set_available_units(unlocked: bool, _team_id: int) -> void:
 									gl.UNITS.ANTI_AIR, gl.UNITS.MISSILE_LAUNCHER]
 				else:
 					available_units = [gl.UNITS.LIGHT_INFANTRY, gl.UNITS.HEAVY_INFANTRY,
-									gl.UNITS.FLYING_INFANTRY, gl.UNITS.SUPPORT_UNIT, gl.UNITS.RECON]
+									gl.UNITS.FLYING_INFANTRY, gl.UNITS.SUPPORT_MECH, gl.UNITS.RECON]
 			gl.BUILDINGS.AIRPORT:
 				available_units = [gl.UNITS.TRANS_DRONE, gl.UNITS.DRONE, gl.UNITS.ANGEL, gl.UNITS.SKY_FORTRESS]
 			gl.BUILDINGS.PORT:

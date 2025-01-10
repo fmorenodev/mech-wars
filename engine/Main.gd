@@ -57,6 +57,8 @@ func _ready() -> void:
 	_err = signals.connect("cancel_action", self, "_on_cancel_action")
 	_err = signals.connect("attack_action", self, "_on_attack_action")
 	_err = signals.connect("capture_action", self, "_on_capture_action")
+	_err = signals.connect("load_action", self, "_on_load_action")
+	_err = signals.connect("unload_action", self, "_on_unload_action")
 	_err = signals.connect("join_action", self, "_on_join_action")
 	
 	_err = signals.connect("target_selected", self, "_on_target_selected")
@@ -441,10 +443,15 @@ func _on_capture_action() -> void:
 	common_capture_logic(active_unit)
 	end_unit_action()
 
-func _on_enter_action() -> void:
+func _on_load_action() -> void:
 	var carried_unit: Unit = targets[0]
-	carried_unit.is_being_carried = true
 	active_unit.carry_unit(carried_unit)
+	end_unit_action()
+
+func _on_unload_action() -> void:
+	var carried_unit: Unit = active_unit.units_carried[0]
+	active_unit.unload_unit(carried_unit)
+	end_unit_action()
 
 func _on_join_action() -> void:
 	var joining_unit: Unit = targets[0]
@@ -466,7 +473,6 @@ func _on_join_action() -> void:
 	active_unit.energy = new_energy
 	active_unit.health = new_health
 	joining_unit.health = 0
-	targets.clear()
 	end_unit_action()
 
 # TODO: can select an empty target when attacking (unsure if solved)
@@ -696,6 +702,8 @@ func end_unit_action() -> void:
 	active_unit.last_pos = null
 	active_unit.end_action()
 	clear_active_unit()
+	
+	targets.clear()
 	action_menu_open = false
 	update_all_a_star()
 

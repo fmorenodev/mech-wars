@@ -147,7 +147,7 @@ func initialize(unit: int) -> void:
 	point_cost = unit_data.point_cost
 	can_capture = unit_data.can_capture
 	carry_capacity = unit_data.carry_capacity
-	units_can_be_carried = unit_data.unit_can_be_carried
+	units_can_be_carried = unit_data.units_can_be_carried
 
 func _ready() -> void:
 	set_process(false)
@@ -210,7 +210,18 @@ func calc_next_cap_points() -> int:
 # TODO: add unit carrying
 func carry_unit(unit: Unit) -> void:
 	if can_carry_unit(unit):
+		unit.is_being_carried = true
 		units_carried.append(unit)
+		
+		unit.position = Vector2(8000, 8000)
+		unit.end_action()
+
+func unload_unit(unit: Unit) -> void:
+	if units_carried.has(unit):
+		units_carried.erase(unit)
+		
+		unit.position = position + Vector2(gl.tile_size, gl.tile_size)
+		unit.end_action()
 
 func can_carry_unit(unit: Unit) -> bool:
 	if units_can_be_carried.has(unit.id) and units_carried.size() < carry_capacity:

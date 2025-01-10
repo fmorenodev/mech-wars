@@ -4,7 +4,8 @@ const move_icon: Texture = preload("res://assets/gui/action_icons/move_arrow.png
 const cancel_icon: Texture = preload("res://assets/gui/action_icons/cancel.png")
 const attack_icon: Texture = preload("res://assets/gui/action_icons/attack.png")
 const capture_icon: Texture = preload("res://assets/gui/action_icons/capture.png")
-const enter_icon: Texture = preload("res://assets/gui/action_icons/capture.png") # TODO: change
+const load_icon: Texture = preload("res://assets/gui/action_icons/capture.png") # TODO: change
+const unload_icon: Texture = preload("res://assets/gui/action_icons/capture.png") # TODO: change
 const join_icon: Texture = preload("res://assets/gui/action_icons/join.png")
 
 enum menu_options {
@@ -12,7 +13,8 @@ enum menu_options {
 	CANCEL,
 	ATTACK,
 	CAPTURE,
-	ENTER,
+	LOAD,
+	UNLOAD,
 	JOIN
 }
 
@@ -30,8 +32,10 @@ func _on_id_pressed(id: int) -> void:
 			signals.emit_signal("attack_action")
 		menu_options.CAPTURE:
 			signals.emit_signal("capture_action")
-		menu_options.ENTER:
-			signals.emit_signal("enter_action")
+		menu_options.LOAD:
+			signals.emit_signal("load_action")
+		menu_options.UNLOAD:
+			signals.emit_signal("unload_action")
 		menu_options.JOIN:
 			signals.emit_signal("join_action")
 
@@ -45,8 +49,10 @@ func add_option(id: int) -> void:
 			add_icon_item(attack_icon, tr("ATTACK_ACTION"), id)
 		menu_options.CAPTURE:
 			add_icon_item(capture_icon, tr("CAPTURE_ACTION"), id)
-		menu_options.ENTER:
-			add_icon_item(enter_icon, tr("ENTER_ACTION"), id)
+		menu_options.LOAD:
+			add_icon_item(load_icon, tr("LOAD_ACTION"), id)
+		menu_options.UNLOAD:
+			add_icon_item(unload_icon, tr("UNLOAD_ACTION"), id)
 		menu_options.JOIN:
 			add_icon_item(join_icon, tr("JOIN_ACTION"), id)
 
@@ -54,7 +60,7 @@ func generate_menu(options: PoolIntArray) -> void:
 	clear()
 	for id in options:
 		add_option(id)
-	if !options.has(menu_options.JOIN) or !options.has(menu_options.ENTER):
+	if !options.has(menu_options.JOIN) or !options.has(menu_options.LOAD):
 		add_option(menu_options.MOVE)
 	add_option(menu_options.CANCEL)
 

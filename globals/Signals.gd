@@ -16,7 +16,8 @@ signal cancel_action
 signal move_action
 signal attack_action
 signal capture_action
-signal enter_action
+signal load_action
+signal unload_action
 signal join_action
 
 signal target_selected(pos)
