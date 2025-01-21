@@ -40,12 +40,15 @@ func _unhandled_input(event: InputEvent) -> void:
 				set_cellv(cursor_pos, 0)
 		elif event.is_action_pressed("right_click") or event.is_action_pressed("ui_cancel"):
 			signals.emit_signal("cancel_pressed")
+	
 	elif event is InputEventMouseMotion:
 		var adjusted_pos = gl.clamp(world_to_map(event.position * GameCamera.zoom))
 		move_cursor(adjusted_pos)
+	
 	elif (Main.action_menu_open and event.is_action_pressed("click")) \
 	or (event.is_action_pressed("ui_cancel") or event.is_action_pressed("right_click")):
 		signals.emit_signal("cancel_pressed")
+	
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
 		signals.emit_signal("accept_pressed", cursor_pos)
 	

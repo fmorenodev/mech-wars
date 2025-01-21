@@ -304,11 +304,15 @@ func move_active_unit(target_pos: Vector2) -> void:
 		active_unit.position = path_world_coords.back()
 	
 	if can_join:
-		open_action_menu([5], target_pos) # join
+		open_action_menu([6], target_pos) # join
 		return
 	elif can_enter:
 		open_action_menu([4], target_pos) # enter
 		return
+	elif active_unit.units_carried.size() > 0:
+		open_action_menu([5], target_pos) # unload
+		return
+	
 	# check for attack targets
 	if active_unit.atk_type == gl.ATTACK_TYPE.DIRECT:
 		targets = check_targets(active_unit, active_unit.position)
@@ -404,7 +408,11 @@ func _on_accept_pressed(pos: Vector2) -> void:
 	if not active_unit:
 		select_unit_or_building(pos)
 	elif active_unit.is_selected:
-		move_active_unit(pos)
+		if active_unit.chosen_unload_unit:
+			active_unit.unload_unit(pos)
+			end_unit_action()
+		else:
+			move_active_unit(pos)
 
 func _on_cancel_pressed() -> void:
 	if action_menu_open:
@@ -444,14 +452,19 @@ func _on_capture_action() -> void:
 	end_unit_action()
 
 func _on_load_action() -> void:
-	var carried_unit: Unit = targets[0]
-	active_unit.carry_unit(carried_unit)
+	var carrying_unit: Unit = targets[0]
+	carrying_unit.carry_unit(active_unit)
 	end_unit_action()
 
 func _on_unload_action() -> void:
-	var carried_unit: Unit = active_unit.units_carried[0]
-	active_unit.unload_unit(carried_unit)
-	end_unit_action()
+	var unit_to_unload: Unit = active_unit.units_carried[0]
+	active_unit.chosen_unload_unit = unit_to_unload
+	for pos in gl.DIRECTIONS:
+		var new_pos = active_unit.position + pos
+		
+		if gl.terrain[get_terrain(new_pos)].move_values[unit_to_unload.move_type] != 99 \
+		and !is_unit_in_position(new_pos): # can move in that terrain and the pos is not blocked
+			SelectionTileMap.set_cellv(new_pos, 0)
 
 func _on_join_action() -> void:
 	var joining_unit: Unit = targets[0]
@@ -677,7 +690,8 @@ func start_turn() -> void:
 	signals.emit_signal("turn_started", active_team)
 	var units_to_delete = []
 	for unit in active_team.units:
-		unit.activate()
+		if !unit.is_being_carried:
+			unit.activate()
 		var is_building = is_building_in_position(BuildingsTileMap.world_to_map(unit.position))
 		if is_building and is_building.can_repair(unit):
 			is_building.repair(unit, active_team)

@@ -40,13 +40,14 @@ var atk_mod := 1.0
 var def_mod := 1.0
 var cap_mod := 1.0
 
-# other variables
+# temp variables
 var capture_points := 0
 var capturing_building
 var current_energy_cost := 0
 var rounded_health := 10
 var joined_this_turn := false # if unit used join action
 var is_being_carried := false setget set_is_being_carried
+var chosen_unload_unit = null
 
 # resets at start of turn
 var atk_bonus := 1.0
@@ -216,12 +217,13 @@ func carry_unit(unit: Unit) -> void:
 		unit.position = Vector2(8000, 8000)
 		unit.end_action()
 
-func unload_unit(unit: Unit) -> void:
-	if units_carried.has(unit):
-		units_carried.erase(unit)
+func unload_unit(unload_pos: Vector2) -> void:
+	if units_carried.has(chosen_unload_unit):
+		chosen_unload_unit.unit.is_being_carried = false
+		units_carried.erase(chosen_unload_unit)
 		
-		unit.position = position + Vector2(gl.tile_size, gl.tile_size)
-		unit.end_action()
+		chosen_unload_unit.position = unload_pos
+		chosen_unload_unit.end_action()
 
 func can_carry_unit(unit: Unit) -> bool:
 	if units_can_be_carried.has(unit.id) and units_carried.size() < carry_capacity:
